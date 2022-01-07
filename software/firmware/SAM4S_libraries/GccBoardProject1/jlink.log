@@ -1,0 +1,6 @@
+T1F64 30403:343 SEGGER J-Link V6.48a Log File (0001ms, 41204ms total)
+T1F64 30403:343 DLL Compiled: Jul 30 2019 15:16:09 (0001ms, 41204ms total)
+T1F64 30403:343 Logging started @ 2021-12-03 03:36 (0001ms, 41204ms total)
+T1F64 30403:350 JLINK_Close() (0010ms, 41214ms total)
+T1F64 30403:350  (0010ms, 41214ms total)
+T1F64 30403:350 Closed (0010ms, 41214ms total)
