@@ -1,0 +1,7 @@
+T1D18 6856:551 SEGGER J-Link V6.48a Log File (0001ms, 16514ms total)
+T1D18 6856:551 DLL Compiled: Jul 30 2019 15:16:09 (0001ms, 16514ms total)
+T1D18 6856:551 Logging started @ 2022-01-19 06:09 (0001ms, 16514ms total)
+T1D18 6856:576 JLINK_GetHWStatus(...)  returns 0x00 (0000ms, 16514ms total)
+T1D18 6859:301 JLINK_Close() (0014ms, 16528ms total)
+T1D18 6859:301  (0014ms, 16528ms total)
+T1D18 6859:301 Closed (0014ms, 16528ms total)
