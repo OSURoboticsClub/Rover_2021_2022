@@ -2,9 +2,21 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+src\ASF\common\services\sleepmgr\sam\sleepmgr.c
+
+src\ASF\common\services\usb\class\cdc\device\udi_cdc.c
+
+src\ASF\common\services\usb\class\cdc\device\udi_cdc_desc.c
+
+src\ASF\common\services\usb\udc\udc.c
+
 src\ASF\sam\drivers\adc\adc.c
 
+src\ASF\sam\drivers\matrix\matrix.c
+
 src\ASF\sam\drivers\pio\pio_handler.c
+
+src\ASF\sam\drivers\udp\udp_device.c
 
 src\ASF\sam\drivers\usart\usart.c
 

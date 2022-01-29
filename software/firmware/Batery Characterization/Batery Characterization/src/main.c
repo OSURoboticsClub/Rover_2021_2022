@@ -31,6 +31,8 @@
 #include <asf.h>
 #include <math.h>
 
+
+
 float cellV, current, tempBatt, tempFet;
 
 void calculateCellVoltage(int rawADCData){
@@ -60,6 +62,14 @@ void getADCData(){
 }
 
 
+void TransmitTimerHandler(void){
+	if(udi_cdc_is_tx_ready() && udi_cdc_get_free_tx_buffer() >= 63){
+		char str[20];
+		sprintf(str, "BattV: %f\n",cellV);
+		udi_cdc_putc(str);
+	}
+}
+
 int main (void)
 {
 	/* Insert system clock initialization code here (sysclk_init()). */
@@ -69,6 +79,7 @@ int main (void)
 	/* Insert application code here, after the board has been initialized. */
 	while(1){
 		getADCData();
+		
 	}
 }
 

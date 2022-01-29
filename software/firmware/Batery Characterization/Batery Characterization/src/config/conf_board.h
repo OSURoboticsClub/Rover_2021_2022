@@ -33,4 +33,11 @@
 /* ADC Transfer Period */
 #define TRANSFER_PERIOD  1
 
+//USB see conf_usb.h
+
+//Timer Counter
+#define TC TC0
+#define TC_CH 1
+#define TransmitTimerHandler TC1_Handler
+
 #endif // CONF_BOARD_H

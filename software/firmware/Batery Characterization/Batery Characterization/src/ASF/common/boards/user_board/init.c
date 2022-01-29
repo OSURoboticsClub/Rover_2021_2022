@@ -27,8 +27,9 @@ void board_init(void)
 	pio_set_output(PIOA,MUX_A1,HIGH,DISABLE,DISABLE);
 	pio_set_output(PIOA,MUX_A2,HIGH,DISABLE,DISABLE);
 	
-	pmc_enable_periph_clk(ID_ADC);
+
 	//ADC Setup
+	pmc_enable_periph_clk(ID_ADC);
 	/* Formula:
 	 *     Startup  Time = startup value / ADCClock
 	 *     Startup time = 64 / 6.4MHz = 10 us
@@ -50,4 +51,19 @@ void board_init(void)
 	adc_enable_channel(ADC, BOARD_TEMP2);
 	adc_enable_channel(ADC, BOARD_CELLV);
 	adc_enable_channel(ADC, BOARD_SHUNT);
+	
+	//USB Setup
+	udc_start();
+	
+	//timer counter configuration
+	pmc_enable_periph_clk(ID_TC1);
+	tc_init(TC, TC_CH, 
+			  TC_CMR_WAVE
+			| TC_CMR_WAVSEL_UP_RC 
+			| TC_CMR_TCCLKS_TIMER_CLOCK3
+			| TC_CMR_ACPC_TOGGLE);     //Sets TC to reset when output compare is reached
+	tc_enable_interrupt(TC, TC_CH, TC_IER_CPCS);
+	tc_write_rc(TC,TC_CH,37500);				  //causes timer to reset every 10ms (exactly)
+	TC->TC_CHANNEL[TC_CH].TC_CCR = 5;
+	tc_start(TC,TC_CH);
 }
