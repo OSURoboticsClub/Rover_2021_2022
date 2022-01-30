@@ -19,8 +19,11 @@ void board_init(void)
 	 * specific board configuration, found in conf_board.h.
 	 */
 	
+	WDT->WDT_MR |= WDT_MR_WDDIS;
+	
 	//GPIO Setup
 	//ALL GPIO are on port A
+	pmc_enable_periph_clk(ID_PIOA);
 	pio_set_output(PIOA,BUILT_IN_LED,LOW,DISABLE,DISABLE);
 	pio_set_output(PIOA,MUX_EN,HIGH,DISABLE,DISABLE);
 	pio_set_output(PIOA,MUX_A0,HIGH,DISABLE,DISABLE);
@@ -54,16 +57,31 @@ void board_init(void)
 	
 	//USB Setup
 	udc_start();
+	//to configure USB see conf_usb.h
 	
 	//timer counter configuration
 	pmc_enable_periph_clk(ID_TC1);
 	tc_init(TC, TC_CH, 
 			  TC_CMR_WAVE
 			| TC_CMR_WAVSEL_UP_RC 
-			| TC_CMR_TCCLKS_TIMER_CLOCK3
-			| TC_CMR_ACPC_TOGGLE);     //Sets TC to reset when output compare is reached
+			| TC_CMR_TCCLKS_TIMER_CLOCK3);     //Sets TC to reset when output compare is reached
 	tc_enable_interrupt(TC, TC_CH, TC_IER_CPCS);
+	NVIC_EnableIRQ(TC1_IRQn);
 	tc_write_rc(TC,TC_CH,37500);				  //causes timer to reset every 10ms (exactly)
-	TC->TC_CHANNEL[TC_CH].TC_CCR = 5;
 	tc_start(TC,TC_CH);
+
+	//PWM Config
+	/*
+	pmc_enable_periph_clk(ID_TC0);
+	tc_init(PWM, PWM_CH, 
+			TC_CMR_WAVE
+			| TC_CMR_WAVSEL_UP
+			| TC_CMR_TCCLKS_TIMER_CLOCK1
+			| TC_CMR_ACPC_CLEAR);
+	tc_disable_interrupt(PWM,PWM_CH,255);
+	tc_start(PWM,PWM_CH);
+	tc_write_rc(PWM,PWM_CH,32768);
+	*/
+	
+	
 }

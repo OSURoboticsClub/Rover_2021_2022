@@ -31,16 +31,20 @@
 #include <asf.h>
 #include <math.h>
 
-
+pwm_channel_t Load;
 
 float cellV, current, tempBatt, tempFet;
+float dischargeCurrent = 0;
+int PWMDuty = 500;
 
 void calculateCellVoltage(int rawADCData){
 	cellV = (rawADCData)*((VOLT_REF/1000.0)/(4096.0*0.759));
 }
 
 void calculateCellCurrent(int rawADCData){
-	current = (rawADCData)*((VOLT_REF/1000.0)/(0.005*4096.0*22.0));
+	float voltage = (float)(rawADCData)*((float)(VOLT_REF)/1000.0)/4096.0;
+	current = voltage/0.11;
+	current = current - 0.6;
 }
 
 void calculateTemp(int rawADCData, int channel){
@@ -61,25 +65,68 @@ void getADCData(){
 	}
 }
 
-
 void TransmitTimerHandler(void){
-	if(udi_cdc_is_tx_ready() && udi_cdc_get_free_tx_buffer() >= 63){
-		char str[20];
-		sprintf(str, "BattV: %f\n",cellV);
-		udi_cdc_putc(str);
+	NVIC_DisableIRQ(ID_TC1);
+	if(tc_get_status(TC,TC_CH) & TC_SR_CPCS){
+		if(udi_cdc_get_free_tx_buffer() >= 64){
+			int strln = 40;
+			char str[strln];
+			sprintf(str, "%f,%f,%f,%f\n\r",cellV,current,tempBatt,tempFet);
+			for(int i=0;i<strln;i++)
+				if(udi_cdc_is_tx_ready())
+					udi_cdc_putc(str[i]);
+		}
+	}
+	NVIC_EnableIRQ(ID_TC1);
+}
+
+void initPWM(){
+	pmc_enable_periph_clk(ID_PWM);
+	pwm_channel_disable(PWM,PWM_CHANNEL_0);
+	pio_set_peripheral(LOAD_PORT,LOAD_PERIPH,LOAD_MASK);
+	pwm_clock_t clock_setting = {
+		.ul_clka = 1000000,
+		.ul_clkb = 0,
+		.ul_mck = 120000000
+	};
+	pwm_init(PWM,&clock_setting);
+	Load.ul_prescaler = PWM_CMR_CPRE_CLKA;
+	Load.ul_period = 1000;
+	Load.ul_duty = PWMDuty;
+	Load.channel = PWM_CHANNEL_0;
+	pwm_channel_init(PWM, &Load);
+	pwm_channel_enable(PWM,PWM_CHANNEL_0);
+}
+
+void checkForDischargeCurrent(){
+	if(udi_cdc_is_rx_ready()){
+		dischargeCurrent = (float)(udi_cdc_getc())/10.0;
 	}
 }
+
+/*
+void updateDuty(){
+	if(dischargeCurrent - current > 0.1){
+		PWMDuty++;
+		Load.ul_duty = PWMDuty;
+		pwm_channel_disable(PWM,PWM_CHANNEL_0);
+	}else if(current - dischargeCurrent > 0.1){
+		
+	}
+}*/
 
 int main (void)
 {
 	/* Insert system clock initialization code here (sysclk_init()). */
 	sysclk_init();
 	board_init();
+	initPWM();
 
 	/* Insert application code here, after the board has been initialized. */
 	while(1){
 		getADCData();
-		
+		checkForDischargeCurrent();
+		//updateDuty();
 	}
 }
 

@@ -262,5 +262,6 @@ void Reset_Handler(void)
 void Dummy_Handler(void)
 {
 	while (1) {
+		//UDP->UDP_CSR[1] = UDP->UDP_CSR[1] & 0xfffffffe;
 	}
 }

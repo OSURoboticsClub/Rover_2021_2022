@@ -40,4 +40,13 @@
 #define TC_CH 1
 #define TransmitTimerHandler TC1_Handler
 
+//PWM TC
+/*
+#define PWM TC0
+#define PWM_CH 0
+*/
+#define LOAD_PORT PIOA
+#define LOAD_MASK PIO_PA0
+#define LOAD_PERIPH PIO_PERIPH_A
+
 #endif // CONF_BOARD_H
