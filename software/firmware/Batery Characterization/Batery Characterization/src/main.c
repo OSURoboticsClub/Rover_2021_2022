@@ -35,7 +35,8 @@ pwm_channel_t Load;
 
 float cellV, current, tempBatt, tempFet;
 float dischargeCurrent = 0;
-int PWMDuty = 500;
+int PWMDuty = 0;
+bool updateLoop = false;
 
 void calculateCellVoltage(int rawADCData){
 	cellV = (rawADCData)*((VOLT_REF/1000.0)/(4096.0*0.759));
@@ -44,7 +45,7 @@ void calculateCellVoltage(int rawADCData){
 void calculateCellCurrent(int rawADCData){
 	float voltage = (float)(rawADCData)*((float)(VOLT_REF)/1000.0)/4096.0;
 	current = voltage/0.11;
-	current = current - 0.6;
+	//current = current - 0.6;
 }
 
 void calculateTemp(int rawADCData, int channel){
@@ -77,6 +78,7 @@ void TransmitTimerHandler(void){
 					udi_cdc_putc(str[i]);
 		}
 	}
+	updateLoop = true;
 	NVIC_EnableIRQ(ID_TC1);
 }
 
@@ -94,6 +96,7 @@ void initPWM(){
 	Load.ul_period = 1000;
 	Load.ul_duty = PWMDuty;
 	Load.channel = PWM_CHANNEL_0;
+	Load.polarity = PWM_HIGH;
 	pwm_channel_init(PWM, &Load);
 	pwm_channel_enable(PWM,PWM_CHANNEL_0);
 }
@@ -104,16 +107,25 @@ void checkForDischargeCurrent(){
 	}
 }
 
-/*
-void updateDuty(){
-	if(dischargeCurrent - current > 0.1){
-		PWMDuty++;
-		Load.ul_duty = PWMDuty;
-		pwm_channel_disable(PWM,PWM_CHANNEL_0);
-	}else if(current - dischargeCurrent > 0.1){
-		
+
+void updatePWM(int newDuty){
+	Load.ul_duty = newDuty;
+	pwm_channel_disable(PWM,PWM_CHANNEL_0);
+	pwm_channel_init(PWM,&Load);
+	pwm_channel_enable(PWM,PWM_CHANNEL_0);
+}
+
+void LoadFeedback(){
+	if(updateLoop){
+		if(dischargeCurrent - current > 0.1 && current < 25 && PWMDuty < 1000){
+			updatePWM(++PWMDuty);
+		}else if(current - dischargeCurrent > 0.1 && current > 0 && PWMDuty > 0){
+			PWMDuty -= 1;
+			updatePWM(PWMDuty);
+		}
+		updateLoop = false;
 	}
-}*/
+}
 
 int main (void)
 {
@@ -126,7 +138,7 @@ int main (void)
 	while(1){
 		getADCData();
 		checkForDischargeCurrent();
-		//updateDuty();
+		LoadFeedback();
 	}
 }
 

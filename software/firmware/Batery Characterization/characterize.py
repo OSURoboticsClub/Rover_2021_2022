@@ -4,14 +4,13 @@ import time
 bcb = serial.Serial('COM6',115200)
 
 current = float(input("Enter discharge current (multiple of 0.1A):\n"))
+fileName = input("name battery Type:\n")
 
-try:
-    bcb.write((str(chr(int(current*10)))).encode())
-except:
-    bcb.close()
-    time.sleep(0.5)
-    bcb.open()
-    bcb.write((str(chr(int(current*10)))).encode())
+bcb.write((str(chr(int(current*10)))).encode())
+
+fileName = ("logs/" + fileName + "_" + str(current) + ".csv")
+
+f = open(fileName, 'w')
 
 print("Running profile")
 time.sleep(1)
@@ -19,9 +18,10 @@ time.sleep(1)
 while(1):
     try:
         line = bcb.readline()
+        line = line.decode("utf-8")
+        line = line[2:]
+        print(line)
+        f.write(line)
     except:
-        bcb.close()
-        time.sleep(0.5)
-        bcb.open()
-        line = bcb.readline()
-    print(line)
+        f.close()
+        exit()

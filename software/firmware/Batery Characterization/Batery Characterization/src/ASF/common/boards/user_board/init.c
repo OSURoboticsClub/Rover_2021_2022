@@ -68,20 +68,6 @@ void board_init(void)
 	tc_enable_interrupt(TC, TC_CH, TC_IER_CPCS);
 	NVIC_EnableIRQ(TC1_IRQn);
 	tc_write_rc(TC,TC_CH,37500);				  //causes timer to reset every 10ms (exactly)
-	tc_start(TC,TC_CH);
-
-	//PWM Config
-	/*
-	pmc_enable_periph_clk(ID_TC0);
-	tc_init(PWM, PWM_CH, 
-			TC_CMR_WAVE
-			| TC_CMR_WAVSEL_UP
-			| TC_CMR_TCCLKS_TIMER_CLOCK1
-			| TC_CMR_ACPC_CLEAR);
-	tc_disable_interrupt(PWM,PWM_CH,255);
-	tc_start(PWM,PWM_CH);
-	tc_write_rc(PWM,PWM_CH,32768);
-	*/
-	
+	tc_start(TC,TC_CH);	
 	
 }
