@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>ModbusTesting</AssemblyName>
-    <Name>ModbusTesting</Name>
-    <RootNamespace>ModbusTesting</RootNamespace>
+    <AssemblyName>ModbusDevelopment</AssemblyName>
+    <Name>ModbusDevelopment</Name>
+    <RootNamespace>ModbusDevelopment</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -32,15 +32,13 @@
       <framework-data>
   <options>
     <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="sam.drivers.usart" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.basic.clock" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
     <option id="sam.drivers.adc" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="sam.drivers.pio" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
     <option id="sam.drivers.pmc" value="Add" config="" content-id="Atmel.ASF" />
     <option id="sam.drivers.pwm" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="sam.drivers.usart" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="sam.drivers.wdt" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="sam.drivers.tc.appnote" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="sam.drivers.pio" value="Add" config="" content-id="Atmel.ASF" />
     <option id="sam.utils.linker_scripts#atsam4s4" value="Add" config="" content-id="Atmel.ASF" />
   </options>
   <configurations>
@@ -50,7 +48,7 @@
   </configurations>
   <files>
     <file path="src/main.c" framework="" version="" source="common/applications/user_application/main.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/Config/conf_board.h" framework="" version="3.51.0" source="sam\drivers\tc\tc_capture_waveform_example\sam4e16e_sam4e_ek\conf_board.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/config/conf_board.h" framework="" version="" source="common/applications/user_application/user_board/config/conf_board.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/common/boards/board.h" framework="" version="" source="common/boards/board.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/common/boards/user_board/init.c" framework="" version="" source="common/boards/user_board/init.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/common/boards/user_board/user_board.h" framework="" version="" source="common/boards/user_board/user_board.h" changed="False" content-id="Atmel.ASF" />
@@ -203,13 +201,8 @@
     <file path="src/ASF/sam/drivers/adc/adc.h" framework="" version="3.51.0" source="sam\drivers\adc\adc.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/sam/drivers/pio/pio_handler.c" framework="" version="3.51.0" source="sam\drivers\pio\pio_handler.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/sam/drivers/pio/pio_handler.h" framework="" version="3.51.0" source="sam\drivers\pio\pio_handler.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/sam/drivers/tc/tc.c" framework="" version="3.51.0" source="sam\drivers\tc\tc.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/sam/drivers/tc/tc.h" framework="" version="3.51.0" source="sam\drivers\tc\tc.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/sam/drivers/tc/tc_capture_waveform_example/tc_capture_waveform_example.h" framework="" version="3.51.0" source="sam\drivers\tc\tc_capture_waveform_example\tc_capture_waveform_example.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/sam/drivers/usart/usart.c" framework="" version="3.51.0" source="sam\drivers\usart\usart.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/sam/drivers/usart/usart.h" framework="" version="3.51.0" source="sam\drivers\usart\usart.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/sam/drivers/wdt/wdt.c" framework="" version="3.51.0" source="sam\drivers\wdt\wdt.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/sam/drivers/wdt/wdt.h" framework="" version="3.51.0" source="sam\drivers\wdt\wdt.h" changed="False" content-id="Atmel.ASF" />
   </files>
   <documentation help="https://asf.microchip.com/docs/3.51.0/common.applications.user_application.user_board.sam4s/html/index.html" />
   <offline-documentation help="" />
@@ -261,9 +254,7 @@
       <Value>../src/ASF/common/services/clock</Value>
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
-      <Value>../src/ASF/sam/drivers/tc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
-      <Value>../src/ASF/sam/drivers/wdt</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
@@ -303,9 +294,7 @@
       <Value>../src/ASF/common/services/clock</Value>
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
-      <Value>../src/ASF/sam/drivers/tc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
-      <Value>../src/ASF/sam/drivers/wdt</Value>
     </ListValues>
   </armgcc.assembler.general.IncludePaths>
   <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM4=true -DBOARD=USER_BOARD -Dprintf=iprintf -Dscanf=iscanf</armgcc.preprocessingassembler.general.AssemblerFlags>
@@ -328,9 +317,7 @@
       <Value>../src/ASF/common/services/clock</Value>
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
-      <Value>../src/ASF/sam/drivers/tc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
-      <Value>../src/ASF/sam/drivers/wdt</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
 </ArmGcc>
@@ -372,9 +359,7 @@
       <Value>../src/ASF/common/services/clock</Value>
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
-      <Value>../src/ASF/sam/drivers/tc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
-      <Value>../src/ASF/sam/drivers/wdt</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
@@ -415,9 +400,7 @@
       <Value>../src/ASF/common/services/clock</Value>
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
-      <Value>../src/ASF/sam/drivers/tc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
-      <Value>../src/ASF/sam/drivers/wdt</Value>
     </ListValues>
   </armgcc.assembler.general.IncludePaths>
   <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
@@ -441,9 +424,7 @@
       <Value>../src/ASF/common/services/clock</Value>
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
-      <Value>../src/ASF/sam/drivers/tc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
-      <Value>../src/ASF/sam/drivers/wdt</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
@@ -469,10 +450,7 @@
     <Folder Include="src\ASF\sam\drivers\pio\" />
     <Folder Include="src\ASF\sam\drivers\pmc\" />
     <Folder Include="src\ASF\sam\drivers\pwm\" />
-    <Folder Include="src\ASF\sam\drivers\tc\" />
-    <Folder Include="src\ASF\sam\drivers\tc\tc_capture_waveform_example\" />
     <Folder Include="src\ASF\sam\drivers\usart\" />
-    <Folder Include="src\ASF\sam\drivers\wdt\" />
     <Folder Include="src\ASF\sam\utils\" />
     <Folder Include="src\ASF\sam\utils\cmsis\" />
     <Folder Include="src\ASF\sam\utils\cmsis\sam4s\" />
@@ -498,13 +476,6 @@
     <Folder Include="src\ASF\thirdparty\CMSIS\Lib\" />
     <Folder Include="src\ASF\thirdparty\CMSIS\Lib\GCC\" />
     <Folder Include="src\config\" />
-    <Folder Include="src\FreeModbus\" />
-    <Folder Include="src\FreeModbus\ascii\" />
-    <Folder Include="src\FreeModbus\functions\" />
-    <Folder Include="src\FreeModbus\include\" />
-    <Folder Include="src\FreeModbus\port\" />
-    <Folder Include="src\FreeModbus\rtu\" />
-    <Folder Include="src\FreeModbus\tcp\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\ASF\sam\drivers\adc\adc.c">
@@ -513,6 +484,12 @@
     <Compile Include="src\ASF\sam\drivers\pio\pio_handler.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\ASF\sam\drivers\usart\usart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\sam\drivers\usart\usart.h">
+      <SubType>compile</SubType>
+    </None>
     <None Include="src\ASF\sam\drivers\pio\pio_handler.h">
       <SubType>compile</SubType>
     </None>
@@ -957,27 +934,6 @@
     <None Include="src\ASF\common\utils\interrupt\interrupt_sam_nvic.h">
       <SubType>compile</SubType>
     </None>
-    <Compile Include="src\ASF\sam\drivers\tc\tc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <None Include="src\ASF\sam\drivers\tc\tc.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\sam\drivers\tc\tc_capture_waveform_example\tc_capture_waveform_example.h">
-      <SubType>compile</SubType>
-    </None>
-    <Compile Include="src\ASF\sam\drivers\usart\usart.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <None Include="src\ASF\sam\drivers\usart\usart.h">
-      <SubType>compile</SubType>
-    </None>
-    <Compile Include="src\ASF\sam\drivers\wdt\wdt.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <None Include="src\ASF\sam\drivers\wdt\wdt.h">
-      <SubType>compile</SubType>
-    </None>
     <Compile Include="src\ASF\sam\utils\cmsis\sam4s\source\templates\gcc\startup_sam4s.c">
       <SubType>compile</SubType>
     </Compile>
@@ -985,93 +941,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\ASF\sam\utils\syscalls\gcc\syscalls.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\ascii\mbascii.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\ascii\mbascii.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\demo.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\functions\mbfunccoils.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\functions\mbfuncdiag.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\functions\mbfuncdisc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\functions\mbfuncholding.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\functions\mbfuncinput.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\functions\mbfuncother.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\functions\mbutils.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\include\mb.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\include\mbconfig.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\include\mbframe.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\include\mbfunc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\include\mbport.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\include\mbproto.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\include\mbutils.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\mb.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\port\port.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\port\portevent.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\port\portother.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\port\portserial.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\port\porttimer.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\rtu\mbcrc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\rtu\mbcrc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\rtu\mbrtu.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\rtu\mbrtu.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\tcp\mbtcp.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\FreeModbus\tcp\mbtcp.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\main.c">
