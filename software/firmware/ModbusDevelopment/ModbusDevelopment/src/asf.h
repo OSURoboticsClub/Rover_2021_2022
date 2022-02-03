@@ -71,6 +71,9 @@
 // From module: Interrupt management - SAM implementation
 #include <interrupt.h>
 
+// From module: MATRIX - Bus Matrix
+#include <matrix.h>
+
 // From module: PIO - Parallel Input/Output Controller
 #include <pio.h>
 
@@ -84,11 +87,25 @@
 // From module: Part identification macros
 #include <parts.h>
 
+// From module: Sleep manager - SAM implementation
+#include <sam/sleepmgr.h>
+#include <sleepmgr.h>
+
 // From module: System Clock Control - SAM4S implementation
 #include <sysclk.h>
 
 // From module: USART - Univ. Syn Async Rec/Trans
 #include <usart.h>
+
+// From module: USB CDC Protocol
+#include <usb_protocol_cdc.h>
+
+// From module: USB Device CDC (Single Interface Device)
+#include <udi_cdc.h>
+
+// From module: USB Device Stack Core (Common API)
+#include <udc.h>
+#include <udd.h>
 
 // From module: pio_handler support enabled
 #include <pio_handler.h>

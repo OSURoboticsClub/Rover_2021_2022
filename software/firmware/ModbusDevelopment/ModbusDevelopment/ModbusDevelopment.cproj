@@ -32,19 +32,21 @@
       <framework-data>
   <options>
     <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="sam.drivers.usart" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.basic.clock" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="sam.drivers.adc" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="sam.drivers.adc" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="sam.drivers.pio" value="Add" config="" content-id="Atmel.ASF" />
     <option id="sam.drivers.pmc" value="Add" config="" content-id="Atmel.ASF" />
     <option id="sam.drivers.pwm" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="sam.drivers.pio" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="sam.drivers.usart" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.usb.class.device" value="Add" config="cdc" content-id="Atmel.ASF" />
     <option id="sam.utils.linker_scripts#atsam4s4" value="Add" config="" content-id="Atmel.ASF" />
   </options>
   <configurations>
     <configuration key="config.compiler.armgcc.printf" value="iprintf" default="iprintf" content-id="Atmel.ASF" />
     <configuration key="config.compiler.armgcc.scanf" value="iscanf" default="iscanf" content-id="Atmel.ASF" />
     <configuration key="config.sam.pio.pio_handler" value="yes" default="yes" content-id="Atmel.ASF" />
+    <configuration key="config.sam.drivers.udp.device.sleepmgr" value="with_sleepmgr" default="with_sleepmgr" content-id="Atmel.ASF" />
   </configurations>
   <files>
     <file path="src/main.c" framework="" version="" source="common/applications/user_application/main.c" changed="False" content-id="Atmel.ASF" />
@@ -203,6 +205,29 @@
     <file path="src/ASF/sam/drivers/pio/pio_handler.h" framework="" version="3.51.0" source="sam\drivers\pio\pio_handler.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/sam/drivers/usart/usart.c" framework="" version="3.51.0" source="sam\drivers\usart\usart.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/sam/drivers/usart/usart.h" framework="" version="3.51.0" source="sam\drivers\usart\usart.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/sam/drivers/matrix/matrix.c" framework="" version="3.51.0" source="sam\drivers\matrix\matrix.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/sam/drivers/matrix/matrix.h" framework="" version="3.51.0" source="sam\drivers\matrix\matrix.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/sleepmgr/sam/sleepmgr.c" framework="" version="3.51.0" source="common\services\sleepmgr\sam\sleepmgr.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/sleepmgr/sleepmgr.h" framework="" version="3.51.0" source="common\services\sleepmgr\sleepmgr.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/sleepmgr/sam/sleepmgr.h" framework="" version="3.51.0" source="common\services\sleepmgr\sam\sleepmgr.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/Config/conf_sleepmgr.h" framework="" version="3.51.0" source="common\services\sleepmgr\sam\module_config\conf_sleepmgr.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/usb_atmel.h" framework="" version="3.51.0" source="common\services\usb\usb_atmel.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/usb_protocol.h" framework="" version="3.51.0" source="common\services\usb\usb_protocol.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/class/cdc/usb_protocol_cdc.h" framework="" version="3.51.0" source="common\services\usb\class\cdc\usb_protocol_cdc.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/class/cdc/device/udi_cdc.c" framework="" version="3.51.0" source="common\services\usb\class\cdc\device\udi_cdc.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/class/cdc/device/udi_cdc_desc.c" framework="" version="3.51.0" source="common\services\usb\class\cdc\device\udi_cdc_desc.c" changed="False" content-id="Atmel.ASF" />
+    <file path="atmel_devices_cdc.cat" framework="" version="3.51.0" source="common\services\usb\class\cdc\device\atmel_devices_cdc.cat" changed="False" content-id="Atmel.ASF" />
+    <file path="atmel_devices_cdc.inf" framework="" version="3.51.0" source="common\services\usb\class\cdc\device\atmel_devices_cdc.inf" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/class/cdc/device/udi_cdc.h" framework="" version="3.51.0" source="common\services\usb\class\cdc\device\udi_cdc.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/class/cdc/device/udi_cdc_conf.h" framework="" version="3.51.0" source="common\services\usb\class\cdc\device\udi_cdc_conf.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/Config/conf_usb.h" framework="" version="3.51.0" source="common\services\usb\class\cdc\device\module_config\conf_usb.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/udc/udc.c" framework="" version="3.51.0" source="common\services\usb\udc\udc.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/udc/udc.h" framework="" version="3.51.0" source="common\services\usb\udc\udc.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/udc/udd.h" framework="" version="3.51.0" source="common\services\usb\udc\udd.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/udc/udc_desc.h" framework="" version="3.51.0" source="common\services\usb\udc\udc_desc.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/services/usb/udc/udi.h" framework="" version="3.51.0" source="common\services\usb\udc\udi.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/sam/drivers/udp/udp_device.c" framework="" version="3.51.0" source="sam\drivers\udp\udp_device.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/sam/drivers/udp/udp_device.h" framework="" version="3.51.0" source="sam\drivers\udp\udp_device.h" changed="False" content-id="Atmel.ASF" />
   </files>
   <documentation help="https://asf.microchip.com/docs/3.51.0/common.applications.user_application.user_board.sam4s/html/index.html" />
   <offline-documentation help="" />
@@ -233,6 +258,7 @@
       <Value>BOARD=USER_BOARD</Value>
       <Value>ARM_MATH_CM4=true</Value>
       <Value>printf=iprintf</Value>
+      <Value>UDD_ENABLE</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
@@ -255,6 +281,13 @@
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/device</Value>
+      <Value>../src/ASF/common/services/usb/udc</Value>
+      <Value>../src/ASF/sam/drivers/udp</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
@@ -295,9 +328,16 @@
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/device</Value>
+      <Value>../src/ASF/common/services/usb/udc</Value>
+      <Value>../src/ASF/sam/drivers/udp</Value>
     </ListValues>
   </armgcc.assembler.general.IncludePaths>
-  <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM4=true -DBOARD=USER_BOARD -Dprintf=iprintf -Dscanf=iscanf</armgcc.preprocessingassembler.general.AssemblerFlags>
+  <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM4=true -DBOARD=USER_BOARD -Dprintf=iprintf -Dscanf=iscanf -DUDD_ENABLE</armgcc.preprocessingassembler.general.AssemblerFlags>
   <armgcc.preprocessingassembler.general.IncludePaths>
     <ListValues>
       <Value>../src/ASF/common/boards</Value>
@@ -318,6 +358,13 @@
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/device</Value>
+      <Value>../src/ASF/common/services/usb/udc</Value>
+      <Value>../src/ASF/sam/drivers/udp</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
 </ArmGcc>
@@ -338,6 +385,7 @@
       <Value>BOARD=USER_BOARD</Value>
       <Value>ARM_MATH_CM4=true</Value>
       <Value>printf=iprintf</Value>
+      <Value>UDD_ENABLE</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
@@ -360,6 +408,13 @@
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/device</Value>
+      <Value>../src/ASF/common/services/usb/udc</Value>
+      <Value>../src/ASF/sam/drivers/udp</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
@@ -401,10 +456,17 @@
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/device</Value>
+      <Value>../src/ASF/common/services/usb/udc</Value>
+      <Value>../src/ASF/sam/drivers/udp</Value>
     </ListValues>
   </armgcc.assembler.general.IncludePaths>
   <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
-  <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM4=true -DBOARD=USER_BOARD -Dprintf=iprintf -Dscanf=iscanf</armgcc.preprocessingassembler.general.AssemblerFlags>
+  <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM4=true -DBOARD=USER_BOARD -Dprintf=iprintf -Dscanf=iscanf -DUDD_ENABLE</armgcc.preprocessingassembler.general.AssemblerFlags>
   <armgcc.preprocessingassembler.general.IncludePaths>
     <ListValues>
       <Value>../src/ASF/common/boards</Value>
@@ -425,6 +487,13 @@
       <Value>../src/ASF/common/services/ioport</Value>
       <Value>../src/ASF/sam/drivers/adc</Value>
       <Value>../src/ASF/sam/drivers/usart</Value>
+      <Value>../src/ASF/sam/drivers/matrix</Value>
+      <Value>../src/ASF/common/services/sleepmgr</Value>
+      <Value>../src/ASF/common/services/usb</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc</Value>
+      <Value>../src/ASF/common/services/usb/class/cdc/device</Value>
+      <Value>../src/ASF/common/services/usb/udc</Value>
+      <Value>../src/ASF/sam/drivers/udp</Value>
     </ListValues>
   </armgcc.preprocessingassembler.general.IncludePaths>
   <armgcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcc.preprocessingassembler.debugging.DebugLevel>
@@ -442,14 +511,23 @@
     <Folder Include="src\ASF\common\services\clock\sam4s\" />
     <Folder Include="src\ASF\common\services\ioport\" />
     <Folder Include="src\ASF\common\services\ioport\sam\" />
+    <Folder Include="src\ASF\common\services\sleepmgr\" />
+    <Folder Include="src\ASF\common\services\sleepmgr\sam\" />
+    <Folder Include="src\ASF\common\services\usb\" />
+    <Folder Include="src\ASF\common\services\usb\class\" />
+    <Folder Include="src\ASF\common\services\usb\class\cdc\" />
+    <Folder Include="src\ASF\common\services\usb\class\cdc\device\" />
+    <Folder Include="src\ASF\common\services\usb\udc\" />
     <Folder Include="src\ASF\common\utils\" />
     <Folder Include="src\ASF\common\utils\interrupt\" />
     <Folder Include="src\ASF\sam\" />
     <Folder Include="src\ASF\sam\drivers\" />
     <Folder Include="src\ASF\sam\drivers\adc\" />
+    <Folder Include="src\ASF\sam\drivers\matrix\" />
     <Folder Include="src\ASF\sam\drivers\pio\" />
     <Folder Include="src\ASF\sam\drivers\pmc\" />
     <Folder Include="src\ASF\sam\drivers\pwm\" />
+    <Folder Include="src\ASF\sam\drivers\udp\" />
     <Folder Include="src\ASF\sam\drivers\usart\" />
     <Folder Include="src\ASF\sam\utils\" />
     <Folder Include="src\ASF\sam\utils\cmsis\" />
@@ -478,12 +556,75 @@
     <Folder Include="src\config\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\ASF\common\services\sleepmgr\sam\sleepmgr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="atmel_devices_cdc.cat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="atmel_devices_cdc.inf">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\sleepmgr\sleepmgr.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\sleepmgr\sam\sleepmgr.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\usb_atmel.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\usb_protocol.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\class\cdc\usb_protocol_cdc.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\common\services\usb\class\cdc\device\udi_cdc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\common\services\usb\class\cdc\device\udi_cdc.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\class\cdc\device\udi_cdc_conf.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\common\services\usb\class\cdc\device\udi_cdc_desc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ASF\common\services\usb\udc\udc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\common\services\usb\udc\udc.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\udc\udd.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\udc\udc_desc.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\services\usb\udc\udi.h">
+      <SubType>compile</SubType>
+    </None>
     <Compile Include="src\ASF\sam\drivers\adc\adc.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\ASF\sam\drivers\matrix\matrix.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\sam\drivers\matrix\matrix.h">
+      <SubType>compile</SubType>
+    </None>
     <Compile Include="src\ASF\sam\drivers\pio\pio_handler.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\ASF\sam\drivers\udp\udp_device.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\ASF\sam\drivers\udp\udp_device.h">
+      <SubType>compile</SubType>
+    </None>
     <Compile Include="src\ASF\sam\drivers\usart\usart.c">
       <SubType>compile</SubType>
     </Compile>
@@ -941,6 +1082,21 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\ASF\sam\utils\syscalls\gcc\syscalls.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\config\conf_sleepmgr.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\config\conf_usb.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\config\modbus.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\config\modbus.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\config\registers.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\main.c">
