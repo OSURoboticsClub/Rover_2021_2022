@@ -29,6 +29,8 @@
  * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
  */
 #include <asf.h>
+#include <modbus.h>
+#include <registers.h>
 
 int main (void)
 {
@@ -40,6 +42,6 @@ int main (void)
 	/* Insert application code here, after the board has been initialized. */
 	
 	while(1){
-		
+		modbus_update();
 	}
 }

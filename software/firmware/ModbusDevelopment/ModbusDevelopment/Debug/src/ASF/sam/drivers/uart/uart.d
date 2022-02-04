@@ -1,7 +1,6 @@
-src/ASF/common/services/usb/class/cdc/device/udi_cdc.d \
- src/ASF/common/services/usb/class/cdc/device/udi_cdc.o: \
- ../src/ASF/common/services/usb/class/cdc/device/udi_cdc.c \
- ../src/config/conf_usb.h ../src/ASF/sam/utils/compiler.h \
+src/ASF/sam/drivers/uart/uart.d src/ASF/sam/drivers/uart/uart.o: \
+ ../src/ASF/sam/drivers/uart/uart.c ../src/ASF/sam/drivers/uart/uart.h \
+ ../src/ASF/sam/utils/compiler.h \
  s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stddef.h \
  ../src/ASF/common/utils/parts.h \
  ../src/ASF/sam/utils/preprocessor/preprocessor.h \
@@ -102,24 +101,9 @@ src/ASF/common/services/usb/class/cdc/device/udi_cdc.d \
  s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\machine\stdlib.h \
  s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\alloca.h \
  ../src/ASF/common/utils/interrupt.h \
- ../src/ASF/common/utils/interrupt/interrupt_sam_nvic.h \
- ../src/ASF/common/services/usb/class/cdc/device/udi_cdc_conf.h \
- ../src/ASF/common/services/usb/class/cdc/usb_protocol_cdc.h \
- ../src/ASF/common/services/usb/usb_protocol.h \
- ../src/ASF/common/services/usb/usb_atmel.h \
- ../src/ASF/common/services/usb/udc/udd.h \
- ../src/ASF/common/services/usb/udc/udc_desc.h \
- ../src/ASF/common/services/usb/udc/udi.h \
- ../src/ASF/common/services/usb/udc/udc.h \
- ../src/ASF/common/services/usb/udc/udd.h \
- ../src/ASF/common/services/usb/class/cdc/device/udi_cdc.h \
- ../src/ASF/common/services/usb/udc/udc_desc.h \
- ../src/ASF/common/services/usb/udc/udi.h \
- s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\string.h \
- s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\xlocale.h \
- s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\string.h
+ ../src/ASF/common/utils/interrupt/interrupt_sam_nvic.h
 
-../src/config/conf_usb.h:
+../src/ASF/sam/drivers/uart/uart.h:
 
 ../src/ASF/sam/utils/compiler.h:
 
@@ -324,33 +308,3 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\a
 ../src/ASF/common/utils/interrupt.h:
 
 ../src/ASF/common/utils/interrupt/interrupt_sam_nvic.h:
-
-../src/ASF/common/services/usb/class/cdc/device/udi_cdc_conf.h:
-
-../src/ASF/common/services/usb/class/cdc/usb_protocol_cdc.h:
-
-../src/ASF/common/services/usb/usb_protocol.h:
-
-../src/ASF/common/services/usb/usb_atmel.h:
-
-../src/ASF/common/services/usb/udc/udd.h:
-
-../src/ASF/common/services/usb/udc/udc_desc.h:
-
-../src/ASF/common/services/usb/udc/udi.h:
-
-../src/ASF/common/services/usb/udc/udc.h:
-
-../src/ASF/common/services/usb/udc/udd.h:
-
-../src/ASF/common/services/usb/class/cdc/device/udi_cdc.h:
-
-../src/ASF/common/services/usb/udc/udc_desc.h:
-
-../src/ASF/common/services/usb/udc/udi.h:
-
-s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\string.h:
-
-s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\xlocale.h:
-
-s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\string.h:

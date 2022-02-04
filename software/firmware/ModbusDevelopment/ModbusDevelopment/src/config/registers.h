@@ -6,11 +6,17 @@
  */ 
 
 
-#ifndef INCFILE1_H_
-#define INCFILE1_H_
+#ifndef REGISTERS_H_
+#define REGISTERS_H_
+
+//int Registers
+
+//float Registers
+
+//char Registers
+
+//Bool Registers
 
 
 
-
-
-#endif /* INCFILE1_H_ */
+#endif /* REGISTERS_H_ */

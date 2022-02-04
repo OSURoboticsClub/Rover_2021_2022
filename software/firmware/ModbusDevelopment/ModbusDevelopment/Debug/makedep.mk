@@ -16,6 +16,8 @@ src\ASF\sam\drivers\matrix\matrix.c
 
 src\ASF\sam\drivers\pio\pio_handler.c
 
+src\ASF\sam\drivers\uart\uart.c
+
 src\ASF\sam\drivers\udp\udp_device.c
 
 src\ASF\sam\drivers\usart\usart.c
