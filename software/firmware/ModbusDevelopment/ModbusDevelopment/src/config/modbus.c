@@ -10,6 +10,7 @@
 #include <modbus.h>
 
 Uart *RS485Port;
+uint8_t slaveID;
 
 uint16_t		recievedDataSize = 0;
 uint16_t		transmitDataSize = 0;
@@ -22,9 +23,10 @@ const char		charRegisters[REGISTER_AR_SIZE];
 const bool		boolRegisters[REGISTER_AR_SIZE];
 
 
-void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_t enPin){
+void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_t enPin, const uint8_t slave_id){
 	
 	RS485Port = port485;
+	slaveID = slave_id;
 	
 	if(RS485Port == UART0){
 		pmc_enable_periph_clk(ID_UART0);		//Enable the clocks to the UART modules
@@ -58,7 +60,7 @@ void modbus_update(void){
 	
 }
 
-//interupt handler for incoming data
+//interrupt handler for incoming data
 void UART_Handler(void){
 	if(uart_is_tx_ready(RS485Port)){							//confirm there is data ready to be read
 		uart_read(RS485Port, rxBuffer[recievedDataSize]);		//move the data into the next index of the rx buffer
