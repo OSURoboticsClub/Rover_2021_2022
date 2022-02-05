@@ -38,6 +38,8 @@ int main (void)
 
 	sysclk_init();
 	board_init();
+	
+	//need to insert modbus_init
 
 	/* Insert application code here, after the board has been initialized. */
 	
