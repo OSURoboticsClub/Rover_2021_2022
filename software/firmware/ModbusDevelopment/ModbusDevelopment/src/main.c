@@ -42,6 +42,6 @@ int main (void)
 	/* Insert application code here, after the board has been initialized. */
 	
 	while(1){
-		modbus_update();
+		modbus_update();  /* This function does the heavy listing / function calling */
 	}
 }

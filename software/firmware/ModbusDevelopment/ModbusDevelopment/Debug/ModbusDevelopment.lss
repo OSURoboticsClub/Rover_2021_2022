@@ -7,37 +7,37 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   1 .relocate     000004d4  20000000  00402a9c  00020000  2**3
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000127c  200004d4  00402f70  000204d4  2**2
+  2 .bss          00001280  200004d4  00402f70  000204d4  2**2
                   ALLOC
-  3 .stack        00003000  20001750  004041ec  000204d4  2**0
+  3 .stack        00003004  20001754  004041f0  000204d4  2**0
                   ALLOC
   4 .ARM.attributes 0000002a  00000000  00000000  000204d4  2**0
                   CONTENTS, READONLY
   5 .comment      00000059  00000000  00000000  000204fe  2**0
                   CONTENTS, READONLY
-  6 .debug_info   0001708a  00000000  00000000  00020557  2**0
+  6 .debug_info   000170ab  00000000  00000000  00020557  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000030d5  00000000  00000000  000375e1  2**0
+  7 .debug_abbrev 000030d5  00000000  00000000  00037602  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_aranges 00000978  00000000  00000000  0003a6b6  2**0
+  8 .debug_aranges 00000978  00000000  00000000  0003a6d7  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_macro  00013bd1  00000000  00000000  0003b02e  2**0
+  9 .debug_macro  00013be9  00000000  00000000  0003b04f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_line   0000d468  00000000  00000000  0004ebff  2**0
+ 10 .debug_line   0000d8a9  00000000  00000000  0004ec38  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    00051866  00000000  00000000  0005c067  2**0
+ 11 .debug_str    0005195c  00000000  00000000  0005c4e1  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    00005ae3  00000000  00000000  000ad8cd  2**0
+ 12 .debug_loc    00005aed  00000000  00000000  000ade3d  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 000009a8  00000000  00000000  000b33b0  2**0
+ 13 .debug_ranges 000009a8  00000000  00000000  000b392a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_frame  000017a0  00000000  00000000  000b3d58  2**2
+ 14 .debug_frame  000017a0  00000000  00000000  000b42d4  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
 
 00400000 <exception_table>:
-  400000:	50 47 00 20 59 26 40 00 55 26 40 00 55 26 40 00     PG. Y&@.U&@.U&@.
+  400000:	58 47 00 20 59 26 40 00 55 26 40 00 55 26 40 00     XG. Y&@.U&@.U&@.
   400010:	55 26 40 00 55 26 40 00 55 26 40 00 00 00 00 00     U&@.U&@.U&@.....
 	...
   40002c:	55 26 40 00 55 26 40 00 00 00 00 00 55 26 40 00     U&@.U&@.....U&@.
@@ -5753,7 +5753,7 @@ void Dummy_Handler(void)
   4026e0:	20000000 	.word	0x20000000
   4026e4:	00402a9c 	.word	0x00402a9c
   4026e8:	200004d4 	.word	0x200004d4
-  4026ec:	20001750 	.word	0x20001750
+  4026ec:	20001754 	.word	0x20001754
   4026f0:	200004d4 	.word	0x200004d4
   4026f4:	e000ed00 	.word	0xe000ed00
   4026f8:	00400000 	.word	0x00400000
@@ -6011,7 +6011,7 @@ void modbus_update(void){
 	
 }
 
-//interupt handler for incoming data
+//interrupt handler for incoming data
 void UART_Handler(void){
   40288c:	b510      	push	{r4, lr}
 	if(uart_is_tx_ready(RS485Port)){							//confirm there is data ready to be read
@@ -6071,26 +6071,11 @@ void UART1_Handler(){
   4028e4:	0040288d 	.word	0x0040288d
 
 004028e8 <main>:
-#include <asf.h>
-#include <modbus.h>
-#include <registers.h>
-
-int main (void)
-{
   4028e8:	b508      	push	{r3, lr}
-	/* Insert system clock initialization code here (sysclk_init()). */
-
-	sysclk_init();
   4028ea:	4b03      	ldr	r3, [pc, #12]	; (4028f8 <main+0x10>)
   4028ec:	4798      	blx	r3
-	board_init();
   4028ee:	4b03      	ldr	r3, [pc, #12]	; (4028fc <main+0x14>)
   4028f0:	4798      	blx	r3
-
-	/* Insert application code here, after the board has been initialized. */
-	
-	while(1){
-		modbus_update();
   4028f2:	4c03      	ldr	r4, [pc, #12]	; (402900 <main+0x18>)
   4028f4:	47a0      	blx	r4
   4028f6:	e7fd      	b.n	4028f4 <main+0xc>

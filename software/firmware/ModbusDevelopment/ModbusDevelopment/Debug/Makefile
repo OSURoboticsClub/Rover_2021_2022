@@ -232,7 +232,8 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 
 LIB_DEP+= 
 
-LINKER_SCRIPT_DEP+= 
+LINKER_SCRIPT_DEP+=  \
+../src/ASF/sam/utils/linker_scripts/sam4s/sam4s4/gcc/flash.ld
 
 
 # AVR32/GNU C Compiler
