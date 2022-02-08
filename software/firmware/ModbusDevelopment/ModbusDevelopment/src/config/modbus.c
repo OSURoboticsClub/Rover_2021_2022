@@ -8,6 +8,7 @@
 
 #include <asf.h>
 #include <modbus.h>
+#include <string.h> // For memcpy
 
 Uart *RS485Port;
 uint8_t slaveID;
@@ -22,6 +23,53 @@ const float		floatRegisters[REGISTER_AR_SIZE];
 const char		charRegisters[REGISTER_AR_SIZE];
 const bool		boolRegisters[REGISTER_AR_SIZE];
 
+
+/* All convert functions assume they are receiving unsigned values in
+ * big-endian format. */
+
+#define MERGE_FOUR_BYTES(x) \
+    (((x)[0] << 24) | ((x)[1] << 16) | ((x)[2] << 8) | (x)[3])
+
+// Three different methods for converting uint to float
+static float convertToFloat_union(const uint8_t data[4]){
+    union {
+        uint32_t data;
+        float data_f;
+    } u;
+
+    u.data = MERGE_FOUR_BYTES(data);
+    return u.data_f;
+}
+
+static float convertToFloat_memcpy(const uint8_t data[4]){
+    uint32_t merged = MERGE_FOUR_BYTES(data);
+    float f = 0.0f;
+
+    // Should not cause buffer overflow if float is guaranteed size 4
+    memcpy(&f, &merged, 4);
+    return f;
+}
+
+static float convertToFloat_recast(const uint8_t data[4]){
+    /* We can't just cast the data pointer because if bytes are received in
+     * big endian and we are on a little endian machine (or vice-versa),
+     * we get a garbage value. So we just merge them into a single uint32. */
+    uint32_t merged = MERGE_FOUR_BYTES(data);
+    return *((float *)&merged);
+}
+
+// These are so trivial they probably don't even need to be functions
+static uint16_t convertToInt(const uint8_t data[2]){
+    return (data[0] << 8) | data[1];
+}
+
+static char convertToChar(const uint8_t data[1]){
+    return data[0];
+}
+
+static bool convertToBool(const uint8_t data[1]){
+    return data[0];
+}
 
 void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_t enPin, const uint8_t slave_id){
 	
