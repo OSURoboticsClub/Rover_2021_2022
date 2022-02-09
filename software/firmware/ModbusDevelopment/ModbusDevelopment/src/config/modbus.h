@@ -38,17 +38,32 @@
 #ifndef MODBUS_H_
 #define MODBUS_H_
 
-void modbus_init(Uart*, const uint32_t, Pio*, const uint32_t);    // Initialize modbus uart port, clock, memory, transmit enable, and ...
+void modbus_init(Uart*, const uint32_t, Pio*, const uint32_t, const uint8_t);    // Initialize modbus uart port, clock, memory, transmit enable, and ...
 
 void modbus_update(void);   //This function does all of the heavy lifting for modbus
 
-#define FC_WRITE_MULTIPLE	0x10	//write multiple function code
-#define FC_READ_MULTIPLE	0x03	//read multiple function code
+#define FC_WRITE_MULT_INT	0x10	//write multiple int registers function code
+#define FC_READ_MULT_INT	0x03	//read multiple int registers function code
+#define FC_WRITE_MULT_FLOAT	0x30	//write multiple float registers function code
+#define FC_READ_MULT_FLOAT	0x23	//read multiple float registers function code
+#define FC_WRITE_MULT_CHAR	0x50	//write multiple char registers function code
+#define FC_READ_MULT_CHAR	0x43	//read multiple char registers function code
+#define FC_WRITE_MULT_BOOL	0x70	//write multiple bool registers function code
+#define FC_READ_MULT_BOOL	0x63	//read multiple bool registers function code
 
 #define RX_BUFFER_SIZE		1024	//size of RX buffer, this determines max incoming packet size
 #define TX_BUFFER_SIZE		1024	//size of TX buffer, this determines max outgoing packet size
 
 #define REGISTER_AR_SIZE	256		//Size of the register array for a given data type
+#define INT_REG_OFFSET		0		//Offset for translating uint16_t array index to register index
+#define FLOAT_REG_OFFSET	256		//Offset for translating float array index to register index
+#define CHAR_REG_OFFSET		512		//Offset for translating char array index to register index
+#define BOOL_REG_OFFSET		768		//Offset for translating bool array index to register index
+
+#define INT_REG_BYTE_SZ		2		//Number of bytes for an int register
+#define FLOAT_REG_BYTE_SZ	4		//Number of bytes for a float register
+#define CHAR_REG_BYTE_SZ	1		//Number of bytes for a char register
+#define BOOL_REG_BYTE_SZ	1		//Number of bytes for a bool register
 
 #define SLAVE_ID_IDX		0		//packet byte index for slave ID byte
 #define FC_IDX				1		//packet byte index for Function Code byte
