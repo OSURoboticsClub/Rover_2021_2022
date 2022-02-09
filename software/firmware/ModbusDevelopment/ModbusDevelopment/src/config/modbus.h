@@ -74,9 +74,13 @@ void modbus_update(void);   //This function does all of the heavy lifting for mo
 #define WR_DATA_SIZE_IDX	6		//packet byte index for the size of the data to follow in bytes (write multiple only)
 #define RD_DATA_SIZE_IDX	2		//packet byte index for the size of the data to follow in bytes (read multiple only)
 
+#define ABS_MIN_PACKET_SIZE 6		//this is the smallest possible packet size in the protocol in bytes
+
 //#define MODBUS_DEBUG				//uncomment this to enable debugging over USB_CDC this depends on USB_CDC being initialized elsewhere
 
 //internal functions:
 void UART_Handler(void);
-
+uint8_t* pop_packet();
+bool packet_complete();
+uint8_t* ModRTU_CRC(uint8_t*, int);
 #endif /* MODBUS_H_ */
