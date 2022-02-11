@@ -24,6 +24,7 @@ const char		charRegisters[REGISTER_AR_SIZE];
 const bool		boolRegisters[REGISTER_AR_SIZE];
 
 
+
 /* All convert functions assume they are receiving unsigned values in
  * big-endian format. */
 
@@ -71,6 +72,7 @@ static bool convertToBool(const uint8_t data[1]){
     return data[0];
 }
 
+
 void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_t enPin, const uint8_t slave_id){
 	
 	RS485Port = port485;
@@ -104,8 +106,14 @@ void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint3
 	pio_set_output(enPinPort,enPin,HIGH,DISABLE,DISABLE);		//init the enable pin
 }
 
+
+
+
 void modbus_update(void){
-	
+	if(recievedDataSize < ABS_MIN_PACKET_SIZE) return;			//if not enough data has been received just break out
+	if(! packet_complete()) return;								//check if an entire packet has been received otherwise return
+	uint8_t* packet = pop_packet();								//packet is complete, so pull it out
+	if(packet[SLAVE_ID_IDX] != slaveID) return;					//disregard if the packet doesn't apply to this slave
 }
 
 //interrupt handler for incoming data
@@ -124,4 +132,34 @@ void UART0_Handler(){
 
 void UART1_Handler(){
 	UART_Handler();
+}
+
+uint8_t* pop_packet(){
+	
+}
+
+bool packet_complete(){
+
+}
+
+uint8_t* ModRTU_CRC(uint8_t* buf, int len)
+{
+	uint8_t crc = 0xFFFF;
+
+	for (int pos = 0; pos < len; pos++) {
+		crc ^= (uint8_t)buf[pos];          // XOR byte into least sig. byte of crc
+
+		for (int i = 8; i != 0; i--) {    // Loop over each bit
+			if ((crc & 0x0001) != 0) {      // If the LSB is set
+				crc >>= 1;                    // Shift right and XOR 0xA001
+				crc ^= 0xA001;
+			}
+			else                            // Else LSB is not set
+			crc >>= 1;                    // Just shift right
+		}
+	}
+	uint8_t crcBytes[2] = {0x00,0x00};
+	crcBytes[0] |= crc;
+	crcBytes[1] |= crc>>8;
+	return crcBytes;
 }
