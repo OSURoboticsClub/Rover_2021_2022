@@ -212,15 +212,18 @@ void modbus_update(void){
 	// extract register info from packet
 	uint16_t start_reg = packet[START_REG_H_IDX] << 8 | packet[START_REG_L_IDX];
 	uint16_t end_reg = packet[END_REG_H_IDX] << 8 | packet[END_REG_L_IDX];
-	uint8_t num_bytes;
 	// call read and write handlers based on function code
 	uint8_t* responsePacket;
-	uint16_t readResponseSize = RD_RESP_PACKET_MIN_SIZE + getReadResponseDataSize(start_reg, end_reg);
+	uint8_t read_num_bytes = getReadResponseDataSize(start_reg, end_reg);
+	uint16_t readResponseSize = RD_RESP_PACKET_MIN_SIZE + read_num_bytes;
 	uint8_t readResponsePacket[readResponseSize];
 	uint8_t writeResponsePacket[WR_RESP_PACKET_SIZE];
 	switch(packet[FC_IDX]) {
 		case FC_READ_MULT:
 			responsePacket = readResponsePacket;
+			responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];
+			responsePacket[FC_IDX] = packet[FC_IDX];
+			responsePacket[RD_DATA_SIZE_IDX] = read_num_bytes;
 			readHandler(responsePacket+RD_DATA_BYTE_START, start_reg, end_reg);
 			break;
 		case FC_WRITE_MULT:
@@ -262,18 +265,7 @@ void UART1_Handler(){
 }
 
 uint8_t* pop_packet(){
-	uint8_t returnPacket[packetSize];						//the popped packet array
-	for(int i=0;i<packetSize;i++){							//copy packet data to packet array
-		returnPacket[i] = rxBuffer[i];
-	}
-	for(int i=0;i<recievedDataSize-packetSize;i++){			//shift rx buffer to the left
-		rxBuffer[i] = rxBuffer[i+packetSize];
-	}
-	recievedDataSize -= packetSize;							//decrease array size by the length of the 
-	for(int i=0;i<packetSize;i++){							//assert 0s to the end of the rx buffer
-		rxBuffer[recievedDataSize+i] = 0;
-	}
-	return returnPacket;									//return the packet
+	
 }
 
 bool packet_complete(){
