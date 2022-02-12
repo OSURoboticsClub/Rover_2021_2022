@@ -174,7 +174,18 @@ void UART1_Handler(){
 }
 
 uint8_t* pop_packet(){
-	
+	uint8_t returnPacket[packetSize];						//the popped packet array
+	for(int i=0;i<packetSize;i++){							//copy packet data to packet array
+		returnPacket[i] = rxBuffer[i];
+	}
+	for(int i=0;i<recievedDataSize-packetSize;i++){			//shift rx buffer to the left
+		rxBuffer[i] = rxBuffer[i+packetSize];
+	}
+	recievedDataSize -= packetSize;							//decrease array size by the length of the 
+	for(int i=0;i<packetSize;i++){							//assert 0s to the end of the rx buffer
+		rxBuffer[recievedDataSize+i] = 0;
+	}
+	return returnPacket;									//return the packet
 }
 
 bool packet_complete(){
