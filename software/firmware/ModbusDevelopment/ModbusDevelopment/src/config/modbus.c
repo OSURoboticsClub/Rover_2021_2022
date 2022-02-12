@@ -18,10 +18,10 @@ uint16_t		transmitDataSize = 0;
 const uint8_t	rxBuffer[RX_BUFFER_SIZE];
 const uint8_t	txBuffer[TX_BUFFER_SIZE];
 
-const uint16_t	intRegisters[REGISTER_AR_SIZE];
-const float		floatRegisters[REGISTER_AR_SIZE];
-const char		charRegisters[REGISTER_AR_SIZE];
-const bool		boolRegisters[REGISTER_AR_SIZE];
+uint16_t	intRegisters[REGISTER_AR_SIZE];
+float		floatRegisters[REGISTER_AR_SIZE];
+char		charRegisters[REGISTER_AR_SIZE];
+bool		boolRegisters[REGISTER_AR_SIZE];
 
 
 
@@ -42,6 +42,22 @@ static float convertToFloat_union(const uint8_t data[4]){
     return u.data_f;
 }
 
+uint8_t floatCoversionBytes[FLOAT_REG_BYTE_SZ];
+
+static uint8_t* floatToBytes_union(float f){
+	union {
+		uint32_t data;
+		float data_f;
+	} u;
+
+	u.data_f = f;
+	floatCoversionBytes[0] = (u.data >> 24) & 0xFFFF;
+	floatCoversionBytes[1] = (u.data >> 16) & 0xFFFF;
+	floatCoversionBytes[2] = (u.data >> 8) & 0xFFFF;
+	floatCoversionBytes[3] = u.data & 0xFFFF};
+	return floatCoversionBytes;
+}
+
 static float convertToFloat_memcpy(const uint8_t data[4]){
     uint32_t merged = MERGE_FOUR_BYTES(data);
     float f = 0.0f;
@@ -50,6 +66,7 @@ static float convertToFloat_memcpy(const uint8_t data[4]){
     memcpy(&f, &merged, 4);
     return f;
 }
+
 
 static float convertToFloat_recast(const uint8_t data[4]){
     /* We can't just cast the data pointer because if bytes are received in
@@ -114,13 +131,35 @@ void modbus_update(void){
 	if(! packet_complete()) return;								//check if an entire packet has been received otherwise return
 	uint8_t* packet = pop_packet();								//packet is complete, so pull it out
 	if(packet[SLAVE_ID_IDX] != slaveID) return;					//disregard if the packet doesn't apply to this slave
+	size_t packet_len = sizeof(packet);
+	uint8_t CRC[2] = {packet[packet_len-2], packet[packet_len-1]};
+	// check CRC here?
+	// extract register info from packet
+	uint16_t start_reg = packet[START_REG_H_IDX] << 8 | packet[START_REG_L_IDX];
+	uint16_t end_reg = packet[END_REG_H_IDX] << 8 | packet[END_REG_L_IDX];
+	uint8_t num_bytes;
+	uint8_t* responsePacket;
+	// call read and write handlers based on function code
+	switch(packet[FC_IDX]) {
+		case FC_READ_MULT:
+			responsePacket = readHandler(start_reg, end_reg);
+			break;
+		case FC_WRITE_MULT:
+			responsePacket = writeHandler(&packet[WR_DATA_BYTE_START], start_reg, end_reg);
+			break;
+	}
+	// write out response packet
+	uint16_t responsePacketSize = sizeof(responsePacket);
+	for (int i = 0; i < responsePacketSize; i++) {
+		uart_write(RS485Port, responsePacket[i]);
+	}
 }
 
 //interrupt handler for incoming data
 void UART_Handler(void){
 	if(uart_is_tx_ready(RS485Port)){							//confirm there is data ready to be read
 		uart_read(RS485Port, rxBuffer[recievedDataSize]);		//move the data into the next index of the rx buffer
-		recievedDataSize = recievedDataSize < RX_BUFFER_SIZE ? recievedDataSize + 1 : recievedDataSize;  //iterate receive buffer size if not yet full
+		recievedDataSize = recievedDataSize < RX_BUFFER_SIZE ? recievedDataSize + 1 : 0;  //iterate receive buffer size if not yet full
 	}
 }
 
@@ -144,7 +183,7 @@ bool packet_complete(){
 
 uint8_t* ModRTU_CRC(uint8_t* buf, int len)
 {
-	uint8_t crc = 0xFFFF;
+	uint16_t crc = 0xFFFF;
 
 	for (int pos = 0; pos < len; pos++) {
 		crc ^= (uint8_t)buf[pos];          // XOR byte into least sig. byte of crc
