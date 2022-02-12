@@ -44,7 +44,7 @@ static float convertToFloat_union(const uint8_t data[4]){
 
 uint8_t floatCoversionBytes[FLOAT_REG_BYTE_SZ];
 
-static uint8_t* floatToBytes_union(float f){
+static void floatToBytes_union(float f){
 	union {
 		uint32_t data;
 		float data_f;
@@ -54,8 +54,7 @@ static uint8_t* floatToBytes_union(float f){
 	floatCoversionBytes[0] = (u.data >> 24) & 0xFFFF;
 	floatCoversionBytes[1] = (u.data >> 16) & 0xFFFF;
 	floatCoversionBytes[2] = (u.data >> 8) & 0xFFFF;
-	floatCoversionBytes[3] = u.data & 0xFFFF};
-	return floatCoversionBytes;
+	floatCoversionBytes[3] = u.data & 0xFFFF;
 }
 
 static float convertToFloat_memcpy(const uint8_t data[4]){
@@ -89,6 +88,82 @@ static bool convertToBool(const uint8_t data[1]){
     return data[0];
 }
 
+
+void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) {
+	int i = start_reg;
+	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i < end_reg) {
+		uint16_t data = intRegisters[i-INT_REG_OFFSET];
+		responsePacket[0] = (data >> 8) & 0xFF;
+		responsePacket[1] = data & 0xFF;
+		responsePacket += INT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
+		floatToBytes_union(floatRegisters[i-FLOAT_REG_OFFSET]);
+		responsePacket[0] = floatCoversionBytes[0];
+		responsePacket[1] = floatCoversionBytes[1];
+		responsePacket[2] = floatCoversionBytes[2];
+		responsePacket[3] = floatCoversionBytes[3];
+		responsePacket += FLOAT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i < end_reg) {
+		responsePacket[0] = charRegisters[i-CHAR_REG_OFFSET];
+		responsePacket += CHAR_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i < end_reg) {
+		responsePacket[0] = boolRegisters[i-BOOL_REG_OFFSET];
+		responsePacket += BOOL_REG_BYTE_SZ;
+		i++;
+	}
+}
+
+void writeHandler(uint8_t* data_packet, uint16_t start_reg, uint16_t end_reg) {
+	int i = start_reg;
+	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i < end_reg) {
+		intRegisters[i-INT_REG_OFFSET] = convertToInt(data_packet);
+		data_packet += INT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
+		floatRegisters[i-FLOAT_REG_OFFSET] = convertToFloat_union(data_packet);
+		data_packet += FLOAT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i < end_reg) {
+		charRegisters[i-CHAR_REG_OFFSET] = convertToChar(data_packet);
+		data_packet += CHAR_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i < end_reg) {
+		boolRegisters[i-BOOL_REG_OFFSET] = convertToBool(data_packet);
+		data_packet += BOOL_REG_BYTE_SZ;
+		i++;
+	}
+}
+
+uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
+	int i = start_reg;
+	uint16_t size = 0;
+	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i < end_reg) {
+		size += INT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
+		size += FLOAT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i < end_reg) {
+		size += CHAR_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i < end_reg) {
+		size += BOOL_REG_BYTE_SZ;
+		i++;
+	}
+	return size;
+}
 
 void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_t enPin, const uint8_t slave_id){
 	
@@ -138,16 +213,29 @@ void modbus_update(void){
 	uint16_t start_reg = packet[START_REG_H_IDX] << 8 | packet[START_REG_L_IDX];
 	uint16_t end_reg = packet[END_REG_H_IDX] << 8 | packet[END_REG_L_IDX];
 	uint8_t num_bytes;
-	uint8_t* responsePacket;
 	// call read and write handlers based on function code
+	uint8_t* responsePacket;
+	uint16_t readResponseSize = RD_RESP_PACKET_MIN_SIZE + getReadResponseDataSize(start_reg, end_reg);
+	uint8_t readResponsePacket[readResponseSize];
+	uint8_t writeResponsePacket[WR_RESP_PACKET_SIZE];
 	switch(packet[FC_IDX]) {
 		case FC_READ_MULT:
-			responsePacket = readHandler(start_reg, end_reg);
+			responsePacket = readResponsePacket;
+			readHandler(responsePacket+RD_DATA_BYTE_START, start_reg, end_reg);
 			break;
 		case FC_WRITE_MULT:
-			responsePacket = writeHandler(&packet[WR_DATA_BYTE_START], start_reg, end_reg);
+			responsePacket = writeResponsePacket;
+			responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];
+			responsePacket[FC_IDX] = packet[FC_IDX];
+			responsePacket[START_REG_H_IDX] = packet[START_REG_H_IDX];
+			responsePacket[START_REG_L_IDX] = packet[START_REG_L_IDX];
+			responsePacket[END_REG_H_IDX] = packet[END_REG_H_IDX];
+			responsePacket[END_REG_L_IDX] = packet[END_REG_L_IDX];
+			writeHandler(&packet[WR_DATA_BYTE_START], start_reg, end_reg);
 			break;
 	}
+	// add the CRC to the response packet here
+	
 	// write out response packet
 	uint16_t responsePacketSize = sizeof(responsePacket);
 	for (int i = 0; i < responsePacketSize; i++) {

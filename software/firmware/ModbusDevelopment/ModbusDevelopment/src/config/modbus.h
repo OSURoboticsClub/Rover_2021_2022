@@ -67,8 +67,12 @@ void modbus_update(void);   //This function does all of the heavy lifting for mo
 #define END_REG_L_IDX		5		//packet byte index for the low side of the end register number
 #define WR_DATA_SIZE_IDX	6		//packet byte index for the size of the data to follow in bytes (write multiple only)
 #define RD_DATA_SIZE_IDX	2		//packet byte index for the size of the data to follow in bytes (read multiple only)
-#define WR_DATA_BYTE_START	7		//packet byte index for the start of the data to be written (write multiple only)
 
+#define WR_DATA_BYTE_START	7		//packet byte index for the start of the data to be written (write multiple only)
+#define RD_DATA_BYTE_START	3		//packet byte index for start of data in read response (read multiple only
+
+#define WR_RESP_PACKET_SIZE	8		//packet size for write multiple response packet
+#define RD_RESP_PACKET_MIN_SIZE	5	//packet size for read multiple response with no data bytes added yet
 
 #define ABS_MIN_PACKET_SIZE 6		//this is the smallest possible packet size in the protocol in bytes
 
@@ -80,6 +84,7 @@ void UART_Handler(void);
 uint8_t* pop_packet();
 bool packet_complete();
 uint8_t* ModRTU_CRC(uint8_t*, int);
-uint8_t* readHandler(uint16_t start_reg, uint16_t end_reg);
-uint8_t* writeHandler(uint8_t* data_packet, uint16_t start_reg, uint16_t end_reg);
+void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg);
+void writeHandler(uint8_t* data_packet, uint16_t start_reg, uint16_t end_reg);
+uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg);
 #endif /* MODBUS_H_ */
