@@ -13,10 +13,11 @@
 Uart *RS485Port;
 uint8_t slaveID;
 
-uint16_t		recievedDataSize = 0;
-uint16_t		transmitDataSize = 0;
-const uint8_t	rxBuffer[RX_BUFFER_SIZE];
-const uint8_t	txBuffer[TX_BUFFER_SIZE];
+uint16_t	recievedDataSize = 0;
+uint16_t	transmitDataSize = 0;
+uint8_t		rxBuffer[RX_BUFFER_SIZE];
+uint8_t		txBuffer[TX_BUFFER_SIZE];
+uint16_t	packetSize;
 
 uint16_t	intRegisters[REGISTER_AR_SIZE];
 float		floatRegisters[REGISTER_AR_SIZE];
@@ -51,10 +52,10 @@ static void floatToBytes_union(float f){
 	} u;
 
 	u.data_f = f;
-	floatCoversionBytes[0] = (u.data >> 24) & 0xFFFF;
-	floatCoversionBytes[1] = (u.data >> 16) & 0xFFFF;
-	floatCoversionBytes[2] = (u.data >> 8) & 0xFFFF;
-	floatCoversionBytes[3] = u.data & 0xFFFF;
+	floatCoversionBytes[0] = (u.data >> 24) & 0xFF;
+	floatCoversionBytes[1] = (u.data >> 16) & 0xFF;
+	floatCoversionBytes[2] = (u.data >> 8) & 0xFF;
+	floatCoversionBytes[3] = u.data & 0xFF;
 }
 
 static float convertToFloat_memcpy(const uint8_t data[4]){
@@ -205,8 +206,8 @@ void modbus_update(void){
 	if(recievedDataSize < ABS_MIN_PACKET_SIZE) return;			//if not enough data has been received just break out
 	if(! packet_complete()) return;								//check if an entire packet has been received otherwise return
 	uint8_t* packet = pop_packet();								//packet is complete, so pull it out
+	uint16_t packet_len = packetSize;
 	if(packet[SLAVE_ID_IDX] != slaveID) return;					//disregard if the packet doesn't apply to this slave
-	size_t packet_len = sizeof(packet);
 	uint8_t CRC[2] = {packet[packet_len-2], packet[packet_len-1]};
 	// check CRC here?
 	// extract register info from packet
@@ -214,6 +215,7 @@ void modbus_update(void){
 	uint16_t end_reg = packet[END_REG_H_IDX] << 8 | packet[END_REG_L_IDX];
 	// call read and write handlers based on function code
 	uint8_t* responsePacket;
+	uint16_t responsePacketSize;
 	uint8_t read_num_bytes = getReadResponseDataSize(start_reg, end_reg);
 	uint16_t readResponseSize = RD_RESP_PACKET_MIN_SIZE + read_num_bytes;
 	uint8_t readResponsePacket[readResponseSize];
@@ -221,6 +223,7 @@ void modbus_update(void){
 	switch(packet[FC_IDX]) {
 		case FC_READ_MULT:
 			responsePacket = readResponsePacket;
+			responsePacketSize = readResponseSize;
 			responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];
 			responsePacket[FC_IDX] = packet[FC_IDX];
 			responsePacket[RD_DATA_SIZE_IDX] = read_num_bytes;
@@ -228,6 +231,7 @@ void modbus_update(void){
 			break;
 		case FC_WRITE_MULT:
 			responsePacket = writeResponsePacket;
+			responsePacketSize = WR_RESP_PACKET_SIZE;
 			responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];
 			responsePacket[FC_IDX] = packet[FC_IDX];
 			responsePacket[START_REG_H_IDX] = packet[START_REG_H_IDX];
@@ -240,7 +244,6 @@ void modbus_update(void){
 	// add the CRC to the response packet here
 	
 	// write out response packet
-	uint16_t responsePacketSize = sizeof(responsePacket);
 	for (int i = 0; i < responsePacketSize; i++) {
 		uart_write(RS485Port, responsePacket[i]);
 	}
@@ -265,7 +268,18 @@ void UART1_Handler(){
 }
 
 uint8_t* pop_packet(){
-	
+	uint8_t returnPacket[packetSize];						//the popped packet array
+	for(int i=0;i<packetSize;i++){							//copy packet data to packet array
+		returnPacket[i] = rxBuffer[i];
+	}
+	for(int i=0;i<recievedDataSize-packetSize;i++){			//shift rx buffer to the left
+		rxBuffer[i] = rxBuffer[i+packetSize];
+	}
+	recievedDataSize -= packetSize;							//decrease array size by the length of the
+	for(int i=0;i<packetSize;i++){							//assert 0s to the end of the rx buffer
+		rxBuffer[recievedDataSize+i] = 0;
+	}
+	return returnPacket;
 }
 
 bool packet_complete(){
