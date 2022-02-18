@@ -116,6 +116,11 @@ void updatePWM(int newDuty){
 }
 
 void LoadFeedback(){
+	if(cellV <= 3.3){					//under voltage protection
+		dischargeCurrent = 0.0;
+		PWMDuty = 0;
+		updatePWM(PWMDuty);
+	}
 	if(updateLoop){
 		if(dischargeCurrent - current > 0.1 && current < 25 && PWMDuty < 1000){
 			updatePWM(++PWMDuty);
