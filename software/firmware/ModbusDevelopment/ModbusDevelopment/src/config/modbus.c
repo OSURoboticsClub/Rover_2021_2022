@@ -1,31 +1,210 @@
 /*
- * CFile1.c
+ * modbus.c
  *
  * Created: 2/3/2022 3:38:07 PM
- *  Author: Anthony
+ *  Author: Anthony Grana,
+			Blake H,
+			Kurtis Dinelle
  */ 
 
 
 #include <asf.h>
 #include <modbus.h>
+#include <string.h> // For memcpy
 
 Uart *RS485Port;
 uint8_t slaveID;
 
-uint16_t		recievedDataSize = 0;
-uint16_t		transmitDataSize = 0;
-const uint8_t	rxBuffer[RX_BUFFER_SIZE];
-const uint8_t	txBuffer[TX_BUFFER_SIZE];
+uint16_t	recievedDataSize = 0;
+uint16_t	transmitDataSize = 0;
+uint8_t		rxBuffer[RX_BUFFER_SIZE];
+uint8_t		txBuffer[TX_BUFFER_SIZE];
+uint16_t	packetSize;
 
-const uint16_t	intRegisters[REGISTER_AR_SIZE];
-const float		floatRegisters[REGISTER_AR_SIZE];
-const char		charRegisters[REGISTER_AR_SIZE];
-const bool		boolRegisters[REGISTER_AR_SIZE];
-
-
-
+uint16_t	intRegisters[REGISTER_AR_SIZE];
+float		floatRegisters[REGISTER_AR_SIZE];
+char		charRegisters[REGISTER_AR_SIZE];
+bool		boolRegisters[REGISTER_AR_SIZE];
 
 
+
+/* All convert functions assume they are receiving unsigned values in
+ * big-endian format. */
+
+#define MERGE_FOUR_BYTES(x) \
+    (((x)[0] << 24) | ((x)[1] << 16) | ((x)[2] << 8) | (x)[3])
+
+// Three different methods for converting uint to float
+static float convertToFloat_union(const uint8_t data[4]){
+    union {
+        uint32_t data;
+        float data_f;
+    } u;
+
+    u.data = MERGE_FOUR_BYTES(data);
+    return u.data_f;
+}
+
+uint8_t floatCoversionBytes[FLOAT_REG_BYTE_SZ];
+
+static void floatToBytes_union(float f){
+	union {
+		uint32_t data;
+		float data_f;
+	} u;
+
+	u.data_f = f;
+	floatCoversionBytes[0] = (u.data >> 24) & 0xFF;
+	floatCoversionBytes[1] = (u.data >> 16) & 0xFF;
+	floatCoversionBytes[2] = (u.data >> 8) & 0xFF;
+	floatCoversionBytes[3] = u.data & 0xFF;
+}
+
+static float convertToFloat_memcpy(const uint8_t data[4]){
+    uint32_t merged = MERGE_FOUR_BYTES(data);
+    float f = 0.0f;
+
+    // Should not cause buffer overflow if float is guaranteed size 4
+    memcpy(&f, &merged, 4);
+    return f;
+}
+
+
+static float convertToFloat_recast(const uint8_t data[4]){
+    /* We can't just cast the data pointer because if bytes are received in
+     * big endian and we are on a little endian machine (or vice-versa),
+     * we get a garbage value. So we just merge them into a single uint32. */
+    uint32_t merged = MERGE_FOUR_BYTES(data);
+    return *((float *)&merged);
+}
+
+// These are so trivial they probably don't even need to be functions
+static uint16_t convertToInt(const uint8_t data[2]){
+    return (data[0] << 8) | data[1];
+}
+
+static char convertToChar(const uint8_t data[1]){
+    return data[0];
+}
+
+static bool convertToBool(const uint8_t data[1]){
+    return data[0];
+}
+
+
+void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) {
+	int i = start_reg;
+	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i < end_reg) {
+		uint16_t data = intRegisters[i-INT_REG_OFFSET];
+		responsePacket[0] = (data >> 8) & 0xFF;
+		responsePacket[1] = data & 0xFF;
+		responsePacket += INT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
+		floatToBytes_union(floatRegisters[i-FLOAT_REG_OFFSET]);
+		responsePacket[0] = floatCoversionBytes[0];
+		responsePacket[1] = floatCoversionBytes[1];
+		responsePacket[2] = floatCoversionBytes[2];
+		responsePacket[3] = floatCoversionBytes[3];
+		responsePacket += FLOAT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i < end_reg) {
+		responsePacket[0] = charRegisters[i-CHAR_REG_OFFSET];
+		responsePacket += CHAR_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i < end_reg) {
+		responsePacket[0] = boolRegisters[i-BOOL_REG_OFFSET];
+		responsePacket += BOOL_REG_BYTE_SZ;
+		i++;
+	}
+}
+
+void writeHandler(uint8_t* data_packet, uint16_t start_reg, uint16_t end_reg) {
+	int i = start_reg;
+	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i < end_reg) {
+		intRegisters[i-INT_REG_OFFSET] = convertToInt(data_packet);
+		data_packet += INT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
+		floatRegisters[i-FLOAT_REG_OFFSET] = convertToFloat_union(data_packet);
+		data_packet += FLOAT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i < end_reg) {
+		charRegisters[i-CHAR_REG_OFFSET] = convertToChar(data_packet);
+		data_packet += CHAR_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i < end_reg) {
+		boolRegisters[i-BOOL_REG_OFFSET] = convertToBool(data_packet);
+		data_packet += BOOL_REG_BYTE_SZ;
+		i++;
+	}
+}
+
+uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
+	uint16_t size = 0;
+	/*
+	int i = start_reg;
+	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i < end_reg) {
+		size += INT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
+		size += FLOAT_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i < end_reg) {
+		size += CHAR_REG_BYTE_SZ;
+		i++;
+	}
+	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i < end_reg) {
+		size += BOOL_REG_BYTE_SZ;
+		i++;
+	}
+	return size;
+	*/																					//I don't like this implementation because it has several loops that are unnecessary
+	
+	if(start_reg < REGISTER_AR_SIZE+INT_REG_OFFSET){									//check if starting register is within the data type range
+		if(end_reg >= REGISTER_AR_SIZE+INT_REG_OFFSET){									//check if the ending register is past the data type range
+			size += (REGISTER_AR_SIZE+INT_REG_OFFSET-start_reg)*INT_REG_BYTE_SZ;		//add the register size to the size variable
+			start_reg = REGISTER_AR_SIZE+INT_REG_OFFSET;								//set the new start range to the first float register
+		}else{
+			size += (end_reg + 1 - start_reg)*INT_REG_BYTE_SZ;							//return the size including this data type's registers
+			return size;
+		}
+	}
+	
+	if(start_reg < REGISTER_AR_SIZE+FLOAT_REG_OFFSET){									//check if starting register is within the data type range
+		if(end_reg >= REGISTER_AR_SIZE+FLOAT_REG_OFFSET){								//check if the ending register is past the data type range
+			size += (REGISTER_AR_SIZE+FLOAT_REG_OFFSET-start_reg)*FLOAT_REG_BYTE_SZ;	//add the register size to the size variable
+			start_reg = REGISTER_AR_SIZE+FLOAT_REG_OFFSET;								//set the new start range to the first float register
+		}else{
+			size += (end_reg + 1 - start_reg)*FLOAT_REG_BYTE_SZ;						//return the size including this data type's registers
+			return size;
+		}
+	}
+	
+	if(start_reg < REGISTER_AR_SIZE+CHAR_REG_OFFSET){									//check if starting register is within the data type range
+		if(end_reg >= REGISTER_AR_SIZE+CHAR_REG_OFFSET){								//check if the ending register is past the data type range
+			size += (REGISTER_AR_SIZE+CHAR_REG_OFFSET-start_reg)*CHAR_REG_BYTE_SZ;		//add the register size to the size variable
+			start_reg = REGISTER_AR_SIZE+CHAR_REG_OFFSET;								//set the new start range to the first float register
+		}else{
+			size += (end_reg + 1 - start_reg)*CHAR_REG_BYTE_SZ;							//return the size including this data type's registers
+			return size;
+		}
+	}
+	
+	if(start_reg < REGISTER_AR_SIZE+BOOL_REG_OFFSET){
+		size += (end_reg + 1 - start_reg)*BOOL_REG_BYTE_SZ;								//return the size including this data type's registers
+		return size;
+	}
+		
+}
 
 void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_t enPin, const uint8_t slave_id){
 	
@@ -65,16 +244,58 @@ void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint3
 
 void modbus_update(void){
 	if(recievedDataSize < ABS_MIN_PACKET_SIZE) return;			//if not enough data has been received just break out
-	if(! packet_complete()) return;								//check if an entire packet has been received otherwise return
+	if(! packet_complete()) return;								//check if an entire packet has been received otherwise return, also resolves overflow errors
 	uint8_t* packet = pop_packet();								//packet is complete, so pull it out
+	uint16_t packet_len = packetSize;
 	if(packet[SLAVE_ID_IDX] != slaveID) return;					//disregard if the packet doesn't apply to this slave
+	uint8_t CRC[2] = {packet[packet_len-2], packet[packet_len-1]};
+	// check CRC here?
+	// extract register info from packet
+	uint16_t start_reg = packet[START_REG_H_IDX] << 8 | packet[START_REG_L_IDX];
+	uint16_t end_reg = packet[END_REG_H_IDX] << 8 | packet[END_REG_L_IDX];
+	// call read and write handlers based on function code
+	uint8_t* responsePacket;
+	uint16_t responsePacketSize;
+	switch(packet[FC_IDX]) {
+		case FC_READ_MULT:
+			uint8_t read_num_bytes = getReadResponseDataSize(start_reg, end_reg);
+			uint16_t readResponseSize = RD_RESP_PACKET_MIN_SIZE + read_num_bytes;
+			uint8_t readResponsePacket[readResponseSize];
+			responsePacket = readResponsePacket;
+			responsePacketSize = readResponseSize;
+			//responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];				//this was how the protocol used to be
+			responsePacket[SLAVE_ID_IDX] = MASTER_ADRESS;						//this is how the protocol is now to help identify when the master or slave is speaking
+			responsePacket[FC_IDX] = packet[FC_IDX];
+			responsePacket[RD_DATA_SIZE_IDX] = read_num_bytes;
+			readHandler(responsePacket+RD_DATA_BYTE_START, start_reg, end_reg);
+			break;
+		case FC_WRITE_MULT:
+			uint8_t writeResponsePacket[WR_RESP_PACKET_SIZE];
+			responsePacket = writeResponsePacket;
+			responsePacketSize = WR_RESP_PACKET_SIZE;
+			//responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];
+			responsePacket[SLAVE_ID_IDX] = MASTER_ADRESS;	
+			responsePacket[FC_IDX] = packet[FC_IDX];
+			responsePacket[START_REG_H_IDX] = packet[START_REG_H_IDX];
+			responsePacket[START_REG_L_IDX] = packet[START_REG_L_IDX];
+			responsePacket[END_REG_H_IDX] = packet[END_REG_H_IDX];
+			responsePacket[END_REG_L_IDX] = packet[END_REG_L_IDX];
+			writeHandler(&packet[WR_DATA_BYTE_START], start_reg, end_reg);
+			break;
+	}
+	// add the CRC to the response packet here
+	
+	// write out response packet
+	for (int i = 0; i < responsePacketSize; i++) {
+		uart_write(RS485Port, responsePacket[i]);
+	}
 }
 
 //interrupt handler for incoming data
 void UART_Handler(void){
 	if(uart_is_tx_ready(RS485Port)){							//confirm there is data ready to be read
 		uart_read(RS485Port, rxBuffer[recievedDataSize]);		//move the data into the next index of the rx buffer
-		recievedDataSize = recievedDataSize < RX_BUFFER_SIZE ? recievedDataSize + 1 : recievedDataSize;  //iterate receive buffer size if not yet full
+		recievedDataSize = recievedDataSize < RX_BUFFER_SIZE ? recievedDataSize + 1 : 0;  //iterate receive buffer size if not yet full
 	}
 }
 
@@ -89,7 +310,18 @@ void UART1_Handler(){
 }
 
 uint8_t* pop_packet(){
-	
+	uint8_t returnPacket[packetSize];						//the popped packet array
+	for(int i=0;i<packetSize;i++){							//copy packet data to return array
+		returnPacket[i] = rxBuffer[i];
+	}
+	for(int i=0;i<recievedDataSize-packetSize;i++){			//shift rx buffer to the left
+		rxBuffer[i] = rxBuffer[i+packetSize];
+	}
+	recievedDataSize -= packetSize;							//decrease array size by the length of the packet
+	for(int i=0;i<packetSize;i++){							//assert 0s to the end of the rx buffer
+		rxBuffer[recievedDataSize+i] = 0;
+	}
+	return returnPacket;									//return
 }
 
 bool packet_complete(){
@@ -98,7 +330,7 @@ bool packet_complete(){
 
 uint8_t* ModRTU_CRC(uint8_t* buf, int len)
 {
-	uint8_t crc = 0xFFFF;
+	uint16_t crc = 0xFFFF;
 
 	for (int pos = 0; pos < len; pos++) {
 		crc ^= (uint8_t)buf[pos];          // XOR byte into least sig. byte of crc

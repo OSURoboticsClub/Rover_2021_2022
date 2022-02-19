@@ -1,7 +1,7 @@
 import serial
 import time
 
-bcb = serial.Serial('COM35',115200)
+bcb = serial.Serial('COM7',115200, timeout=1)
 
 str_current = input("Enter discharge current (multiple of 0.1A) or leave blankd for default 0:\n")
 if(str_current == ""):
@@ -19,13 +19,15 @@ if(fileName != ""):
     f = open(fileName, 'w')
 
 print("Running profile")
-time.sleep(1)
+startTime = time.perf_counter()
 
 while(1):
     try:
         line = bcb.readline()
         line = line.decode("utf-8")
         line = line[2:]
+        timer = str(round(time.perf_counter() - startTime, 3))
+        line = timer + "," + line
         print(line)
         if(fileName != ""):
             f.write(line)

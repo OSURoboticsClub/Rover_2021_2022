@@ -37,6 +37,7 @@ float cellV, current, tempBatt, tempFet;
 float dischargeCurrent = 0;
 int PWMDuty = 0;
 bool updateLoop = false;
+bool protectionActive = false;
 
 void calculateCellVoltage(int rawADCData){
 	cellV = (rawADCData)*((VOLT_REF/1000.0)/(4096.0*0.759));
@@ -69,7 +70,7 @@ void getADCData(){
 void TransmitTimerHandler(void){
 	NVIC_DisableIRQ(ID_TC1);
 	if(tc_get_status(TC,TC_CH) & TC_SR_CPCS){
-		if(udi_cdc_get_free_tx_buffer() >= 64){
+		if(udi_cdc_get_free_tx_buffer() >= 64 && !protectionActive){
 			int strln = 40;
 			char str[strln];
 			sprintf(str, "%f,%f,%f,%f\n\r",cellV,current,tempBatt,tempFet);
@@ -116,10 +117,11 @@ void updatePWM(int newDuty){
 }
 
 void LoadFeedback(){
-	if(cellV <= 3.3){					//under voltage protection
+	if(dischargeCurrent > 0 && cellV <= 3.3){					//under voltage protection
 		dischargeCurrent = 0.0;
 		PWMDuty = 0;
 		updatePWM(PWMDuty);
+		protectionActive = true;
 	}
 	if(updateLoop){
 		if(dischargeCurrent - current > 0.1 && current < 25 && PWMDuty < 1000){

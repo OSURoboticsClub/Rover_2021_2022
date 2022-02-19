@@ -133,7 +133,10 @@ src/config/modbus.d src/config/modbus.o: ../src/config/modbus.c \
  ../src/ASF/common/services/usb/udc/udi.h \
  ../src/ASF/common/services/usb/udc/udc.h \
  ../src/ASF/common/services/usb/udc/udd.h \
- ../src/ASF/sam/drivers/pio/pio_handler.h ../src/config/modbus.h
+ ../src/ASF/sam/drivers/pio/pio_handler.h ../src/config/modbus.h \
+ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\string.h \
+ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\xlocale.h \
+ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\string.h
 
 ../src/asf.h:
 
@@ -420,3 +423,9 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\a
 ../src/ASF/sam/drivers/pio/pio_handler.h:
 
 ../src/config/modbus.h:
+
+s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\string.h:
+
+s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\xlocale.h:
+
+s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\string.h:

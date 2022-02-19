@@ -42,14 +42,8 @@ void modbus_init(Uart*, const uint32_t, Pio*, const uint32_t, const uint8_t);   
 
 void modbus_update(void);   //This function does all of the heavy lifting for modbus
 
-#define FC_WRITE_MULT_INT	0x10	//write multiple int registers function code
-#define FC_READ_MULT_INT	0x03	//read multiple int registers function code
-#define FC_WRITE_MULT_FLOAT	0x30	//write multiple float registers function code
-#define FC_READ_MULT_FLOAT	0x23	//read multiple float registers function code
-#define FC_WRITE_MULT_CHAR	0x50	//write multiple char registers function code
-#define FC_READ_MULT_CHAR	0x43	//read multiple char registers function code
-#define FC_WRITE_MULT_BOOL	0x70	//write multiple bool registers function code
-#define FC_READ_MULT_BOOL	0x63	//read multiple bool registers function code
+#define FC_WRITE_MULT	0x10	//write multiple registers function code
+#define FC_READ_MULT	0x03	//read multiple registers function code
 
 #define RX_BUFFER_SIZE		1024	//size of RX buffer, this determines max incoming packet size
 #define TX_BUFFER_SIZE		1024	//size of TX buffer, this determines max outgoing packet size
@@ -74,7 +68,16 @@ void modbus_update(void);   //This function does all of the heavy lifting for mo
 #define WR_DATA_SIZE_IDX	6		//packet byte index for the size of the data to follow in bytes (write multiple only)
 #define RD_DATA_SIZE_IDX	2		//packet byte index for the size of the data to follow in bytes (read multiple only)
 
+#define WR_DATA_BYTE_START	7		//packet byte index for the start of the data to be written (write multiple only)
+#define RD_DATA_BYTE_START	3		//packet byte index for start of data in read response (read multiple only
+
+#define WR_RESP_PACKET_SIZE	8		//packet size for write multiple response packet
+#define RD_RESP_PACKET_MIN_SIZE	5	//packet size for read multiple response with no data bytes added yet
+
 #define ABS_MIN_PACKET_SIZE 6		//this is the smallest possible packet size in the protocol in bytes
+
+#define MASTER_ADRESS 0X00
+
 
 //#define MODBUS_DEBUG				//uncomment this to enable debugging over USB_CDC this depends on USB_CDC being initialized elsewhere
 
@@ -83,4 +86,7 @@ void UART_Handler(void);
 uint8_t* pop_packet();
 bool packet_complete();
 uint8_t* ModRTU_CRC(uint8_t*, int);
+void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg);
+void writeHandler(uint8_t* data_packet, uint16_t start_reg, uint16_t end_reg);
+uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg);
 #endif /* MODBUS_H_ */
