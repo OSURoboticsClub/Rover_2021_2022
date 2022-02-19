@@ -46,7 +46,7 @@ void modbus_update(void);   //This function does all of the heavy lifting for mo
 #define FC_READ_MULT	0x03	//read multiple registers function code
 
 #define RX_BUFFER_SIZE		1024	//size of RX buffer, this determines max incoming packet size
-#define TX_BUFFER_SIZE		1024	//size of TX buffer, this determines max outgoing packet size
+#define TX_BUFFER_SIZE		1024    //							!!!!!! Important change this value to the size of the tx buffer in the UART module
 
 #define REGISTER_AR_SIZE	256		//Size of the register array for a given data type
 #define INT_REG_OFFSET		0		//Offset for translating uint16_t array index to register index
@@ -74,7 +74,12 @@ void modbus_update(void);   //This function does all of the heavy lifting for mo
 #define WR_RESP_PACKET_SIZE	8		//packet size for write multiple response packet
 #define RD_RESP_PACKET_MIN_SIZE	5	//packet size for read multiple response with no data bytes added yet
 
-#define ABS_MIN_PACKET_SIZE 6		//this is the smallest possible packet size in the protocol in bytes
+#define ABS_MIN_PACKET_SIZE 6			//this is the smallest possible packet size in the protocol in bytes
+#define ABS_MIN_WRITE_PACKET_SIZE 10	//this is the smallest possible packet size for a write command from the master
+#define WRITE_RES_PACKET_SIZE 8			//this is the only possible packet size for a write response from the slave This is the same as the size of read from master
+#define ABS_MIN_READ_RES_PACKET_SIZE 6  //this is the smallest possible packet size for a read response from the slave
+
+#define CRC_SIZE 2					//size of CRC in bytes
 
 #define MASTER_ADRESS 0X00
 
@@ -89,4 +94,6 @@ uint8_t* ModRTU_CRC(uint8_t*, int);
 void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg);
 void writeHandler(uint8_t* data_packet, uint16_t start_reg, uint16_t end_reg);
 uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg);
+uint16_t buffer_get_data_sz(void);
+
 #endif /* MODBUS_H_ */

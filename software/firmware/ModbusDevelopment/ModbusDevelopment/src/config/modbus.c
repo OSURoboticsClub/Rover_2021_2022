@@ -15,10 +15,9 @@
 Uart *RS485Port;
 uint8_t slaveID;
 
-uint16_t	recievedDataSize = 0;
-uint16_t	transmitDataSize = 0;
-uint8_t		rxBuffer[RX_BUFFER_SIZE];
-uint8_t		txBuffer[TX_BUFFER_SIZE];
+//uint16_t	recievedDataSize = 0;
+//uint16_t	transmitDataSize = 0;
+//uint8_t		rxBuffer[RX_BUFFER_SIZE];
 uint16_t	packetSize;
 
 uint16_t	intRegisters[REGISTER_AR_SIZE];
@@ -26,7 +25,15 @@ float		floatRegisters[REGISTER_AR_SIZE];
 char		charRegisters[REGISTER_AR_SIZE];
 bool		boolRegisters[REGISTER_AR_SIZE];
 
+struct ringBuffer{																	//ring buffer to serve as rx buffer. Helps solve lots of data shifting problems
+	uint16_t head; // Next free space in the buffer
+	uint16_t tail; // Start of unprocessed data and beginning of packet
+	uint8_t data[RX_BUFFER_SIZE];
+} rxBuffer;
 
+// To handle edge case if a packet starts toward end of buffer but wraps around to beginning
+#define PKT_WRAP_ARND(idx) \
+((idx) & (RX_BUFFER_SIZE - 1))
 
 /* All convert functions assume they are receiving unsigned values in
  * big-endian format. */
@@ -147,28 +154,8 @@ void writeHandler(uint8_t* data_packet, uint16_t start_reg, uint16_t end_reg) {
 }
 
 uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
-	uint16_t size = 0;
-	/*
-	int i = start_reg;
-	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i < end_reg) {
-		size += INT_REG_BYTE_SZ;
-		i++;
-	}
-	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
-		size += FLOAT_REG_BYTE_SZ;
-		i++;
-	}
-	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i < end_reg) {
-		size += CHAR_REG_BYTE_SZ;
-		i++;
-	}
-	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i < end_reg) {
-		size += BOOL_REG_BYTE_SZ;
-		i++;
-	}
-	return size;
-	*/																					//I don't like this implementation because it has several loops that are unnecessary
-	
+	uint16_t size = 0;																			//I don't like the previous implementation because it had several loops that were unnecessary
+
 	if(start_reg < REGISTER_AR_SIZE+INT_REG_OFFSET){									//check if starting register is within the data type range
 		if(end_reg >= REGISTER_AR_SIZE+INT_REG_OFFSET){									//check if the ending register is past the data type range
 			size += (REGISTER_AR_SIZE+INT_REG_OFFSET-start_reg)*INT_REG_BYTE_SZ;		//add the register size to the size variable
@@ -241,37 +228,29 @@ void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint3
 
 
 
-
 void modbus_update(void){
-	if(recievedDataSize < ABS_MIN_PACKET_SIZE) return;			//if not enough data has been received just break out
-	if(! packet_complete()) return;								//check if an entire packet has been received otherwise return, also resolves overflow errors
-	uint8_t* packet = pop_packet();								//packet is complete, so pull it out
-	uint16_t packet_len = packetSize;
-	if(packet[SLAVE_ID_IDX] != slaveID) return;					//disregard if the packet doesn't apply to this slave
-	uint8_t CRC[2] = {packet[packet_len-2], packet[packet_len-1]};
-	// check CRC here?
+	if(buffer_get_data_sz() < ABS_MIN_PACKET_SIZE) return;			//if not enough data has been received just break out
+	if( !packet_complete()) return;									//check if an entire packet has been received otherwise return, also resolves overflow errors
+	uint8_t* packet = pop_packet();									//packet is complete, so pull it out
+	if(packet[SLAVE_ID_IDX] != slaveID) return;						//disregard if the packet doesn't apply to this slave
+	uint8_t CRC[2] = {packet[packetSize-2], packet[packetSize-1]};
 	// extract register info from packet
 	uint16_t start_reg = packet[START_REG_H_IDX] << 8 | packet[START_REG_L_IDX];
 	uint16_t end_reg = packet[END_REG_H_IDX] << 8 | packet[END_REG_L_IDX];
 	// call read and write handlers based on function code
-	uint8_t* responsePacket;
+	uint8_t responsePacket[TX_BUFFER_SIZE];
 	uint16_t responsePacketSize;
 	switch(packet[FC_IDX]) {
-		case FC_READ_MULT:
-			uint8_t read_num_bytes = getReadResponseDataSize(start_reg, end_reg);
-			uint16_t readResponseSize = RD_RESP_PACKET_MIN_SIZE + read_num_bytes;
-			uint8_t readResponsePacket[readResponseSize];
-			responsePacket = readResponsePacket;
-			responsePacketSize = readResponseSize;
+		case FC_READ_MULT: ;													//semicolon resolves statement errors
+			uint16_t read_num_bytes = getReadResponseDataSize(start_reg, end_reg);
+			responsePacketSize = RD_RESP_PACKET_MIN_SIZE + read_num_bytes;
 			//responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];				//this was how the protocol used to be
 			responsePacket[SLAVE_ID_IDX] = MASTER_ADRESS;						//this is how the protocol is now to help identify when the master or slave is speaking
 			responsePacket[FC_IDX] = packet[FC_IDX];
 			responsePacket[RD_DATA_SIZE_IDX] = read_num_bytes;
 			readHandler(responsePacket+RD_DATA_BYTE_START, start_reg, end_reg);
 			break;
-		case FC_WRITE_MULT:
-			uint8_t writeResponsePacket[WR_RESP_PACKET_SIZE];
-			responsePacket = writeResponsePacket;
+		case FC_WRITE_MULT: ;
 			responsePacketSize = WR_RESP_PACKET_SIZE;
 			//responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];
 			responsePacket[SLAVE_ID_IDX] = MASTER_ADRESS;	
@@ -284,7 +263,10 @@ void modbus_update(void){
 			break;
 	}
 	// add the CRC to the response packet here
-	
+	uint8_t* responceCRC = ModRTU_CRC(responsePacket, responsePacketSize-CRC_SIZE);			//calculate crc
+	for(int i=CRC_SIZE; i>=0; i-=1){														//put crc in the response packet
+		responsePacket[responsePacketSize-i] = responceCRC[CRC_SIZE-i];
+	}
 	// write out response packet
 	for (int i = 0; i < responsePacketSize; i++) {
 		uart_write(RS485Port, responsePacket[i]);
@@ -294,8 +276,8 @@ void modbus_update(void){
 //interrupt handler for incoming data
 void UART_Handler(void){
 	if(uart_is_tx_ready(RS485Port)){							//confirm there is data ready to be read
-		uart_read(RS485Port, rxBuffer[recievedDataSize]);		//move the data into the next index of the rx buffer
-		recievedDataSize = recievedDataSize < RX_BUFFER_SIZE ? recievedDataSize + 1 : 0;  //iterate receive buffer size if not yet full
+		uart_read(RS485Port, &rxBuffer.data[rxBuffer.head]);		//move the data into the next index of the rx buffer
+		rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1);		//iterate the head through the ring buffer
 	}
 }
 
@@ -310,22 +292,87 @@ void UART1_Handler(){
 }
 
 uint8_t* pop_packet(){
-	uint8_t returnPacket[packetSize];						//the popped packet array
+	uint8_t returnPacket[packetSize];
 	for(int i=0;i<packetSize;i++){							//copy packet data to return array
-		returnPacket[i] = rxBuffer[i];
-	}
-	for(int i=0;i<recievedDataSize-packetSize;i++){			//shift rx buffer to the left
-		rxBuffer[i] = rxBuffer[i+packetSize];
-	}
-	recievedDataSize -= packetSize;							//decrease array size by the length of the packet
-	for(int i=0;i<packetSize;i++){							//assert 0s to the end of the rx buffer
-		rxBuffer[recievedDataSize+i] = 0;
+		returnPacket[i] = rxBuffer.data[rxBuffer.tail];
+		rxBuffer.tail = PKT_WRAP_ARND(rxBuffer.tail + 1);	//iterate the tail
 	}
 	return returnPacket;									//return
 }
 
-bool packet_complete(){
+uint16_t buffer_get_data_sz(void) {
+	if (rxBuffer.head >= rxBuffer.tail) {
+		return rxBuffer.head - rxBuffer.tail;
+		} else {
+		return (RX_BUFFER_SIZE - rxBuffer.tail) + rxBuffer.head;
+	}
+}
 
+bool packet_complete(){
+	packetSize = 0;																	// Reset this in case packet is not complete
+	
+	uint8_t func_code = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + FC_IDX)];
+	if(func_code != FC_WRITE_MULT && func_code != FC_READ_MULT){					//if the function code isn't write or read, we know somethings fucked up
+		//need to write a graceful handler here
+		//needs to be a while loop that iterates through the buffer looking for a valid function code, then pops out all the garbage that came before 
+		 return false;																
+	}
+	uint8_t slave_id = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + SLAVE_ID_IDX)];
+	
+	//bool need_crc = false;															//helper variables				//need crc becomes redundent, because at a certain point you need the crc no mater what
+	uint8_t num_data_bytes = 0;														// Default 0 for packets with no data bytes
+	uint16_t base_pkt_sz;															//size of packet not including data bytes
+	
+	// Handle write command from master
+	if (func_code == FC_WRITE_MULT && slave_id != 0) {
+		if(buffer_get_data_sz() < ABS_MIN_WRITE_PACKET_SIZE) return false;						//if the data size is less than this, we know the packet is incomplete
+		num_data_bytes = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + WR_DATA_SIZE_IDX)];		//get supposed number of data bytes from the packet
+		base_pkt_sz = ABS_MIN_WRITE_PACKET_SIZE - 1;											
+		//need_crc = true;																		
+	}
+	
+	// Handle write response from slave or read command from master (identical packet structure)
+	else if ((func_code == FC_WRITE_MULT && slave_id == 0) ||
+	(func_code == FC_READ_MULT) && slave_id != 0) {
+		if(buffer_get_data_sz() < WRITE_RES_PACKET_SIZE) return false;					//if the data size is less than this, we know the packet is incomplete
+		base_pkt_sz = WRITE_RES_PACKET_SIZE;											//we know the final packet size
+		//need_crc = true;																//still need crc because we need to confirm we are processing a complete packet and not some segment of another packet
+	}
+	
+	// Handle read response from slave
+	else if (func_code == FC_READ_MULT && slave_id == 0) {
+		//if(buffer_get_data_sz() < ABS_MIN_READ_RES_PACKET_SIZE) return false;			//if the data size is less than this, we know the packet is incomplete     //Redundent due to check before entering the function
+		num_data_bytes = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + RD_DATA_SIZE_IDX)];
+		base_pkt_sz = ABS_MIN_READ_RES_PACKET_SIZE - 1;
+		//need_crc = true;
+	}
+	
+	uint16_t full_pkt_sz = num_data_bytes + base_pkt_sz;								//calculate full packet size
+	
+	if (buffer_get_data_sz() < full_pkt_sz) return false;								//make sure we have a full packet
+	
+	packetSize = full_pkt_sz;															// Set global packetSize to completed packet size
+	
+	uint8_t packetNoCRC[packetSize - CRC_SIZE];											//pull packet into linear buffer for crc check
+	for(int i=0;i<packetSize - CRC_SIZE;i++){
+		packetNoCRC[i] = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + i)];
+	}
+	
+	uint8_t packetCRC[CRC_SIZE];														//pull out the crc from the packet
+	for(int i=0; i < CRC_SIZE; i++){
+		packetCRC[i] = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + (packetSize - CRC_SIZE) + i)];
+	}
+	
+	uint8_t* expectedCRC = ModRTU_CRC(packetNoCRC, packetSize - CRC_SIZE);				//calculate expected crc
+	
+	if(expectedCRC[0] == packetCRC[0]  &&  expectedCRC[1] == packetCRC[1]){				//crc comparison
+		return true;																	//packet is complete and passes crc
+	}else{																				//on crc fail remove first two bytes from buffer These are the only two known incorrect bytes
+		packetSize = FC_IDX + 1;
+		pop_packet();
+		return false;
+	}
+	
 }
 
 uint8_t* ModRTU_CRC(uint8_t* buf, int len)
