@@ -38,6 +38,13 @@
 #ifndef MODBUS_H_
 #define MODBUS_H_
 
+#define REGISTER_AR_SIZE	256		//Size of the register array for a given data type
+
+extern uint16_t		intRegisters[REGISTER_AR_SIZE];
+extern float		floatRegisters[REGISTER_AR_SIZE];
+extern char			charRegisters[REGISTER_AR_SIZE];
+extern bool			boolRegisters[REGISTER_AR_SIZE];
+
 void modbus_init(Uart*, const uint32_t, Pio*, const uint32_t, const uint8_t);    // Initialize modbus uart port, clock, memory, transmit enable, and ...
 
 void modbus_update(void);   //This function does all of the heavy lifting for modbus
@@ -48,7 +55,6 @@ void modbus_update(void);   //This function does all of the heavy lifting for mo
 #define RX_BUFFER_SIZE		1024	//size of RX buffer, this determines max incoming packet size
 #define TX_BUFFER_SIZE		1024    //							!!!!!! Important change this value to the size of the tx buffer in the UART module
 
-#define REGISTER_AR_SIZE	256		//Size of the register array for a given data type
 #define INT_REG_OFFSET		0		//Offset for translating uint16_t array index to register index
 #define FLOAT_REG_OFFSET	256		//Offset for translating float array index to register index
 #define CHAR_REG_OFFSET		512		//Offset for translating char array index to register index

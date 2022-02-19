@@ -45,5 +45,10 @@ int main (void)
 	
 	while(1){
 		modbus_update();
+		//udi_cdc_putc(charRegisters[roverState]);
+		uart_write(UART1,202);
+		for(int i=0;i<10000;i++){
+			
+		}
 	}
 }

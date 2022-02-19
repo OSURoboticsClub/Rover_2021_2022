@@ -61,13 +61,13 @@
 
 // ===== PLL0 (A) Options   (Fpll = (Fclk * PLL_mul) / PLL_div)
 // Use mul and div effective values here.
-#define CONFIG_PLL0_SOURCE          PLL_SRC_MAINCK_XTAL
+#define CONFIG_PLL0_SOURCE          PLL_SRC_MAINCK_12M_RC
 #define CONFIG_PLL0_MUL             20
 #define CONFIG_PLL0_DIV             1
 
 // ===== PLL1 (B) Options   (Fpll = (Fclk * PLL_mul) / PLL_div)
 // Use mul and div effective values here.
-#define CONFIG_PLL1_SOURCE          PLL_SRC_MAINCK_XTAL
+#define CONFIG_PLL1_SOURCE          PLL_SRC_MAINCK_12M_RC
 #define CONFIG_PLL1_MUL             16
 #define CONFIG_PLL1_DIV             2
 

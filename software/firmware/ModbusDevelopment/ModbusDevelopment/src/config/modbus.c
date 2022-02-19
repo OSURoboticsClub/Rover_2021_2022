@@ -29,7 +29,9 @@ struct ringBuffer{																	//ring buffer to serve as rx buffer. Helps so
 	uint16_t head; // Next free space in the buffer
 	uint16_t tail; // Start of unprocessed data and beginning of packet
 	uint8_t data[RX_BUFFER_SIZE];
-} rxBuffer;
+} rxBuffer = {
+	.head = 0,
+	.tail = 0};
 
 // To handle edge case if a packet starts toward end of buffer but wraps around to beginning
 #define PKT_WRAP_ARND(idx) \
@@ -66,7 +68,7 @@ static uint8_t* floatToBytes_union(float f){
 	floatCoversionBytes[2] = (u.data >> 8) & 0xFF;
 	floatCoversionBytes[3] = u.data & 0xFF;
 	
-	return &floatCoversionBytes;
+	return floatCoversionBytes;
 }
 
 static float convertToFloat_memcpy(const uint8_t data[4]){
@@ -210,15 +212,17 @@ void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint3
 		NVIC_EnableIRQ(UART1_IRQn);							//enables interrupts related to this port
 	}
 	
-	uint32_t clockSpeed = sysclk_get_cpu_hz();		//gets CPU speed to for baud counter
+	uint32_t clockSpeed = sysclk_get_peripheral_bus_hz(RS485Port);		//gets CPU speed to for baud counter
 	
 	sam_uart_opt_t UARTSettings = {
 		.ul_baudrate = baud,			//sets baudrate
-		.ul_mode = 0,					//sets to normal mode
+		.ul_mode = UART_MR_CHMODE_NORMAL | UART_MR_PAR_NO,	//sets to normal mode
 		.ul_mck = clockSpeed			//sets baud counter clock
 	};
 	
 	uart_init(RS485Port, &UARTSettings);							//init the UART port
+	uart_enable_rx(RS485Port);
+	uart_enable_tx(RS485Port);
 	uart_enable_interrupt(RS485Port, UART_IER_RXRDY);				//Enable interrupt for incoming data
 	
 	pio_set_output(enPinPort,enPin,HIGH,DISABLE,DISABLE);		//init the enable pin
@@ -274,8 +278,8 @@ void modbus_update(void){
 
 //interrupt handler for incoming data
 void UART_Handler(void){
-	if(uart_is_tx_ready(RS485Port)){							//confirm there is data ready to be read
-		uart_read(RS485Port, &rxBuffer.data[rxBuffer.head]);		//move the data into the next index of the rx buffer
+	if(uart_is_rx_ready(RS485Port)){							//confirm there is data ready to be read
+		uart_read(RS485Port, &(rxBuffer.data[rxBuffer.head]));		//move the data into the next index of the rx buffer
 		rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1);		//iterate the head through the ring buffer
 	}
 }
@@ -302,7 +306,7 @@ uint8_t* pop_packet(){
 uint16_t buffer_get_data_sz(void) {
 	if (rxBuffer.head >= rxBuffer.tail) {
 		return rxBuffer.head - rxBuffer.tail;
-		} else {
+	} else {
 		return (RX_BUFFER_SIZE - rxBuffer.tail) + rxBuffer.head;
 	}
 }

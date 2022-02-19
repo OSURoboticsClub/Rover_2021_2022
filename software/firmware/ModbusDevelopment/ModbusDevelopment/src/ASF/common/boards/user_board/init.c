@@ -26,6 +26,6 @@ void board_init(void)
 	//Enable USB Comm port so we can send debug data over serial to a computer (could be useful)
 	//Configuration for this is in conf_usb.h
 	udc_start();
-	modbus_init(UART1,115200,PIOA,PIO_PA17,3);
+	modbus_init(UART1,115200,PIOA,PIO_PA17,SLAVEID);
 	
 }
