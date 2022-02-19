@@ -52,19 +52,21 @@ static float convertToFloat_union(const uint8_t data[4]){
     return u.data_f;
 }
 
-uint8_t floatCoversionBytes[FLOAT_REG_BYTE_SZ];
-
-static void floatToBytes_union(float f){
+static uint8_t* floatToBytes_union(float f){
 	union {
 		uint32_t data;
 		float data_f;
 	} u;
+
+	static uint8_t floatCoversionBytes[FLOAT_REG_BYTE_SZ];
 
 	u.data_f = f;
 	floatCoversionBytes[0] = (u.data >> 24) & 0xFF;
 	floatCoversionBytes[1] = (u.data >> 16) & 0xFF;
 	floatCoversionBytes[2] = (u.data >> 8) & 0xFF;
 	floatCoversionBytes[3] = u.data & 0xFF;
+	
+	return &floatCoversionBytes;
 }
 
 static float convertToFloat_memcpy(const uint8_t data[4]){
@@ -109,11 +111,7 @@ void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) 
 		i++;
 	}
 	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
-		floatToBytes_union(floatRegisters[i-FLOAT_REG_OFFSET]);
-		responsePacket[0] = floatCoversionBytes[0];
-		responsePacket[1] = floatCoversionBytes[1];
-		responsePacket[2] = floatCoversionBytes[2];
-		responsePacket[3] = floatCoversionBytes[3];
+		uint8_t* floatConversionBytes = floatToBytes_union(floatRegisters[i-FLOAT_REG_OFFSET]);
 		responsePacket += FLOAT_REG_BYTE_SZ;
 		i++;
 	}
@@ -263,9 +261,10 @@ void modbus_update(void){
 			break;
 	}
 	// add the CRC to the response packet here
-	uint8_t* responceCRC = ModRTU_CRC(responsePacket, responsePacketSize-CRC_SIZE);			//calculate crc
-	for(int i=CRC_SIZE; i>=0; i-=1){														//put crc in the response packet
-		responsePacket[responsePacketSize-i] = responceCRC[CRC_SIZE-i];
+	uint16_t responceCRC = ModRTU_CRC(responsePacket, responsePacketSize-CRC_SIZE);			//calculate crc
+	
+	for(int i=CRC_SIZE; i>0; i-=1){														//put crc in the response packet
+		responsePacket[responsePacketSize-i] = (responceCRC >> ((CRC_SIZE-i)*8)) & 0xFF;
 	}
 	// write out response packet
 	for (int i = 0; i < responsePacketSize; i++) {
@@ -292,7 +291,7 @@ void UART1_Handler(){
 }
 
 uint8_t* pop_packet(){
-	uint8_t returnPacket[packetSize];
+	static uint8_t returnPacket[RX_BUFFER_SIZE];
 	for(int i=0;i<packetSize;i++){							//copy packet data to return array
 		returnPacket[i] = rxBuffer.data[rxBuffer.tail];
 		rxBuffer.tail = PKT_WRAP_ARND(rxBuffer.tail + 1);	//iterate the tail
@@ -333,7 +332,7 @@ bool packet_complete(){
 	
 	// Handle write response from slave or read command from master (identical packet structure)
 	else if ((func_code == FC_WRITE_MULT && slave_id == 0) ||
-	(func_code == FC_READ_MULT) && slave_id != 0) {
+	((func_code == FC_READ_MULT) && slave_id != 0)) {
 		if(buffer_get_data_sz() < WRITE_RES_PACKET_SIZE) return false;					//if the data size is less than this, we know the packet is incomplete
 		base_pkt_sz = WRITE_RES_PACKET_SIZE;											//we know the final packet size
 		//need_crc = true;																//still need crc because we need to confirm we are processing a complete packet and not some segment of another packet
@@ -363,9 +362,9 @@ bool packet_complete(){
 		packetCRC[i] = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + (packetSize - CRC_SIZE) + i)];
 	}
 	
-	uint8_t* expectedCRC = ModRTU_CRC(packetNoCRC, packetSize - CRC_SIZE);				//calculate expected crc
+	uint16_t expectedCRC = ModRTU_CRC(packetNoCRC, packetSize - CRC_SIZE);				//calculate expected crc
 	
-	if(expectedCRC[0] == packetCRC[0]  &&  expectedCRC[1] == packetCRC[1]){				//crc comparison
+	if((expectedCRC & 0xFF) == packetCRC[0]  &&  ((expectedCRC >> 8) & 0xFF) == packetCRC[1]){				//crc comparison
 		return true;																	//packet is complete and passes crc
 	}else{																				//on crc fail remove first two bytes from buffer These are the only two known incorrect bytes
 		packetSize = FC_IDX + 1;
@@ -375,7 +374,7 @@ bool packet_complete(){
 	
 }
 
-uint8_t* ModRTU_CRC(uint8_t* buf, int len)
+uint16_t ModRTU_CRC(uint8_t* buf, int len)
 {
 	uint16_t crc = 0xFFFF;
 
@@ -391,8 +390,6 @@ uint8_t* ModRTU_CRC(uint8_t* buf, int len)
 			crc >>= 1;                    // Just shift right
 		}
 	}
-	uint8_t crcBytes[2] = {0x00,0x00};
-	crcBytes[0] |= crc;
-	crcBytes[1] |= crc>>8;
-	return crcBytes;
+	
+	return crc;
 }

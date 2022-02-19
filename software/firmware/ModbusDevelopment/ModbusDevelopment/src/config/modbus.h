@@ -90,7 +90,7 @@ void modbus_update(void);   //This function does all of the heavy lifting for mo
 void UART_Handler(void);
 uint8_t* pop_packet();
 bool packet_complete();
-uint8_t* ModRTU_CRC(uint8_t*, int);
+uint16_t ModRTU_CRC(uint8_t* buf, int len);
 void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg);
 void writeHandler(uint8_t* data_packet, uint16_t start_reg, uint16_t end_reg);
 uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg);
