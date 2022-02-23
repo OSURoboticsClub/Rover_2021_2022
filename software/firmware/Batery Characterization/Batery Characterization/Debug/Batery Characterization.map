@@ -6431,110 +6431,109 @@ LOAD s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-
                 0x00403238       0x38 src/main.o
                 0x00403238                updatePWM
  .text.LoadFeedback
-                0x00403270      0x108 src/main.o
+                0x00403270       0xfc src/main.o
                 0x00403270                LoadFeedback
- .text.main     0x00403378       0x34 src/main.o
-                0x00403378                main
- .text.log      0x004033ac       0xf8 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libm.a(lib_a-w_log.o)
-                0x004033ac                log
- *fill*         0x004034a4        0x4 
+ .text.main     0x0040336c       0x34 src/main.o
+                0x0040336c                main
+ .text.log      0x004033a0       0xf8 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libm.a(lib_a-w_log.o)
+                0x004033a0                log
  .text.__ieee754_log
-                0x004034a8      0x3e8 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libm.a(lib_a-e_log.o)
-                0x004034a8                __ieee754_log
- .text.matherr  0x00403890        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libm.a(lib_a-s_matherr.o)
-                0x00403890                matherr
- .text.nan      0x00403894        0xc s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libm.a(lib_a-s_nan.o)
-                0x00403894                nan
- .text          0x004038a0      0x370 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_addsubdf3.o)
-                0x004038a0                __aeabi_drsub
-                0x004038a8                __aeabi_dsub
-                0x004038a8                __subdf3
-                0x004038ac                __aeabi_dadd
-                0x004038ac                __adddf3
-                0x00403b24                __floatunsidf
-                0x00403b24                __aeabi_ui2d
-                0x00403b44                __floatsidf
-                0x00403b44                __aeabi_i2d
-                0x00403b68                __aeabi_f2d
-                0x00403b68                __extendsfdf2
-                0x00403ba4                __floatundidf
-                0x00403ba4                __aeabi_ul2d
-                0x00403bb4                __floatdidf
-                0x00403bb4                __aeabi_l2d
- .text          0x00403c10      0x424 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_muldivdf3.o)
-                0x00403c10                __aeabi_dmul
-                0x00403c10                __muldf3
-                0x00403e64                __divdf3
-                0x00403e64                __aeabi_ddiv
- .text          0x00404034      0x110 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_cmpdf2.o)
-                0x00404034                __gtdf2
-                0x00404034                __gedf2
-                0x0040403c                __ltdf2
-                0x0040403c                __ledf2
-                0x00404044                __nedf2
-                0x00404044                __eqdf2
-                0x00404044                __cmpdf2
-                0x004040c0                __aeabi_cdrcmple
-                0x004040d0                __aeabi_cdcmpeq
-                0x004040d0                __aeabi_cdcmple
-                0x004040e0                __aeabi_dcmpeq
-                0x004040f4                __aeabi_dcmplt
-                0x00404108                __aeabi_dcmple
-                0x0040411c                __aeabi_dcmpge
-                0x00404130                __aeabi_dcmpgt
- .text          0x00404144       0x2c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_unorddf2.o)
-                0x00404144                __unorddf2
-                0x00404144                __aeabi_dcmpun
- .text          0x00404170       0xa0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_truncdfsf2.o)
-                0x00404170                __truncdfsf2
-                0x00404170                __aeabi_d2f
- .text          0x00404210      0x21c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_addsubsf3.o)
-                0x00404210                __aeabi_frsub
-                0x00404218                __subsf3
-                0x00404218                __aeabi_fsub
-                0x0040421c                __aeabi_fadd
-                0x0040421c                __addsf3
-                0x0040437c                __aeabi_ui2f
-                0x0040437c                __floatunsisf
-                0x00404384                __aeabi_i2f
-                0x00404384                __floatsisf
-                0x004043a0                __aeabi_ul2f
-                0x004043a0                __floatundisf
-                0x004043b0                __aeabi_l2f
-                0x004043b0                __floatdisf
- .text          0x0040442c      0x2a0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_muldivsf3.o)
-                0x0040442c                __mulsf3
-                0x0040442c                __aeabi_fmul
-                0x00404594                __aeabi_fdiv
-                0x00404594                __divsf3
- .text          0x004046cc       0xec s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
-                0x004046cc                __gesf2
-                0x004046cc                __gtsf2
-                0x004046d4                __lesf2
-                0x004046d4                __ltsf2
-                0x004046dc                __nesf2
-                0x004046dc                __eqsf2
-                0x004046dc                __cmpsf2
-                0x0040473c                __aeabi_cfrcmple
-                0x00404744                __aeabi_cfcmpeq
-                0x00404744                __aeabi_cfcmple
-                0x00404754                __aeabi_fcmpeq
-                0x00404768                __aeabi_fcmplt
-                0x0040477c                __aeabi_fcmple
-                0x00404790                __aeabi_fcmpge
-                0x004047a4                __aeabi_fcmpgt
- .text.__errno  0x004047b8        0xc s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-errno.o)
-                0x004047b8                __errno
+                0x00403498      0x3e8 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libm.a(lib_a-e_log.o)
+                0x00403498                __ieee754_log
+ .text.matherr  0x00403880        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libm.a(lib_a-s_matherr.o)
+                0x00403880                matherr
+ .text.nan      0x00403884        0xc s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libm.a(lib_a-s_nan.o)
+                0x00403884                nan
+ .text          0x00403890      0x370 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_addsubdf3.o)
+                0x00403890                __aeabi_drsub
+                0x00403898                __aeabi_dsub
+                0x00403898                __subdf3
+                0x0040389c                __aeabi_dadd
+                0x0040389c                __adddf3
+                0x00403b14                __floatunsidf
+                0x00403b14                __aeabi_ui2d
+                0x00403b34                __floatsidf
+                0x00403b34                __aeabi_i2d
+                0x00403b58                __aeabi_f2d
+                0x00403b58                __extendsfdf2
+                0x00403b94                __floatundidf
+                0x00403b94                __aeabi_ul2d
+                0x00403ba4                __floatdidf
+                0x00403ba4                __aeabi_l2d
+ .text          0x00403c00      0x424 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_muldivdf3.o)
+                0x00403c00                __aeabi_dmul
+                0x00403c00                __muldf3
+                0x00403e54                __divdf3
+                0x00403e54                __aeabi_ddiv
+ .text          0x00404024      0x110 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_cmpdf2.o)
+                0x00404024                __gtdf2
+                0x00404024                __gedf2
+                0x0040402c                __ltdf2
+                0x0040402c                __ledf2
+                0x00404034                __nedf2
+                0x00404034                __eqdf2
+                0x00404034                __cmpdf2
+                0x004040b0                __aeabi_cdrcmple
+                0x004040c0                __aeabi_cdcmpeq
+                0x004040c0                __aeabi_cdcmple
+                0x004040d0                __aeabi_dcmpeq
+                0x004040e4                __aeabi_dcmplt
+                0x004040f8                __aeabi_dcmple
+                0x0040410c                __aeabi_dcmpge
+                0x00404120                __aeabi_dcmpgt
+ .text          0x00404134       0x2c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_unorddf2.o)
+                0x00404134                __unorddf2
+                0x00404134                __aeabi_dcmpun
+ .text          0x00404160       0xa0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_truncdfsf2.o)
+                0x00404160                __truncdfsf2
+                0x00404160                __aeabi_d2f
+ .text          0x00404200      0x21c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_addsubsf3.o)
+                0x00404200                __aeabi_frsub
+                0x00404208                __subsf3
+                0x00404208                __aeabi_fsub
+                0x0040420c                __aeabi_fadd
+                0x0040420c                __addsf3
+                0x0040436c                __aeabi_ui2f
+                0x0040436c                __floatunsisf
+                0x00404374                __aeabi_i2f
+                0x00404374                __floatsisf
+                0x00404390                __aeabi_ul2f
+                0x00404390                __floatundisf
+                0x004043a0                __aeabi_l2f
+                0x004043a0                __floatdisf
+ .text          0x0040441c      0x2a0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_muldivsf3.o)
+                0x0040441c                __mulsf3
+                0x0040441c                __aeabi_fmul
+                0x00404584                __aeabi_fdiv
+                0x00404584                __divsf3
+ .text          0x004046bc       0xec s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
+                0x004046bc                __gesf2
+                0x004046bc                __gtsf2
+                0x004046c4                __lesf2
+                0x004046c4                __ltsf2
+                0x004046cc                __nesf2
+                0x004046cc                __eqsf2
+                0x004046cc                __cmpsf2
+                0x0040472c                __aeabi_cfrcmple
+                0x00404734                __aeabi_cfcmpeq
+                0x00404734                __aeabi_cfcmple
+                0x00404744                __aeabi_fcmpeq
+                0x00404758                __aeabi_fcmplt
+                0x0040476c                __aeabi_fcmple
+                0x00404780                __aeabi_fcmpge
+                0x00404794                __aeabi_fcmpgt
+ .text.__errno  0x004047a8        0xc s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-errno.o)
+                0x004047a8                __errno
  .text.__libc_init_array
-                0x004047c4       0x50 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-init.o)
-                0x004047c4                __libc_init_array
- .text          0x00404814      0x134 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-memcpy.o)
-                0x00404814                memcpy
- .text.memset   0x00404948       0x9c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-memset.o)
-                0x00404948                memset
- .text.sprintf  0x004049e4       0x4c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-sprintf.o)
-                0x004049e4                sprintf
- *fill*         0x00404a30       0x10 
+                0x004047b4       0x50 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-init.o)
+                0x004047b4                __libc_init_array
+ .text          0x00404804      0x134 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-memcpy.o)
+                0x00404804                memcpy
+ .text.memset   0x00404938       0x9c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-memset.o)
+                0x00404938                memset
+ .text.sprintf  0x004049d4       0x4c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-sprintf.o)
+                0x004049d4                sprintf
+ *fill*         0x00404a20       0x20 
  .text          0x00404a40       0xdc s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-strlen.o)
                 0x00404a40                strlen
  .text._svfprintf_r
@@ -6754,7 +6753,7 @@ LOAD s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-
                 0x00408af4                . = ALIGN (0x4)
                 0x00408af4                _etext = .
 
-.relocate       0x20000000      0xa58 load address 0x00408af4
+.relocate       0x20000000      0xa60 load address 0x00408af4
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _srelocate = .
  *(.ramfunc .ramfunc.*)
@@ -6791,186 +6790,190 @@ LOAD s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-
  .data.SystemCoreClock
                 0x200000a4        0x4 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o
                 0x200000a4                SystemCoreClock
+ .data.endOfDischarge
+                0x200000a8        0x4 src/main.o
+                0x200000a8                endOfDischarge
  .data.__fdlib_version
-                0x200000a8        0x1 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libm.a(lib_a-s_lib_ver.o)
-                0x200000a8                __fdlib_version
- *fill*         0x200000a9        0x3 
+                0x200000ac        0x1 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libm.a(lib_a-s_lib_ver.o)
+                0x200000ac                __fdlib_version
+ *fill*         0x200000ad        0x3 
  .data._impure_ptr
-                0x200000ac        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-impure.o)
-                0x200000ac                _impure_ptr
+                0x200000b0        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-impure.o)
+                0x200000b0                _impure_ptr
+ *fill*         0x200000b4        0x4 
  .data.impure_data
-                0x200000b0      0x428 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-impure.o)
+                0x200000b8      0x428 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-impure.o)
  .data.__atexit_recursive_mutex
-                0x200004d8        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-__call_atexit.o)
-                0x200004d8                __atexit_recursive_mutex
+                0x200004e0        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-__call_atexit.o)
+                0x200004e0                __atexit_recursive_mutex
  .data.__global_locale
-                0x200004dc      0x16c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-locale.o)
-                0x200004dc                __global_locale
+                0x200004e4      0x16c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-locale.o)
+                0x200004e4                __global_locale
  .data.__malloc_av_
-                0x20000648      0x408 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
-                0x20000648                __malloc_av_
+                0x20000650      0x408 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
+                0x20000650                __malloc_av_
  .data.__malloc_sbrk_base
-                0x20000a50        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
-                0x20000a50                __malloc_sbrk_base
+                0x20000a58        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
+                0x20000a58                __malloc_sbrk_base
  .data.__malloc_trim_threshold
-                0x20000a54        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
-                0x20000a54                __malloc_trim_threshold
-                0x20000a58                . = ALIGN (0x4)
-                0x20000a58                _erelocate = .
+                0x20000a5c        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
+                0x20000a5c                __malloc_trim_threshold
+                0x20000a60                . = ALIGN (0x4)
+                0x20000a60                _erelocate = .
 
-.bss            0x20000a58      0x2f8 load address 0x0040954c
-                0x20000a58                . = ALIGN (0x4)
-                0x20000a58                _sbss = .
-                0x20000a58                _szero = .
+.bss            0x20000a60      0x2f8 load address 0x00409554
+                0x20000a60                . = ALIGN (0x4)
+                0x20000a60                _sbss = .
+                0x20000a60                _szero = .
  *(.bss .bss.*)
- .bss           0x20000a58       0x1c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
+ .bss           0x20000a60       0x1c s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
  .bss.sof_zlp_counter.8010
-                0x20000a74        0x2 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+                0x20000a7c        0x2 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .bss.udi_cdc_data_running
-                0x20000a76        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
- *fill*         0x20000a77        0x1 
+                0x20000a7e        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+ *fill*         0x20000a7f        0x1 
  .bss.udi_cdc_line_coding
-                0x20000a78        0x7 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+                0x20000a80        0x7 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .bss.udi_cdc_nb_comm_enabled
-                0x20000a7f        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+                0x20000a87        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .bss.udi_cdc_nb_data_enabled
-                0x20000a80        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
- *fill*         0x20000a81        0x3 
+                0x20000a88        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+ *fill*         0x20000a89        0x3 
  .bss.udi_cdc_rx_buf
-                0x20000a84       0x80 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+                0x20000a8c       0x80 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .bss.udi_cdc_rx_buf_nb
-                0x20000b04        0x4 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+                0x20000b0c        0x4 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .bss.udi_cdc_rx_buf_sel
-                0x20000b08        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
- *fill*         0x20000b09        0x3 
- .bss.udi_cdc_rx_pos
-                0x20000b0c        0x2 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
- *fill*         0x20000b0e        0x2 
- .bss.udi_cdc_rx_trans_ongoing
                 0x20000b10        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  *fill*         0x20000b11        0x3 
- .bss.udi_cdc_state
+ .bss.udi_cdc_rx_pos
                 0x20000b14        0x2 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  *fill*         0x20000b16        0x2 
- .bss.udi_cdc_tx_both_buf_to_send
+ .bss.udi_cdc_rx_trans_ongoing
                 0x20000b18        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  *fill*         0x20000b19        0x3 
+ .bss.udi_cdc_state
+                0x20000b1c        0x2 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+ *fill*         0x20000b1e        0x2 
+ .bss.udi_cdc_tx_both_buf_to_send
+                0x20000b20        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+ *fill*         0x20000b21        0x3 
  .bss.udi_cdc_tx_buf
-                0x20000b1c       0x80 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+                0x20000b24       0x80 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .bss.udi_cdc_tx_buf_nb
-                0x20000b9c        0x4 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+                0x20000ba4        0x4 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .bss.udi_cdc_tx_buf_sel
-                0x20000ba0        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
- *fill*         0x20000ba1        0x3 
- .bss.udi_cdc_tx_sof_num
-                0x20000ba4        0x2 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
- *fill*         0x20000ba6        0x2 
- .bss.udi_cdc_tx_trans_ongoing
                 0x20000ba8        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  *fill*         0x20000ba9        0x3 
+ .bss.udi_cdc_tx_sof_num
+                0x20000bac        0x2 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+ *fill*         0x20000bae        0x2 
+ .bss.udi_cdc_tx_trans_ongoing
+                0x20000bb0        0x1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+ *fill*         0x20000bb1        0x3 
  .bss.uid_cdc_state_msg
-                0x20000bac        0xa src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
+                0x20000bb4        0xa src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .bss.udc_device_status
-                0x20000bb6        0x2 src/ASF/common/services/usb/udc/udc.o
+                0x20000bbe        0x2 src/ASF/common/services/usb/udc/udc.o
  .bss.udc_ep_status.7655
-                0x20000bb8        0x2 src/ASF/common/services/usb/udc/udc.o
- *fill*         0x20000bba        0x2 
+                0x20000bc0        0x2 src/ASF/common/services/usb/udc/udc.o
+ *fill*         0x20000bc2        0x2 
  .bss.udc_iface_setting
-                0x20000bbc        0x1 src/ASF/common/services/usb/udc/udc.o
- *fill*         0x20000bbd        0x3 
+                0x20000bc4        0x1 src/ASF/common/services/usb/udc/udc.o
+ *fill*         0x20000bc5        0x3 
  .bss.udc_num_configuration
-                0x20000bc0        0x1 src/ASF/common/services/usb/udc/udc.o
- *fill*         0x20000bc1        0x3 
+                0x20000bc8        0x1 src/ASF/common/services/usb/udc/udc.o
+ *fill*         0x20000bc9        0x3 
  .bss.udc_ptr_conf
-                0x20000bc4        0x4 src/ASF/common/services/usb/udc/udc.o
+                0x20000bcc        0x4 src/ASF/common/services/usb/udc/udc.o
  .bss.udc_ptr_iface
-                0x20000bc8        0x4 src/ASF/common/services/usb/udc/udc.o
+                0x20000bd0        0x4 src/ASF/common/services/usb/udc/udc.o
  .bss.gs_interrupt_sources
-                0x20000bcc       0x70 src/ASF/sam/drivers/pio/pio_handler.o
+                0x20000bd4       0x70 src/ASF/sam/drivers/pio/pio_handler.o
  .bss.pio_capture_handler
-                0x20000c3c        0x4 src/ASF/sam/drivers/pio/pio_handler.o
+                0x20000c44        0x4 src/ASF/sam/drivers/pio/pio_handler.o
  .bss.b_shortpacket.8717
-                0x20000c40        0x1 src/ASF/sam/drivers/udp/udp_device.o
+                0x20000c48        0x1 src/ASF/sam/drivers/udp/udp_device.o
  .bss.udd_b_idle
-                0x20000c41        0x1 src/ASF/sam/drivers/udp/udp_device.o
+                0x20000c49        0x1 src/ASF/sam/drivers/udp/udp_device.o
  .bss.udd_ctrl_payload_nb_trans
-                0x20000c42        0x2 src/ASF/sam/drivers/udp/udp_device.o
+                0x20000c4a        0x2 src/ASF/sam/drivers/udp/udp_device.o
  .bss.udd_ctrl_prev_payload_nb_trans
-                0x20000c44        0x2 src/ASF/sam/drivers/udp/udp_device.o
+                0x20000c4c        0x2 src/ASF/sam/drivers/udp/udp_device.o
  .bss.udd_ep_control_state
-                0x20000c46        0x1 src/ASF/sam/drivers/udp/udp_device.o
- *fill*         0x20000c47        0x1 
+                0x20000c4e        0x1 src/ASF/sam/drivers/udp/udp_device.o
+ *fill*         0x20000c4f        0x1 
  .bss.udd_ep_job
-                0x20000c48       0x3c src/ASF/sam/drivers/udp/udp_device.o
+                0x20000c50       0x3c src/ASF/sam/drivers/udp/udp_device.o
  .bss.b_is_sleep_clock_used
-                0x20000c84        0x1 src/ASF/sam/drivers/pmc/sleep.o
- *fill*         0x20000c85        0x3 
+                0x20000c8c        0x1 src/ASF/sam/drivers/pmc/sleep.o
+ *fill*         0x20000c8d        0x3 
  .bss.heap.5297
-                0x20000c88        0x4 src/ASF/sam/utils/syscalls/gcc/syscalls.o
- .bss.PWMDuty   0x20000c8c        0x4 src/main.o
-                0x20000c8c                PWMDuty
+                0x20000c90        0x4 src/ASF/sam/utils/syscalls/gcc/syscalls.o
+ .bss.PWMDuty   0x20000c94        0x4 src/main.o
+                0x20000c94                PWMDuty
  .bss.dischargeCurrent
-                0x20000c90        0x4 src/main.o
-                0x20000c90                dischargeCurrent
+                0x20000c98        0x4 src/main.o
+                0x20000c98                dischargeCurrent
  .bss.protectionActive
-                0x20000c94        0x1 src/main.o
-                0x20000c94                protectionActive
+                0x20000c9c        0x1 src/main.o
+                0x20000c9c                protectionActive
  .bss.updateLoop
-                0x20000c95        0x1 src/main.o
-                0x20000c95                updateLoop
- *fill*         0x20000c96        0x2 
+                0x20000c9d        0x1 src/main.o
+                0x20000c9d                updateLoop
+ *fill*         0x20000c9e        0x2 
  .bss.__malloc_current_mallinfo
-                0x20000c98       0x28 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
-                0x20000c98                __malloc_current_mallinfo
+                0x20000ca0       0x28 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
+                0x20000ca0                __malloc_current_mallinfo
  .bss.__malloc_max_sbrked_mem
-                0x20000cc0        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
-                0x20000cc0                __malloc_max_sbrked_mem
- .bss.__malloc_max_total_mem
-                0x20000cc4        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
-                0x20000cc4                __malloc_max_total_mem
- .bss.__malloc_top_pad
                 0x20000cc8        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
-                0x20000cc8                __malloc_top_pad
+                0x20000cc8                __malloc_max_sbrked_mem
+ .bss.__malloc_max_total_mem
+                0x20000ccc        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
+                0x20000ccc                __malloc_max_total_mem
+ .bss.__malloc_top_pad
+                0x20000cd0        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-mallocr.o)
+                0x20000cd0                __malloc_top_pad
  *(COMMON)
- COMMON         0x20000ccc        0x6 src/ASF/common/services/sleepmgr/sam/sleepmgr.o
-                0x20000ccc                sleepmgr_locks
- *fill*         0x20000cd2        0x2 
- COMMON         0x20000cd4       0x18 src/ASF/sam/drivers/udp/udp_device.o
-                0x20000cd4                udd_g_ctrlreq
- COMMON         0x20000cec        0x4 src/ASF/sam/drivers/pio/pio.o
-                0x20000cec                pio_capture_enable_flag
- COMMON         0x20000cf0       0x38 src/main.o
-                0x20000cf0                current
-                0x20000cf4                cellV
-                0x20000cf8                tempBatt
-                0x20000cfc                tempFet
-                0x20000d00                Load
- COMMON         0x20000d28       0x21 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-lock.o)
-                0x20000d28                __lock___atexit_recursive_mutex
-                0x20000d2c                __lock___arc4random_mutex
-                0x20000d30                __lock___env_recursive_mutex
-                0x20000d34                __lock___sinit_recursive_mutex
-                0x20000d38                __lock___malloc_recursive_mutex
-                0x20000d3c                __lock___at_quick_exit_mutex
-                0x20000d40                __lock___dd_hash_mutex
-                0x20000d44                __lock___tz_mutex
-                0x20000d48                __lock___sfp_recursive_mutex
- *fill*         0x20000d49        0x3 
- COMMON         0x20000d4c        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-reent.o)
-                0x20000d4c                errno
-                0x20000d50                . = ALIGN (0x4)
-                0x20000d50                _ebss = .
-                0x20000d50                _ezero = .
+ COMMON         0x20000cd4        0x6 src/ASF/common/services/sleepmgr/sam/sleepmgr.o
+                0x20000cd4                sleepmgr_locks
+ *fill*         0x20000cda        0x2 
+ COMMON         0x20000cdc       0x18 src/ASF/sam/drivers/udp/udp_device.o
+                0x20000cdc                udd_g_ctrlreq
+ COMMON         0x20000cf4        0x4 src/ASF/sam/drivers/pio/pio.o
+                0x20000cf4                pio_capture_enable_flag
+ COMMON         0x20000cf8       0x38 src/main.o
+                0x20000cf8                current
+                0x20000cfc                cellV
+                0x20000d00                tempBatt
+                0x20000d04                tempFet
+                0x20000d08                Load
+ COMMON         0x20000d30       0x21 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-lock.o)
+                0x20000d30                __lock___atexit_recursive_mutex
+                0x20000d34                __lock___arc4random_mutex
+                0x20000d38                __lock___env_recursive_mutex
+                0x20000d3c                __lock___sinit_recursive_mutex
+                0x20000d40                __lock___malloc_recursive_mutex
+                0x20000d44                __lock___at_quick_exit_mutex
+                0x20000d48                __lock___dd_hash_mutex
+                0x20000d4c                __lock___tz_mutex
+                0x20000d50                __lock___sfp_recursive_mutex
+ *fill*         0x20000d51        0x3 
+ COMMON         0x20000d54        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-reent.o)
+                0x20000d54                errno
+                0x20000d58                . = ALIGN (0x4)
+                0x20000d58                _ebss = .
+                0x20000d58                _ezero = .
 
-.stack          0x20000d50     0x3000 load address 0x00409844
-                0x20000d50                . = ALIGN (0x8)
-                0x20000d50                _sstack = .
-                0x20003d50                . = (. + __stack_size__)
- *fill*         0x20000d50     0x3000 
-                0x20003d50                . = ALIGN (0x8)
-                0x20003d50                _estack = .
-                0x20003d50                . = ALIGN (0x4)
-                0x20003d50                _end = .
+.stack          0x20000d58     0x3000 load address 0x0040984c
+                0x20000d58                . = ALIGN (0x8)
+                0x20000d58                _sstack = .
+                0x20003d58                . = (. + __stack_size__)
+ *fill*         0x20000d58     0x3000 
+                0x20003d58                . = ALIGN (0x8)
+                0x20003d58                _estack = .
+                0x20003d58                . = ALIGN (0x4)
+                0x20003d58                _end = .
 OUTPUT(Batery Characterization.elf elf32-littlearm)
 
 .ARM.attributes
@@ -7136,7 +7139,7 @@ OUTPUT(Batery Characterization.elf elf32-littlearm)
  .comment       0x00000059       0x5a src/ASF/sam/utils/syscalls/gcc/syscalls.o
  .comment       0x00000059       0x5a src/main.o
 
-.debug_info     0x00000000    0x1c640
+.debug_info     0x00000000    0x1c64a
  .debug_info    0x00000000      0xa8e src/ASF/common/services/sleepmgr/sam/sleepmgr.o
  .debug_info    0x00000a8e     0x290e src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .debug_info    0x0000339c     0x124a src/ASF/common/services/usb/class/cdc/device/udi_cdc_desc.o
@@ -7155,7 +7158,7 @@ OUTPUT(Batery Characterization.elf elf32-littlearm)
  .debug_info    0x000185c4      0x6d2 src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.o
  .debug_info    0x00018c96      0x458 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o
  .debug_info    0x000190ee      0xdb0 src/ASF/sam/utils/syscalls/gcc/syscalls.o
- .debug_info    0x00019e9e     0x27a2 src/main.o
+ .debug_info    0x00019e9e     0x27ac src/main.o
 
 .debug_abbrev   0x00000000     0x3995
  .debug_abbrev  0x00000000      0x1b2 src/ASF/common/services/sleepmgr/sam/sleepmgr.o
@@ -7400,7 +7403,7 @@ OUTPUT(Batery Characterization.elf elf32-littlearm)
  .debug_line    0x0000d34b      0x3cb src/ASF/sam/utils/syscalls/gcc/syscalls.o
  .debug_line    0x0000d716      0xfac src/main.o
 
-.debug_str      0x00000000    0x53e35
+.debug_str      0x00000000    0x53e44
  .debug_str     0x00000000    0x4561c src/ASF/common/services/sleepmgr/sam/sleepmgr.o
                               0x459bd (size before relaxing)
  .debug_str     0x0004561c     0x47e1 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
@@ -7437,8 +7440,8 @@ OUTPUT(Batery Characterization.elf elf32-littlearm)
                               0x351ec (size before relaxing)
  .debug_str     0x00052d02      0x766 src/ASF/sam/utils/syscalls/gcc/syscalls.o
                                0x7436 (size before relaxing)
- .debug_str     0x00053468      0x9cd src/main.o
-                              0x4c68e (size before relaxing)
+ .debug_str     0x00053468      0x9dc src/main.o
+                              0x4c69d (size before relaxing)
 
 .debug_loc      0x00000000     0x77ca
  .debug_loc     0x00000000     0x11bb src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
@@ -7616,7 +7619,6 @@ __aeabi_dcmpgt                                    s:/microchip studio/7.0/toolch
                                                   src/main.o
 __aeabi_dcmple                                    s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_cmpdf2.o)
                                                   s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-svfprintf.o)
-                                                  src/main.o
 __aeabi_dcmplt                                    s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_cmpdf2.o)
                                                   s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-dtoa.o)
                                                   s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-svfprintf.o)
@@ -7646,6 +7648,7 @@ __aeabi_fcmpge                                    s:/microchip studio/7.0/toolch
 __aeabi_fcmpgt                                    s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
                                                   src/main.o
 __aeabi_fcmple                                    s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
+                                                  src/main.o
 __aeabi_fcmplt                                    s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_cmpsf2.o)
                                                   src/main.o
 __aeabi_fdiv                                      s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m\libgcc.a(_arm_muldivsf3.o)
@@ -8090,6 +8093,7 @@ cpu_irq_enter_critical                            src/ASF/common/utils/interrupt
 cpu_irq_leave_critical                            src/ASF/common/utils/interrupt/interrupt_sam_nvic.o
 current                                           src/main.o
 dischargeCurrent                                  src/main.o
+endOfDischarge                                    src/main.o
 errno                                             s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-reent.o)
                                                   s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-readr.o)
                                                   s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-lseekr.o)

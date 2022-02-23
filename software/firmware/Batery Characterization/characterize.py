@@ -1,7 +1,7 @@
 import serial
 import time
 
-bcb = serial.Serial('COM7',115200, timeout=1)
+bcb = serial.Serial('COM8',115200, timeout=1)
 
 str_current = input("Enter discharge current (multiple of 0.1A) or leave blankd for default 0:\n")
 if(str_current == ""):
@@ -26,6 +26,10 @@ while(1):
         line = bcb.readline()
         line = line.decode("utf-8")
         line = line[2:]
+        if(line == ""):
+            if(fileName != ""):
+                f.close()
+            exit()
         timer = str(round(time.perf_counter() - startTime, 3))
         line = timer + "," + line
         print(line)

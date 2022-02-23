@@ -38,6 +38,7 @@ float dischargeCurrent = 0;
 int PWMDuty = 0;
 bool updateLoop = false;
 bool protectionActive = false;
+float endOfDischarge = 2.7;
 
 void calculateCellVoltage(int rawADCData){
 	cellV = (rawADCData)*((VOLT_REF/1000.0)/(4096.0*0.759));
@@ -117,7 +118,7 @@ void updatePWM(int newDuty){
 }
 
 void LoadFeedback(){
-	if(dischargeCurrent > 0 && cellV <= 3.3){					//under voltage protection
+	if(dischargeCurrent > 0 && cellV <= endOfDischarge){					//under voltage protection
 		dischargeCurrent = 0.0;
 		PWMDuty = 0;
 		updatePWM(PWMDuty);
