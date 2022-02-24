@@ -114,6 +114,9 @@ void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) 
 	}
 	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
 		uint8_t* floatConversionBytes = floatToBytes_union(floatRegisters[i-FLOAT_REG_OFFSET]);
+		for (int j = 0; j < FLOAT_REG_BYTE_SZ; j++) {
+			responsePacket[j] = floatConversionBytes[j];
+		}
 		responsePacket += FLOAT_REG_BYTE_SZ;
 		i++;
 	}
@@ -161,7 +164,7 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 			size += (REGISTER_AR_SIZE+INT_REG_OFFSET-start_reg)*INT_REG_BYTE_SZ;		//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+INT_REG_OFFSET;								//set the new start range to the first float register
 		}else{
-			size += (end_reg + 1 - start_reg)*INT_REG_BYTE_SZ;							//return the size including this data type's registers
+			size += (end_reg - start_reg)*INT_REG_BYTE_SZ;							//return the size including this data type's registers
 			return size;
 		}
 	}
@@ -171,7 +174,7 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 			size += (REGISTER_AR_SIZE+FLOAT_REG_OFFSET-start_reg)*FLOAT_REG_BYTE_SZ;	//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+FLOAT_REG_OFFSET;								//set the new start range to the first float register
 		}else{
-			size += (end_reg + 1 - start_reg)*FLOAT_REG_BYTE_SZ;						//return the size including this data type's registers
+			size += (end_reg - start_reg)*FLOAT_REG_BYTE_SZ;						//return the size including this data type's registers
 			return size;
 		}
 	}
@@ -181,13 +184,13 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 			size += (REGISTER_AR_SIZE+CHAR_REG_OFFSET-start_reg)*CHAR_REG_BYTE_SZ;		//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+CHAR_REG_OFFSET;								//set the new start range to the first float register
 		}else{
-			size += (end_reg + 1 - start_reg)*CHAR_REG_BYTE_SZ;							//return the size including this data type's registers
+			size += (end_reg - start_reg)*CHAR_REG_BYTE_SZ;							//return the size including this data type's registers
 			return size;
 		}
 	}
 	
 	if(start_reg < REGISTER_AR_SIZE+BOOL_REG_OFFSET){
-		size += (end_reg + 1 - start_reg)*BOOL_REG_BYTE_SZ;								//return the size including this data type's registers
+		size += (end_reg - start_reg)*BOOL_REG_BYTE_SZ;								//return the size including this data type's registers
 		return size;
 	}
 		
@@ -268,7 +271,7 @@ void modbus_update(void){
 	uint16_t responceCRC = ModRTU_CRC(responsePacket, responsePacketSize-CRC_SIZE);			//calculate crc
 	
 	for(int i=CRC_SIZE; i>0; i-=1){														//put crc in the response packet
-		responsePacket[responsePacketSize-i] = (responceCRC >> ((CRC_SIZE-i)*8)) & 0xFF;
+		responsePacket[responsePacketSize-i] = (responceCRC >> ((i - 1)*8)) & 0xFF;
 	}
 	// write out response packet
 	for (int i = 0; i < responsePacketSize; i++) {
@@ -368,7 +371,7 @@ bool packet_complete(){
 	
 	uint16_t expectedCRC = ModRTU_CRC(packetNoCRC, packetSize - CRC_SIZE);				//calculate expected crc
 	
-	if((expectedCRC & 0xFF) == packetCRC[0]  &&  ((expectedCRC >> 8) & 0xFF) == packetCRC[1]){				//crc comparison
+	if(((expectedCRC >> 8) & 0xFF) == packetCRC[0] && (expectedCRC & 0xFF) == packetCRC[1]){				//crc comparison
 		return true;																	//packet is complete and passes crc
 	}else{																				//on crc fail remove first two bytes from buffer These are the only two known incorrect bytes
 		packetSize = FC_IDX + 1;
