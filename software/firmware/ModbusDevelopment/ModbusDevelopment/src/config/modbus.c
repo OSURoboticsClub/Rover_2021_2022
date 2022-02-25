@@ -15,15 +15,25 @@
 Uart *RS485Port;
 uint8_t slaveID;
 
+Pio *globalEnPinPort;
+uint32_t globalEnPin;
+
+
 //uint16_t	recievedDataSize = 0;
 //uint16_t	transmitDataSize = 0;
 //uint8_t		rxBuffer[RX_BUFFER_SIZE];
-uint16_t	packetSize;
+uint16_t	packetSize;							
+uint16_t	transmitIndex;					//helper variables for transmitting
+bool		endTransmission;
 
 uint16_t	intRegisters[REGISTER_AR_SIZE];
 float		floatRegisters[REGISTER_AR_SIZE];
 char		charRegisters[REGISTER_AR_SIZE];
 bool		boolRegisters[REGISTER_AR_SIZE];
+
+
+uint8_t responsePacket[TX_BUFFER_SIZE];
+uint16_t responsePacketSize;
 
 struct ringBuffer{																	//ring buffer to serve as rx buffer. Helps solve lots of data shifting problems
 	uint16_t head; // Next free space in the buffer
@@ -228,7 +238,9 @@ void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint3
 	uart_enable_tx(RS485Port);
 	uart_enable_interrupt(RS485Port, UART_IER_RXRDY);				//Enable interrupt for incoming data
 	
-	pio_set_output(enPinPort,enPin,HIGH,DISABLE,DISABLE);		//init the enable pin
+	pio_set_output(enPinPort,enPin,LOW,DISABLE,DISABLE);		//init the enable pin
+	globalEnPinPort = enPinPort;
+	globalEnPin = enPin;
 }
 
 
@@ -243,8 +255,6 @@ void modbus_update(void){
 	uint16_t start_reg = packet[START_REG_H_IDX] << 8 | packet[START_REG_L_IDX];
 	uint16_t end_reg = packet[END_REG_H_IDX] << 8 | packet[END_REG_L_IDX];
 	// call read and write handlers based on function code
-	uint8_t responsePacket[TX_BUFFER_SIZE];
-	uint16_t responsePacketSize;
 	switch(packet[FC_IDX]) {
 		case FC_READ_MULT: ;													//semicolon resolves statement errors
 			uint16_t read_num_bytes = getReadResponseDataSize(start_reg, end_reg);
@@ -274,16 +284,31 @@ void modbus_update(void){
 		responsePacket[responsePacketSize-i] = (responceCRC >> ((i - 1)*8)) & 0xFF;
 	}
 	// write out response packet
-	for (int i = 0; i < responsePacketSize; i++) {
-		uart_write(RS485Port, responsePacket[i]);
-	}
+	pio_set(globalEnPinPort,globalEnPin);
+	transmitIndex = 0;
+	uart_enable_interrupt(RS485Port,UART_IMR_TXRDY);
 }
 
 //interrupt handler for incoming data
 void UART_Handler(void){
 	if(uart_is_rx_ready(RS485Port)){							//confirm there is data ready to be read
-		uart_read(RS485Port, &(rxBuffer.data[rxBuffer.head]));		//move the data into the next index of the rx buffer
-		rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1);		//iterate the head through the ring buffer
+		if(!endTransmission){
+			uart_read(RS485Port, &(rxBuffer.data[rxBuffer.head]));		//move the data into the next index of the rx buffer
+			rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1);		//iterate the head through the ring buffer
+		}else{
+			uint8_t dummy;											//if It is the buggy byte at the end of a transmission, clear it from the read register.
+			uart_read(RS485Port, &dummy);
+			endTransmission = false;
+		}
+	}else if(uart_is_tx_ready(RS485Port)){
+		if(transmitIndex < responsePacketSize){
+			uart_write(RS485Port, responsePacket[transmitIndex]);
+			transmitIndex++;
+		}else{
+			pio_clear(globalEnPinPort,globalEnPin);
+			uart_disable_interrupt(RS485Port,UART_IMR_TXRDY);
+			endTransmission = true;											//This is to resolve a strange bug where when I put the tranciever into recieve mode, we recieve a 0x00, could be a hardware issue.
+		}
 	}
 }
 
