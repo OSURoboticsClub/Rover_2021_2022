@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 filePath = input("Please enter path to raw data:\n")
 
 if(filePath == ""):
-    filePath = "logs/SonyVTC6_3.0.csv"
+    filePath = "logs/LGHG2_10.0.csv"
 
 f = open(filePath, 'r')
 
@@ -17,6 +17,7 @@ tempFetAr = []
 idx = 0
 for line in f:
     line = line[:-1]
+    line = line.replace(chr(0x00),"")
     lineData = line.split(",")
     timeAr.append(float(lineData[0]))
     voltageAr.append(float(lineData[1]))
@@ -37,7 +38,7 @@ print("measured Wh: " + str(measuredWh))
 
 plt.subplots(2,1)
 plt.subplot(2,1,1)
-plt.title(filePath[5:-8] + " " + filePath[-7:-4] + "A")
+plt.title(filePath[5:-8] + " " + filePath[-8:-4] + "A")
 plt.plot(timeAr,voltageAr)
 plt.subplot(2,1,2)
 plt.plot(timeAr,currentAr)
@@ -48,8 +49,8 @@ loadBeginIDX = 0
 beginset = False
 loadEndIDX = 0
 i = 50
-while(currentAr[i] <= float(filePath[-7:-4])):
-    if(currentAr[i] >= .7 and not beginset):
+while(currentAr[i] <= float(filePath[-8:-4])):
+    if(currentAr[i] >= 1 and not beginset):
         loadBeginIDX = i-50
         beginset = True
     i += 1
@@ -67,7 +68,7 @@ print("estimated " + filePath[-7:-4] + "A sag voltage: " + str(sagVoltage[0] - s
 
 plt.subplots(2,1)
 plt.subplot(2,1,1)
-plt.title(filePath[5:-8] + " " + filePath[-7:-4] + "A sag voltage")
+plt.title(filePath[5:-8] + " " + filePath[-8:-4] + "A sag voltage")
 plt.plot(sagTime,sagVoltage)
 plt.subplot(2,1,2)
 plt.plot(sagTime,sagCurrent)

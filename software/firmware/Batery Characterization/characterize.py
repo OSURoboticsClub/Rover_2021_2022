@@ -25,7 +25,7 @@ while(1):
     try:
         line = bcb.readline()
         line = line.decode("utf-8")
-        line = line[2:]
+        line = line[1:]
         if(line == ""):
             if(fileName != ""):
                 f.close()

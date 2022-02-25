@@ -46,7 +46,7 @@ void calculateCellVoltage(int rawADCData){
 
 void calculateCellCurrent(int rawADCData){
 	float voltage = (float)(rawADCData)*((float)(VOLT_REF)/1000.0)/4096.0;
-	current = voltage/0.11;
+	current = voltage/0.0733333;
 	//current = current - 0.6;
 }
 
@@ -89,13 +89,13 @@ void initPWM(){
 	pwm_channel_disable(PWM,PWM_CHANNEL_0);
 	pio_set_peripheral(LOAD_PORT,LOAD_PERIPH,LOAD_MASK);
 	pwm_clock_t clock_setting = {
-		.ul_clka = 1000000,
+		.ul_clka = 60000000,
 		.ul_clkb = 0,
 		.ul_mck = 120000000
 	};
 	pwm_init(PWM,&clock_setting);
 	Load.ul_prescaler = PWM_CMR_CPRE_CLKA;
-	Load.ul_period = 1000;
+	Load.ul_period = 3000;
 	Load.ul_duty = PWMDuty;
 	Load.channel = PWM_CHANNEL_0;
 	Load.polarity = PWM_HIGH;
@@ -125,7 +125,7 @@ void LoadFeedback(){
 		protectionActive = true;
 	}
 	if(updateLoop){
-		if(dischargeCurrent - current > 0.1 && current < 25 && PWMDuty < 1000){
+		if(dischargeCurrent - current > 0.1 && current < 25 && PWMDuty < 3000){
 			updatePWM(++PWMDuty);
 		}else if(current - dischargeCurrent > 0.1 && current > 0 && PWMDuty > 0){
 			PWMDuty -= 1;
