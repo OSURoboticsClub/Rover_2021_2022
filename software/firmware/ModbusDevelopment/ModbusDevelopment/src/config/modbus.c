@@ -241,6 +241,12 @@ void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint3
 	pio_set_output(enPinPort,enPin,LOW,DISABLE,DISABLE);		//init the enable pin
 	globalEnPinPort = enPinPort;
 	globalEnPin = enPin;
+	
+	/*																//CRC engine cannot be used in the current configuration because the modbus RTU polynomial (0xA001) does not match any of the supported polynomials
+	uint8_t CRCMode = CRCCU_MR_ENABLE | CRCCU_MR_PTYPE_CCITT16;
+	pmc_enable_periph_clk(ID_CRCCU);							//init CRC Computation Unit
+	crccu_configure_mode(CRCCU, CRCMode)
+	*/
 }
 
 
@@ -280,11 +286,11 @@ void modbus_update(void){
 	// add the CRC to the response packet here
 	uint16_t responceCRC = ModRTU_CRC(responsePacket, responsePacketSize-CRC_SIZE);			//calculate crc
 	
-	for(int i=CRC_SIZE; i>0; i-=1){														//put crc in the response packet
-		responsePacket[responsePacketSize-i] = (responceCRC >> ((i - 1)*8)) & 0xFF;
-	}
+	responsePacket[responsePacketSize-2] = responceCRC & 0xff;								//add CRC
+	responsePacket[responsePacketSize-1] = (responceCRC>>8) & 0xff;
+	
 	// write out response packet
-	pio_set(globalEnPinPort,globalEnPin);
+	pio_set(globalEnPinPort,globalEnPin);				//transceiver transmit enable
 	transmitIndex = 0;
 	uart_enable_interrupt(RS485Port,UART_IMR_TXRDY);
 }
@@ -292,22 +298,15 @@ void modbus_update(void){
 //interrupt handler for incoming data
 void UART_Handler(void){
 	if(uart_is_rx_ready(RS485Port)){							//confirm there is data ready to be read
-		if(!endTransmission){
-			uart_read(RS485Port, &(rxBuffer.data[rxBuffer.head]));		//move the data into the next index of the rx buffer
-			rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1);		//iterate the head through the ring buffer
-		}else{
-			uint8_t dummy;											//if It is the buggy byte at the end of a transmission, clear it from the read register.
-			uart_read(RS485Port, &dummy);
-			endTransmission = false;
-		}
+		uart_read(RS485Port, &(rxBuffer.data[rxBuffer.head]));		//move the data into the next index of the rx buffer
+		rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1);		//iterate the head through the ring buffer
 	}else if(uart_is_tx_ready(RS485Port)){
 		if(transmitIndex < responsePacketSize){
 			uart_write(RS485Port, responsePacket[transmitIndex]);
 			transmitIndex++;
-		}else{
+		}else if(uart_is_tx_empty(RS485Port)){
 			pio_clear(globalEnPinPort,globalEnPin);
 			uart_disable_interrupt(RS485Port,UART_IMR_TXRDY);
-			endTransmission = true;											//This is to resolve a strange bug where when I put the tranciever into recieve mode, we recieve a 0x00, could be a hardware issue.
 		}
 	}
 }
@@ -346,7 +345,19 @@ bool packet_complete(){
 	if(func_code != FC_WRITE_MULT && func_code != FC_READ_MULT){					//if the function code isn't write or read, we know somethings fucked up
 		//need to write a graceful handler here
 		//needs to be a while loop that iterates through the buffer looking for a valid function code, then pops out all the garbage that came before 
-		 return false;																
+		uint8_t checkByte = func_code;
+		uint16_t FCLoc = PKT_WRAP_ARND(rxBuffer.tail + FC_IDX);
+		while(checkByte != FC_READ_MULT || checkByte != FC_WRITE_MULT || FCLoc == rxBuffer.head){
+			FCLoc = PKT_WRAP_ARND(FCLoc + 1);
+			checkByte = rxBuffer.data[FCLoc];
+		}
+		if(PKT_WRAP_ARND(FCLoc-1) >= rxBuffer.tail){
+			packetSize = PKT_WRAP_ARND(FCLoc-1) - rxBuffer.tail;
+		}else{
+			packetSize = (RX_BUFFER_SIZE - rxBuffer.tail) + PKT_WRAP_ARND(FCLoc-1);
+		}
+		pop_packet();
+		return false;																
 	}
 	uint8_t slave_id = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + SLAVE_ID_IDX)];
 	
@@ -396,10 +407,10 @@ bool packet_complete(){
 	
 	uint16_t expectedCRC = ModRTU_CRC(packetNoCRC, packetSize - CRC_SIZE);				//calculate expected crc
 	
-	if(((expectedCRC >> 8) & 0xFF) == packetCRC[0] && (expectedCRC & 0xFF) == packetCRC[1]){				//crc comparison
+	if(((expectedCRC >> 8) & 0xFF) == packetCRC[1] && (expectedCRC & 0xFF) == packetCRC[0]){				//crc comparison
 		return true;																	//packet is complete and passes crc
-	}else{																				//on crc fail remove first two bytes from buffer These are the only two known incorrect bytes
-		packetSize = FC_IDX + 1;
+	}else{																				//on crc fail remove first byte from buffer This is the only known incorrect byte
+		packetSize = 1;
 		pop_packet();
 		return false;
 	}
