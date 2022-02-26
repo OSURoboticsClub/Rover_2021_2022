@@ -1,5 +1,6 @@
 import serial
 import time
+import random
 
 """
 in c
@@ -39,7 +40,7 @@ def modRTU_CRC(packet,len):
     crcar = crc.to_bytes(2,'big')
     return crcar
 
-node = serial.Serial('COM9',500000, timeout=1)
+node = serial.Serial('COM9',500000, timeout=0.01)
 
 """
 write command (from master)
@@ -56,20 +57,32 @@ read response (from slave)
 """
 
 test_packets = [
-    [0x01, 0x10, 0x00, 0x00, 0x00, 0x01, 0x02, 0x42, 0x42, 0x16, 0xc1],#, #write 4112 to int reg
+    [0x01, 0x10, 0x00, 0x00, 0x00, 0x01, 0x02, 0x42, 0x42, 0x16, 0xc1],#, #write 16962 to int reg
     [0x01, 0x10, 0x01, 0x00, 0x01, 0x01, 0x04, 0x40, 0x48, 0xf5, 0xc3, 0x7c, 0x1b], #write 3.14 to float reg
     [0x01, 0x10, 0x02, 0x00, 0x02, 0x01, 0x01, 0x42, 0x40, 0x3d], #write 'B' to char reg
-    [0x01, 0x10, 0x03, 0x00, 0x03, 0x01, 0x01, 0x01, 0x01, 0xe1] #write True to bool reg
-]
+    [0x01, 0x10, 0x03, 0x00, 0x03, 0x01, 0x01, 0x01, 0x01, 0xe1], #write True to bool reg
+    [0x69, 0x02],        #little bit of garbage data
+    [0x01, 0x03, 0x01, 0x00, 0x01, 0x00, 0x45, 0xa6],               #read first float register (should be pi)
+    [0x00, 0x01, 0x02, 0x03, 0x90, 0x91, 0x92, 0x93, 0x94, 0x69],   #more garbage data
+    [0x02, 0x10, 0x00, 0x00, 0x00, 0x01, 0x02, 0x42, 0x42, 0x02, 0x31],     #write to slave ID 2 16962 int reg 1
+    [0x00, 0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x18],                        #responce from slave ID 2
+    [0x01, 0x03, 0x00, 0x00, 0x00, 0x30, 0x45, 0xde]]                        #read from registers that have not been setup
 
+hugePacket = []
+for i in range(3000):
+    hugePacket.append(random.randrange(0,255,1))
+test_packets[4] = hugePacket                         #adds 3000 bytes of noise to triger overflows, wrap arrounds, and worst case noise
 
 print("Running profile")
 startTime = time.perf_counter()
 
+
 for packet in test_packets:
+    response_bytes = []
     print(bytes(packet))
     node.write(bytes(packet))
-    response_bytes = node.readline()
-    response_bytes_readable = [hex(b) for b in response_bytes]
-
-    print(response_bytes_readable)
+    time.sleep(0.05)
+    for i in range(node.in_waiting):
+        response_bytes.append(node.read())
+    print(response_bytes)
+    print("")

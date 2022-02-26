@@ -5893,7 +5893,7 @@ LOAD s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-
                 0x00003000                __stack_size__ = DEFINED (__stack_size__)?__stack_size__:0x3000
                 0x2000fffc                __ram_end__ = ((ORIGIN (ram) + LENGTH (ram)) - 0x4)
 
-.text           0x00400000     0x328c
+.text           0x00400000     0x32dc
                 0x00400000                . = ALIGN (0x4)
                 0x00400000                _sfixed = .
  *(.vectors .vectors.*)
@@ -6177,140 +6177,140 @@ LOAD s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-
                 0x00402958       0x74 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o
                 0x00402958                system_init_flash
  .text.readHandler
-                0x004029cc      0x100 src/config/modbus.o
+                0x004029cc       0xf4 src/config/modbus.o
                 0x004029cc                readHandler
  .text.writeHandler
-                0x00402acc      0x100 src/config/modbus.o
-                0x00402acc                writeHandler
+                0x00402ac0      0x100 src/config/modbus.o
+                0x00402ac0                writeHandler
  .text.getReadResponseDataSize
-                0x00402bcc       0x7c src/config/modbus.o
-                0x00402bcc                getReadResponseDataSize
+                0x00402bc0       0x84 src/config/modbus.o
+                0x00402bc0                getReadResponseDataSize
  .text.modbus_init
-                0x00402c48      0x10c src/config/modbus.o
-                0x00402c48                modbus_init
+                0x00402c44      0x10c src/config/modbus.o
+                0x00402c44                modbus_init
  .text.UART_Handler
-                0x00402d54       0xb0 src/config/modbus.o
-                0x00402d54                UART_Handler
+                0x00402d50       0xb0 src/config/modbus.o
+                0x00402d50                UART_Handler
  .text.UART0_Handler
-                0x00402e04        0xc src/config/modbus.o
-                0x00402e04                UART0_Handler
+                0x00402e00        0xc src/config/modbus.o
+                0x00402e00                UART0_Handler
  .text.UART1_Handler
-                0x00402e10        0xc src/config/modbus.o
-                0x00402e10                UART1_Handler
+                0x00402e0c        0xc src/config/modbus.o
+                0x00402e0c                UART1_Handler
  .text.pop_packet
-                0x00402e1c       0x44 src/config/modbus.o
-                0x00402e1c                pop_packet
+                0x00402e18       0x44 src/config/modbus.o
+                0x00402e18                pop_packet
  .text.buffer_get_data_sz
-                0x00402e60       0x18 src/config/modbus.o
-                0x00402e60                buffer_get_data_sz
+                0x00402e5c       0x18 src/config/modbus.o
+                0x00402e5c                buffer_get_data_sz
  .text.ModRTU_CRC
-                0x00402e78       0x3c src/config/modbus.o
-                0x00402e78                ModRTU_CRC
+                0x00402e74       0x3c src/config/modbus.o
+                0x00402e74                ModRTU_CRC
  .text.packet_complete
-                0x00402eb4      0x118 src/config/modbus.o
-                0x00402eb4                packet_complete
+                0x00402eb0      0x16c src/config/modbus.o
+                0x00402eb0                packet_complete
  .text.modbus_update
-                0x00402fcc      0x10c src/config/modbus.o
-                0x00402fcc                modbus_update
- .text.main     0x004030d8       0x1c src/main.o
-                0x004030d8                main
+                0x0040301c      0x10c src/config/modbus.o
+                0x0040301c                modbus_update
+ .text.main     0x00403128       0x1c src/main.o
+                0x00403128                main
  .text.__libc_init_array
-                0x004030f4       0x50 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-init.o)
-                0x004030f4                __libc_init_array
+                0x00403144       0x50 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-init.o)
+                0x00403144                __libc_init_array
  .text.startup.register_fini
-                0x00403144       0x14 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-__call_atexit.o)
- .text.atexit   0x00403158        0xc s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-atexit.o)
-                0x00403158                atexit
+                0x00403194       0x14 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-__call_atexit.o)
+ .text.atexit   0x004031a8        0xc s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-atexit.o)
+                0x004031a8                atexit
  .text.__libc_fini_array
-                0x00403164       0x34 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-fini.o)
-                0x00403164                __libc_fini_array
+                0x004031b4       0x34 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-fini.o)
+                0x004031b4                __libc_fini_array
  .text.__retarget_lock_acquire_recursive
-                0x00403198        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-lock.o)
-                0x00403198                __retarget_lock_acquire_recursive
+                0x004031e8        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-lock.o)
+                0x004031e8                __retarget_lock_acquire_recursive
  .text.__retarget_lock_release_recursive
-                0x0040319c        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-lock.o)
-                0x0040319c                __retarget_lock_release_recursive
+                0x004031ec        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-lock.o)
+                0x004031ec                __retarget_lock_release_recursive
  .text.__register_exitproc
-                0x004031a0       0xc4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-__atexit.o)
-                0x004031a0                __register_exitproc
+                0x004031f0       0xc4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-__atexit.o)
+                0x004031f0                __register_exitproc
  *(.glue_7t)
- .glue_7t       0x00403264        0x0 linker stubs
+ .glue_7t       0x004032b4        0x0 linker stubs
  *(.glue_7)
- .glue_7        0x00403264        0x0 linker stubs
+ .glue_7        0x004032b4        0x0 linker stubs
  *(.rodata .rodata* .gnu.linkonce.r.*)
  .rodata._global_impure_ptr
-                0x00403264        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-impure.o)
-                0x00403264                _global_impure_ptr
+                0x004032b4        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-impure.o)
+                0x004032b4                _global_impure_ptr
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x00403268                . = ALIGN (0x4)
+                0x004032b8                . = ALIGN (0x4)
  *(.init)
- .init          0x00403268        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crti.o
-                0x00403268                _init
- .init          0x0040326c        0x8 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtn.o
-                0x00403274                . = ALIGN (0x4)
-                0x00403274                __preinit_array_start = .
+ .init          0x004032b8        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crti.o
+                0x004032b8                _init
+ .init          0x004032bc        0x8 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtn.o
+                0x004032c4                . = ALIGN (0x4)
+                0x004032c4                __preinit_array_start = .
  *(.preinit_array)
-                0x00403274                __preinit_array_end = .
-                0x00403274                . = ALIGN (0x4)
-                0x00403274                __init_array_start = .
+                0x004032c4                __preinit_array_end = .
+                0x004032c4                . = ALIGN (0x4)
+                0x004032c4                __init_array_start = .
  *(SORT(.init_array.*))
  .init_array.00000
-                0x00403274        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-__call_atexit.o)
+                0x004032c4        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m\libc.a(lib_a-__call_atexit.o)
  *(.init_array)
- .init_array    0x00403278        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
-                0x0040327c                __init_array_end = .
-                0x0040327c                . = ALIGN (0x4)
+ .init_array    0x004032c8        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
+                0x004032cc                __init_array_end = .
+                0x004032cc                . = ALIGN (0x4)
  *crtbegin.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o) .ctors)
  *(SORT(.ctors.*))
  *crtend.o(.ctors)
-                0x0040327c                . = ALIGN (0x4)
+                0x004032cc                . = ALIGN (0x4)
  *(.fini)
- .fini          0x0040327c        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crti.o
-                0x0040327c                _fini
- .fini          0x00403280        0x8 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtn.o
-                0x00403288                . = ALIGN (0x4)
-                0x00403288                __fini_array_start = .
+ .fini          0x004032cc        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crti.o
+                0x004032cc                _fini
+ .fini          0x004032d0        0x8 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtn.o
+                0x004032d8                . = ALIGN (0x4)
+                0x004032d8                __fini_array_start = .
  *(.fini_array)
- .fini_array    0x00403288        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
+ .fini_array    0x004032d8        0x4 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
  *(SORT(.fini_array.*))
-                0x0040328c                __fini_array_end = .
+                0x004032dc                __fini_array_end = .
  *crtbegin.o(.dtors)
  *(EXCLUDE_FILE(*crtend.o) .dtors)
  *(SORT(.dtors.*))
  *crtend.o(.dtors)
-                0x0040328c                . = ALIGN (0x4)
-                0x0040328c                _efixed = .
+                0x004032dc                . = ALIGN (0x4)
+                0x004032dc                _efixed = .
                 [!provide]                PROVIDE (__exidx_start, .)
 
-.vfp11_veneer   0x0040328c        0x0
- .vfp11_veneer  0x0040328c        0x0 linker stubs
+.vfp11_veneer   0x004032dc        0x0
+ .vfp11_veneer  0x004032dc        0x0 linker stubs
 
-.v4_bx          0x0040328c        0x0
- .v4_bx         0x0040328c        0x0 linker stubs
+.v4_bx          0x004032dc        0x0
+ .v4_bx         0x004032dc        0x0 linker stubs
 
-.iplt           0x0040328c        0x0
- .iplt          0x0040328c        0x0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
+.iplt           0x004032dc        0x0
+ .iplt          0x004032dc        0x0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
 
-.eh_frame       0x0040328c        0x0
- .eh_frame      0x0040328c        0x0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
+.eh_frame       0x004032dc        0x0
+ .eh_frame      0x004032dc        0x0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
 
-.rel.dyn        0x0040328c        0x0
- .rel.iplt      0x0040328c        0x0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
+.rel.dyn        0x004032dc        0x0
+ .rel.iplt      0x004032dc        0x0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
 
-.jcr            0x0040328c        0x0
- .jcr           0x0040328c        0x0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
+.jcr            0x004032dc        0x0
+ .jcr           0x004032dc        0x0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
 
-.igot.plt       0x0040328c        0x0
- .igot.plt      0x0040328c        0x0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
+.igot.plt       0x004032dc        0x0
+ .igot.plt      0x004032dc        0x0 s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/crtbegin.o
 
 .ARM.exidx
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
                 [!provide]                PROVIDE (__exidx_end, .)
-                0x0040328c                . = ALIGN (0x4)
-                0x0040328c                _etext = .
+                0x004032dc                . = ALIGN (0x4)
+                0x004032dc                _etext = .
 
-.relocate       0x20000000      0x4d4 load address 0x0040328c
+.relocate       0x20000000      0x4d4 load address 0x004032dc
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _srelocate = .
  *(.ramfunc .ramfunc.*)
@@ -6355,7 +6355,7 @@ LOAD s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-
                 0x200004d4                . = ALIGN (0x4)
                 0x200004d4                _erelocate = .
 
-.bss            0x200004d4     0x1698 load address 0x00403760
+.bss            0x200004d4     0x1698 load address 0x004037b0
                 0x200004d4                . = ALIGN (0x4)
                 0x200004d4                _sbss = .
                 0x200004d4                _szero = .
@@ -6486,7 +6486,7 @@ LOAD s:/microchip studio/7.0/toolchain/arm/arm-gnu-toolchain/bin/../lib/gcc/arm-
                 0x20001b6c                _ebss = .
                 0x20001b6c                _ezero = .
 
-.stack          0x20001b6c     0x3004 load address 0x00404df8
+.stack          0x20001b6c     0x3004 load address 0x00404e48
                 0x20001b70                . = ALIGN (0x8)
  *fill*         0x20001b6c        0x4 
                 0x20001b70                _sstack = .
@@ -6575,7 +6575,7 @@ OUTPUT(ModbusDevelopment.elf elf32-littlearm)
  .comment       0x00000059       0x5a src/config/modbus.o
  .comment       0x00000059       0x5a src/main.o
 
-.debug_info     0x00000000    0x17f98
+.debug_info     0x00000000    0x17fad
  .debug_info    0x00000000      0xa8e src/ASF/common/services/sleepmgr/sam/sleepmgr.o
  .debug_info    0x00000a8e     0x28fc src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .debug_info    0x0000338a     0x124a src/ASF/common/services/usb/class/cdc/device/udi_cdc_desc.o
@@ -6591,10 +6591,10 @@ OUTPUT(ModbusDevelopment.elf elf32-littlearm)
  .debug_info    0x0001373f      0xaff src/ASF/common/utils/interrupt/interrupt_sam_nvic.o
  .debug_info    0x0001423e      0x6d2 src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.o
  .debug_info    0x00014910      0x458 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o
- .debug_info    0x00014d68     0x2325 src/config/modbus.o
- .debug_info    0x0001708d      0xf0b src/main.o
+ .debug_info    0x00014d68     0x233a src/config/modbus.o
+ .debug_info    0x000170a2      0xf0b src/main.o
 
-.debug_abbrev   0x00000000     0x3281
+.debug_abbrev   0x00000000     0x327a
  .debug_abbrev  0x00000000      0x1b2 src/ASF/common/services/sleepmgr/sam/sleepmgr.o
  .debug_abbrev  0x000001b2      0x484 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .debug_abbrev  0x00000636      0x1c7 src/ASF/common/services/usb/class/cdc/device/udi_cdc_desc.o
@@ -6610,8 +6610,8 @@ OUTPUT(ModbusDevelopment.elf elf32-littlearm)
  .debug_abbrev  0x0000277c      0x221 src/ASF/common/utils/interrupt/interrupt_sam_nvic.o
  .debug_abbrev  0x0000299d      0x15e src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.o
  .debug_abbrev  0x00002afb      0x102 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o
- .debug_abbrev  0x00002bfd      0x49f src/config/modbus.o
- .debug_abbrev  0x0000309c      0x1e5 src/main.o
+ .debug_abbrev  0x00002bfd      0x498 src/config/modbus.o
+ .debug_abbrev  0x00003095      0x1e5 src/main.o
 
 .debug_aranges  0x00000000      0x9b0
  .debug_aranges
@@ -6796,7 +6796,7 @@ OUTPUT(ModbusDevelopment.elf elf32-littlearm)
  .debug_macro   0x00012f71      0x6a4 src/config/modbus.o
  .debug_macro   0x00013615      0x67e src/main.o
 
-.debug_line     0x00000000     0xd66e
+.debug_line     0x00000000     0xd689
  .debug_line    0x00000000      0x9fc src/ASF/common/services/sleepmgr/sam/sleepmgr.o
  .debug_line    0x000009fc     0x116e src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .debug_line    0x00001b6a      0xa7e src/ASF/common/services/usb/class/cdc/device/udi_cdc_desc.o
@@ -6812,8 +6812,8 @@ OUTPUT(ModbusDevelopment.elf elf32-littlearm)
  .debug_line    0x00009fca      0x9a9 src/ASF/common/utils/interrupt/interrupt_sam_nvic.o
  .debug_line    0x0000a973      0x767 src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.o
  .debug_line    0x0000b0da      0x798 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o
- .debug_line    0x0000b872     0x1029 src/config/modbus.o
- .debug_line    0x0000c89b      0xdd3 src/main.o
+ .debug_line    0x0000b872     0x1044 src/config/modbus.o
+ .debug_line    0x0000c8b6      0xdd3 src/main.o
 
 .debug_str      0x00000000    0x51cce
  .debug_str     0x00000000    0x45628 src/ASF/common/services/sleepmgr/sam/sleepmgr.o
@@ -6851,7 +6851,7 @@ OUTPUT(ModbusDevelopment.elf elf32-littlearm)
  .debug_str     0x00051cc0        0xe src/main.o
                               0x4b148 (size before relaxing)
 
-.debug_loc      0x00000000     0x66f8
+.debug_loc      0x00000000     0x6854
  .debug_loc     0x00000000     0x11ee src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .debug_loc     0x000011ee      0x49b src/ASF/common/services/usb/udc/udc.o
  .debug_loc     0x00001689      0x531 src/ASF/sam/drivers/pio/pio_handler.o
@@ -6863,10 +6863,10 @@ OUTPUT(ModbusDevelopment.elf elf32-littlearm)
  .debug_loc     0x000054c5      0x39c src/ASF/sam/drivers/pmc/sleep.o
  .debug_loc     0x00005861       0x38 src/ASF/common/boards/user_board/init.o
  .debug_loc     0x00005899       0xa1 src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.o
- .debug_loc     0x0000593a      0xd9e src/config/modbus.o
- .debug_loc     0x000066d8       0x20 src/main.o
+ .debug_loc     0x0000593a      0xefa src/config/modbus.o
+ .debug_loc     0x00006834       0x20 src/main.o
 
-.debug_ranges   0x00000000      0xa70
+.debug_ranges   0x00000000      0xa88
  .debug_ranges  0x00000000      0x1b0 src/ASF/common/services/usb/class/cdc/device/udi_cdc.o
  .debug_ranges  0x000001b0       0xa8 src/ASF/common/services/usb/udc/udc.o
  .debug_ranges  0x00000258       0x58 src/ASF/sam/drivers/pio/pio_handler.o
@@ -6880,8 +6880,8 @@ OUTPUT(ModbusDevelopment.elf elf32-littlearm)
  .debug_ranges  0x00000918       0x18 src/ASF/common/utils/interrupt/interrupt_sam_nvic.o
  .debug_ranges  0x00000930       0x18 src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.o
  .debug_ranges  0x00000948       0x20 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o
- .debug_ranges  0x00000968       0xf8 src/config/modbus.o
- .debug_ranges  0x00000a60       0x10 src/main.o
+ .debug_ranges  0x00000968      0x110 src/config/modbus.o
+ .debug_ranges  0x00000a78       0x10 src/main.o
 
 .debug_frame    0x00000000     0x1880
  .debug_frame   0x00000000      0x48c src/ASF/common/services/usb/class/cdc/device/udi_cdc.o

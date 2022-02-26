@@ -115,14 +115,14 @@ static bool convertToBool(const uint8_t data[1]){
 
 void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) {
 	int i = start_reg;
-	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i < end_reg) {
+	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i <= end_reg) {
 		uint16_t data = intRegisters[i-INT_REG_OFFSET];
 		responsePacket[0] = (data >> 8) & 0xFF;
 		responsePacket[1] = data & 0xFF;
 		responsePacket += INT_REG_BYTE_SZ;
 		i++;
 	}
-	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
+	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i <= end_reg) {
 		uint8_t* floatConversionBytes = floatToBytes_union(floatRegisters[i-FLOAT_REG_OFFSET]);
 		for (int j = 0; j < FLOAT_REG_BYTE_SZ; j++) {
 			responsePacket[j] = floatConversionBytes[j];
@@ -130,12 +130,12 @@ void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) 
 		responsePacket += FLOAT_REG_BYTE_SZ;
 		i++;
 	}
-	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i < end_reg) {
+	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i <= end_reg) {
 		responsePacket[0] = charRegisters[i-CHAR_REG_OFFSET];
 		responsePacket += CHAR_REG_BYTE_SZ;
 		i++;
 	}
-	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i < end_reg) {
+	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i <= end_reg) {
 		responsePacket[0] = boolRegisters[i-BOOL_REG_OFFSET];
 		responsePacket += BOOL_REG_BYTE_SZ;
 		i++;
@@ -174,7 +174,7 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 			size += (REGISTER_AR_SIZE+INT_REG_OFFSET-start_reg)*INT_REG_BYTE_SZ;		//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+INT_REG_OFFSET;								//set the new start range to the first float register
 		}else{
-			size += (end_reg - start_reg)*INT_REG_BYTE_SZ;							//return the size including this data type's registers
+			size += ((end_reg+1) - start_reg)*INT_REG_BYTE_SZ;							//return the size including this data type's registers
 			return size;
 		}
 	}
@@ -184,7 +184,7 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 			size += (REGISTER_AR_SIZE+FLOAT_REG_OFFSET-start_reg)*FLOAT_REG_BYTE_SZ;	//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+FLOAT_REG_OFFSET;								//set the new start range to the first float register
 		}else{
-			size += (end_reg - start_reg)*FLOAT_REG_BYTE_SZ;						//return the size including this data type's registers
+			size += ((end_reg+1) - start_reg)*FLOAT_REG_BYTE_SZ;						//return the size including this data type's registers
 			return size;
 		}
 	}
@@ -194,13 +194,13 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 			size += (REGISTER_AR_SIZE+CHAR_REG_OFFSET-start_reg)*CHAR_REG_BYTE_SZ;		//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+CHAR_REG_OFFSET;								//set the new start range to the first float register
 		}else{
-			size += (end_reg - start_reg)*CHAR_REG_BYTE_SZ;							//return the size including this data type's registers
+			size += ((end_reg+1) - start_reg)*CHAR_REG_BYTE_SZ;							//return the size including this data type's registers
 			return size;
 		}
 	}
 	
 	if(start_reg < REGISTER_AR_SIZE+BOOL_REG_OFFSET){
-		size += (end_reg - start_reg)*BOOL_REG_BYTE_SZ;								//return the size including this data type's registers
+		size += ((end_reg+1) - start_reg)*BOOL_REG_BYTE_SZ;								//return the size including this data type's registers
 		return size;
 	}
 		
@@ -342,12 +342,13 @@ bool packet_complete(){
 	packetSize = 0;																	// Reset this in case packet is not complete
 	
 	uint8_t func_code = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + FC_IDX)];
-	if(func_code != FC_WRITE_MULT && func_code != FC_READ_MULT){					//if the function code isn't write or read, we know somethings fucked up
+	
+	if((func_code != FC_WRITE_MULT) && (func_code != FC_READ_MULT)){				//if the function code isn't write or read, we know somethings fucked up
 		//need to write a graceful handler here
 		//needs to be a while loop that iterates through the buffer looking for a valid function code, then pops out all the garbage that came before 
 		uint8_t checkByte = func_code;
 		uint16_t FCLoc = PKT_WRAP_ARND(rxBuffer.tail + FC_IDX);
-		while(checkByte != FC_READ_MULT || checkByte != FC_WRITE_MULT || FCLoc == rxBuffer.head){
+		while(checkByte != FC_READ_MULT && checkByte != FC_WRITE_MULT && FCLoc != rxBuffer.head){
 			FCLoc = PKT_WRAP_ARND(FCLoc + 1);
 			checkByte = rxBuffer.data[FCLoc];
 		}
