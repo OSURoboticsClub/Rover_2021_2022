@@ -46,5 +46,9 @@ int main (void)
 	while(1){
 		modbus_update();
 		//udi_cdc_putc(charRegisters[roverState]);
+		if(boolRegisters[0])
+			pio_set(PIOA, PIO_PA3);
+		else
+			pio_clear(PIOA,PIO_PA3);
 	}
 }

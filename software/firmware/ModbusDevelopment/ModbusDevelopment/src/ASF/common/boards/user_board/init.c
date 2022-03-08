@@ -28,4 +28,5 @@ void board_init(void)
 	udc_start();
 	modbus_init(UART1,500000,PIOA,PIO_PA17,SLAVEID);
 	
+	pio_set_output(PIOA,PIO_PA3,LOW,DISABLE,DISABLE);
 }
