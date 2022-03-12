@@ -91,8 +91,6 @@ void modbus_update(void);   //This function does all of the heavy lifting for mo
 
 #define MASTER_ADRESS 0X00
 
-#define TIMEOUT 1000000
-
 
 //#define MODBUS_DEBUG				//uncomment this to enable debugging over USB_CDC this depends on USB_CDC being initialized elsewhere
 

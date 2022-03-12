@@ -11,7 +11,6 @@
 #include <asf.h>
 #include <modbus.h>
 #include <string.h> // For memcpy
-//#include <time.h>	// for clock
 
 Uart *RS485Port;
 uint8_t slaveID;
@@ -23,7 +22,6 @@ uint32_t globalEnPin;
 //uint16_t	recievedDataSize = 0;
 //uint16_t	transmitDataSize = 0;
 //uint8_t		rxBuffer[RX_BUFFER_SIZE];
-//clock_t		cachedTime = 0;
 uint16_t	packetSize;							
 uint16_t	transmitIndex;					//helper variables for transmitting
 bool		endTransmission;
@@ -113,15 +111,6 @@ static char convertToChar(const uint8_t data[1]){
 static bool convertToBool(const uint8_t data[1]){
     return data[0];
 }
-
-// function for packet timeout
-//bool packetTimeout() {
-//	if (clock() - cachedTime >= TIMEOUT) {
-//		cachedTime = clock();
-//		return true;
-//	}
-//	return false;
-//}
 
 // modbus functions
 void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) {
@@ -312,7 +301,6 @@ void UART_Handler(void){
 	if(uart_is_rx_ready(RS485Port)){							//confirm there is data ready to be read
 		uart_read(RS485Port, &(rxBuffer.data[rxBuffer.head]));		//move the data into the next index of the rx buffer
 		rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1);		//iterate the head through the ring buffer
-		//cachedTime = clock();
 	}else if(uart_is_tx_ready(RS485Port)){
 		if(transmitIndex < responsePacketSize){
 			uart_write(RS485Port, responsePacket[transmitIndex]);
