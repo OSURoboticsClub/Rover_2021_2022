@@ -126,14 +126,14 @@ static bool convertToBool(const uint8_t data[1]){
 // modbus functions
 void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) {
 	int i = start_reg;
-	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i <= end_reg) {
+	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i < end_reg) {
 		uint16_t data = intRegisters[i-INT_REG_OFFSET];
 		responsePacket[0] = (data >> 8) & 0xFF;
 		responsePacket[1] = data & 0xFF;
 		responsePacket += INT_REG_BYTE_SZ;
 		i++;
 	}
-	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i <= end_reg) {
+	while (i < REGISTER_AR_SIZE+FLOAT_REG_OFFSET && i < end_reg) {
 		uint8_t* floatConversionBytes = floatToBytes_union(floatRegisters[i-FLOAT_REG_OFFSET]);
 		for (int j = 0; j < FLOAT_REG_BYTE_SZ; j++) {
 			responsePacket[j] = floatConversionBytes[j];
@@ -141,12 +141,12 @@ void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) 
 		responsePacket += FLOAT_REG_BYTE_SZ;
 		i++;
 	}
-	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i <= end_reg) {
+	while (i < REGISTER_AR_SIZE+CHAR_REG_OFFSET && i < end_reg) {
 		responsePacket[0] = charRegisters[i-CHAR_REG_OFFSET];
 		responsePacket += CHAR_REG_BYTE_SZ;
 		i++;
 	}
-	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i <= end_reg) {
+	while (i < REGISTER_AR_SIZE+BOOL_REG_OFFSET && i < end_reg) {
 		responsePacket[0] = boolRegisters[i-BOOL_REG_OFFSET];
 		responsePacket += BOOL_REG_BYTE_SZ;
 		i++;
@@ -185,7 +185,7 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 			size += (REGISTER_AR_SIZE+INT_REG_OFFSET-start_reg)*INT_REG_BYTE_SZ;		//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+INT_REG_OFFSET;								//set the new start range to the first float register
 		}else{
-			size += ((end_reg+1) - start_reg)*INT_REG_BYTE_SZ;							//return the size including this data type's registers
+			size += (end_reg - start_reg)*INT_REG_BYTE_SZ;							//return the size including this data type's registers
 			return size;
 		}
 	}
@@ -195,7 +195,7 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 			size += (REGISTER_AR_SIZE+FLOAT_REG_OFFSET-start_reg)*FLOAT_REG_BYTE_SZ;	//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+FLOAT_REG_OFFSET;								//set the new start range to the first float register
 		}else{
-			size += ((end_reg+1) - start_reg)*FLOAT_REG_BYTE_SZ;						//return the size including this data type's registers
+			size += (end_reg - start_reg)*FLOAT_REG_BYTE_SZ;						//return the size including this data type's registers
 			return size;
 		}
 	}
@@ -205,13 +205,13 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 			size += (REGISTER_AR_SIZE+CHAR_REG_OFFSET-start_reg)*CHAR_REG_BYTE_SZ;		//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+CHAR_REG_OFFSET;								//set the new start range to the first float register
 		}else{
-			size += ((end_reg+1) - start_reg)*CHAR_REG_BYTE_SZ;							//return the size including this data type's registers
+			size += (end_reg - start_reg)*CHAR_REG_BYTE_SZ;							//return the size including this data type's registers
 			return size;
 		}
 	}
 	
 	if(start_reg < REGISTER_AR_SIZE+BOOL_REG_OFFSET){
-		size += ((end_reg+1) - start_reg)*BOOL_REG_BYTE_SZ;								//return the size including this data type's registers
+		size += (end_reg - start_reg)*BOOL_REG_BYTE_SZ;								//return the size including this data type's registers
 		return size;
 	}
 		
