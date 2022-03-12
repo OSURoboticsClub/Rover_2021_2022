@@ -40,7 +40,7 @@ def modRTU_CRC(packet,len):
     crcar = crc.to_bytes(2,'big')
     return crcar
 
-node = serial.Serial('COM9',500000, timeout=0.01)
+node = serial.Serial('COM5',19200, timeout=0.01)
 
 """
 write command (from master)

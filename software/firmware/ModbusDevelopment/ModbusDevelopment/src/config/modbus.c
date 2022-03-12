@@ -3,7 +3,7 @@
  *
  * Created: 2/3/2022 3:38:07 PM
  *  Author: Anthony Grana,
-			Blake H,
+			Blake Hakkila,
 			Kurtis Dinelle
  */ 
 
@@ -11,6 +11,7 @@
 #include <asf.h>
 #include <modbus.h>
 #include <string.h> // For memcpy
+//#include <time.h>	// for clock
 
 Uart *RS485Port;
 uint8_t slaveID;
@@ -22,6 +23,7 @@ uint32_t globalEnPin;
 //uint16_t	recievedDataSize = 0;
 //uint16_t	transmitDataSize = 0;
 //uint8_t		rxBuffer[RX_BUFFER_SIZE];
+//clock_t		cachedTime = 0;
 uint16_t	packetSize;							
 uint16_t	transmitIndex;					//helper variables for transmitting
 bool		endTransmission;
@@ -112,7 +114,16 @@ static bool convertToBool(const uint8_t data[1]){
     return data[0];
 }
 
+// function for packet timeout
+//bool packetTimeout() {
+//	if (clock() - cachedTime >= TIMEOUT) {
+//		cachedTime = clock();
+//		return true;
+//	}
+//	return false;
+//}
 
+// modbus functions
 void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) {
 	int i = start_reg;
 	while (i < REGISTER_AR_SIZE+INT_REG_OFFSET && i <= end_reg) {
@@ -170,7 +181,7 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 	uint16_t size = 0;																			//I don't like the previous implementation because it had several loops that were unnecessary
 
 	if(start_reg < REGISTER_AR_SIZE+INT_REG_OFFSET){									//check if starting register is within the data type range
-		if(end_reg >= REGISTER_AR_SIZE+INT_REG_OFFSET){									//check if the ending register is past the data type range
+		if(end_reg > REGISTER_AR_SIZE+INT_REG_OFFSET){									//check if the ending register is past the data type range
 			size += (REGISTER_AR_SIZE+INT_REG_OFFSET-start_reg)*INT_REG_BYTE_SZ;		//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+INT_REG_OFFSET;								//set the new start range to the first float register
 		}else{
@@ -180,7 +191,7 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 	}
 	
 	if(start_reg < REGISTER_AR_SIZE+FLOAT_REG_OFFSET){									//check if starting register is within the data type range
-		if(end_reg >= REGISTER_AR_SIZE+FLOAT_REG_OFFSET){								//check if the ending register is past the data type range
+		if(end_reg > REGISTER_AR_SIZE+FLOAT_REG_OFFSET){								//check if the ending register is past the data type range
 			size += (REGISTER_AR_SIZE+FLOAT_REG_OFFSET-start_reg)*FLOAT_REG_BYTE_SZ;	//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+FLOAT_REG_OFFSET;								//set the new start range to the first float register
 		}else{
@@ -190,7 +201,7 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 	}
 	
 	if(start_reg < REGISTER_AR_SIZE+CHAR_REG_OFFSET){									//check if starting register is within the data type range
-		if(end_reg >= REGISTER_AR_SIZE+CHAR_REG_OFFSET){								//check if the ending register is past the data type range
+		if(end_reg > REGISTER_AR_SIZE+CHAR_REG_OFFSET){								//check if the ending register is past the data type range
 			size += (REGISTER_AR_SIZE+CHAR_REG_OFFSET-start_reg)*CHAR_REG_BYTE_SZ;		//add the register size to the size variable
 			start_reg = REGISTER_AR_SIZE+CHAR_REG_OFFSET;								//set the new start range to the first float register
 		}else{
@@ -259,7 +270,8 @@ void modbus_update(void){
 	uint8_t CRC[2] = {packet[packetSize-2], packet[packetSize-1]};
 	// extract register info from packet
 	uint16_t start_reg = packet[START_REG_H_IDX] << 8 | packet[START_REG_L_IDX];
-	uint16_t end_reg = packet[END_REG_H_IDX] << 8 | packet[END_REG_L_IDX];
+	uint16_t num_registers = packet[NUM_REG_H_IDX] << 8 | packet[NUM_REG_L_IDX];
+	int end_reg = start_reg + num_registers;                                    // this register number is exclusive, so all valid register numbers are less than end_reg
 	// call read and write handlers based on function code
 	switch(packet[FC_IDX]) {
 		case FC_READ_MULT: ;													//semicolon resolves statement errors
@@ -278,8 +290,8 @@ void modbus_update(void){
 			responsePacket[FC_IDX] = packet[FC_IDX];
 			responsePacket[START_REG_H_IDX] = packet[START_REG_H_IDX];
 			responsePacket[START_REG_L_IDX] = packet[START_REG_L_IDX];
-			responsePacket[END_REG_H_IDX] = packet[END_REG_H_IDX];
-			responsePacket[END_REG_L_IDX] = packet[END_REG_L_IDX];
+			responsePacket[NUM_REG_H_IDX] = packet[NUM_REG_H_IDX];
+			responsePacket[NUM_REG_L_IDX] = packet[NUM_REG_L_IDX];
 			writeHandler(&packet[WR_DATA_BYTE_START], start_reg, end_reg);
 			break;
 	}
@@ -300,6 +312,7 @@ void UART_Handler(void){
 	if(uart_is_rx_ready(RS485Port)){							//confirm there is data ready to be read
 		uart_read(RS485Port, &(rxBuffer.data[rxBuffer.head]));		//move the data into the next index of the rx buffer
 		rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1);		//iterate the head through the ring buffer
+		//cachedTime = clock();
 	}else if(uart_is_tx_ready(RS485Port)){
 		if(transmitIndex < responsePacketSize){
 			uart_write(RS485Port, responsePacket[transmitIndex]);
@@ -342,8 +355,11 @@ bool packet_complete(){
 	packetSize = 0;																	// Reset this in case packet is not complete
 	
 	uint8_t func_code = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + FC_IDX)];
+	uint8_t start_reg_hi = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + START_REG_H_IDX)];
+	uint8_t num_reg_hi = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + NUM_REG_H_IDX)];
 	
-	if((func_code != FC_WRITE_MULT) && (func_code != FC_READ_MULT)){				//if the function code isn't write or read, we know somethings fucked up
+	// if the function code isn't write or read or start register/number of registers high bytes are too big, we know somethings fucked up
+	if((func_code != FC_WRITE_MULT && func_code != FC_READ_MULT) || start_reg_hi >= 4 || num_reg_hi >= 4) {
 		//need to write a graceful handler here
 		//needs to be a while loop that iterates through the buffer looking for a valid function code, then pops out all the garbage that came before 
 		uint8_t checkByte = func_code;
@@ -367,7 +383,7 @@ bool packet_complete(){
 	uint16_t base_pkt_sz;															//size of packet not including data bytes
 	
 	// Handle write command from master
-	if (func_code == FC_WRITE_MULT && slave_id != 0) {
+	if (func_code == FC_WRITE_MULT) {
 		if(buffer_get_data_sz() < ABS_MIN_WRITE_PACKET_SIZE) return false;						//if the data size is less than this, we know the packet is incomplete
 		num_data_bytes = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + WR_DATA_SIZE_IDX)];		//get supposed number of data bytes from the packet
 		base_pkt_sz = ABS_MIN_WRITE_PACKET_SIZE - 1;											
@@ -375,19 +391,10 @@ bool packet_complete(){
 	}
 	
 	// Handle write response from slave or read command from master (identical packet structure)
-	else if ((func_code == FC_WRITE_MULT && slave_id == 0) ||
-	((func_code == FC_READ_MULT) && slave_id != 0)) {
+	else if (func_code == FC_READ_MULT) {
 		if(buffer_get_data_sz() < WRITE_RES_PACKET_SIZE) return false;					//if the data size is less than this, we know the packet is incomplete
 		base_pkt_sz = WRITE_RES_PACKET_SIZE;											//we know the final packet size
 		//need_crc = true;																//still need crc because we need to confirm we are processing a complete packet and not some segment of another packet
-	}
-	
-	// Handle read response from slave
-	else if (func_code == FC_READ_MULT && slave_id == 0) {
-		//if(buffer_get_data_sz() < ABS_MIN_READ_RES_PACKET_SIZE) return false;			//if the data size is less than this, we know the packet is incomplete     //Redundent due to check before entering the function
-		num_data_bytes = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + RD_DATA_SIZE_IDX)];
-		base_pkt_sz = ABS_MIN_READ_RES_PACKET_SIZE - 1;
-		//need_crc = true;
 	}
 	
 	uint16_t full_pkt_sz = num_data_bytes + base_pkt_sz;								//calculate full packet size
