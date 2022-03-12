@@ -31,6 +31,8 @@
 #include <asf.h>
 #include <modbus.h>
 #include <registers.h>
+#include <interupt_handlers.h>
+#include <sleep_modes.h>
 
 int main (void)
 {

@@ -1,4 +1,5 @@
-src/main.d src/main.o: ../src/main.c ../src/asf.h \
+src/config/sleep_modes.d src/config/sleep_modes.o: \
+ ../src/config/sleep_modes.c ../src/asf.h \
  ../src/ASF/sam/drivers/adc/adc.h ../src/ASF/sam/utils/compiler.h \
  s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stddef.h \
  ../src/ASF/common/utils/parts.h \
@@ -133,9 +134,7 @@ src/main.d src/main.o: ../src/main.c ../src/asf.h \
  ../src/ASF/common/services/usb/udc/udi.h \
  ../src/ASF/common/services/usb/udc/udc.h \
  ../src/ASF/common/services/usb/udc/udd.h \
- ../src/ASF/sam/drivers/pio/pio_handler.h ../src/config/modbus.h \
- ../src/config/registers.h ../src/config/interupt_handlers.h \
- ../src/config/sleep_modes.h
+ ../src/ASF/sam/drivers/pio/pio_handler.h ../src/config/sleep_modes.h
 
 ../src/asf.h:
 
@@ -420,11 +419,5 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\a
 ../src/ASF/common/services/usb/udc/udd.h:
 
 ../src/ASF/sam/drivers/pio/pio_handler.h:
-
-../src/config/modbus.h:
-
-../src/config/registers.h:
-
-../src/config/interupt_handlers.h:
 
 ../src/config/sleep_modes.h:

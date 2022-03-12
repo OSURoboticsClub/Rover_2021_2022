@@ -203,10 +203,11 @@ uint32_t pio_handler_set_pin(uint32_t ul_pin, uint32_t ul_flag,
  * \brief Parallel IO Controller A interrupt handler.
  * Redefined PIOA interrupt handler for NVIC interrupt table.
  */
+/*
 void PIOA_Handler(void)
 {
 	pio_handler_process(PIOA, ID_PIOA);
-}
+}*/
 #endif
 
 #ifdef ID_PIOB

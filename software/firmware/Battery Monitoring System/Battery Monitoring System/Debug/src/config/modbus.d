@@ -114,7 +114,8 @@ src/config/modbus.d src/config/modbus.o: ../src/config/modbus.c \
  ../src/ASF/sam/drivers/pmc/pmc.h ../src/ASF/common/services/clock/pll.h \
  ../src/ASF/common/services/clock/sam4s/pll.h \
  ../src/ASF/sam/drivers/matrix/matrix.h ../src/ASF/sam/drivers/pio/pio.h \
- ../src/ASF/sam/drivers/pmc/sleep.h ../src/ASF/sam/drivers/rtc/rtc.h \
+ ../src/ASF/sam/drivers/pmc/sleep.h ../src/ASF/sam/drivers/rtt/rtt.h \
+ ../src/ASF/sam/drivers/supc/supc.h \
  ../src/ASF/common/services/sleepmgr/sam/sleepmgr.h \
  ../src/config/conf_sleepmgr.h \
  ../src/ASF/common/services/sleepmgr/sleepmgr.h \
@@ -380,7 +381,9 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\a
 
 ../src/ASF/sam/drivers/pmc/sleep.h:
 
-../src/ASF/sam/drivers/rtc/rtc.h:
+../src/ASF/sam/drivers/rtt/rtt.h:
+
+../src/ASF/sam/drivers/supc/supc.h:
 
 ../src/ASF/common/services/sleepmgr/sam/sleepmgr.h:
 

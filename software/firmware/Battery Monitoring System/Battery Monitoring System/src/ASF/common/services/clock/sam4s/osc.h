@@ -48,6 +48,7 @@ extern "C" {
 /**INDENT-ON**/
 /// @endcond
 
+# define BOARD_FREQ_MAINCK_XTAL (16000000UL)
 /*
  * Below BOARD_XXX macros are related to the specific board, and
  * should be defined by the board code, otherwise default value are used.
@@ -64,7 +65,7 @@ extern "C" {
 
 #if !defined(BOARD_FREQ_MAINCK_XTAL)
 #  warning The board main clock xtal frequency has not been defined.
-#  define BOARD_FREQ_MAINCK_XTAL    (12000000UL)
+#  define BOARD_FREQ_MAINCK_XTAL    (16000000UL)
 #endif
 
 #if !defined(BOARD_FREQ_MAINCK_BYPASS)

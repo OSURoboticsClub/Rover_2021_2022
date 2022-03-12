@@ -291,7 +291,7 @@ void modbus_update(void){
 	
 	// write out response packet
 	pio_set(globalEnPinPort,globalEnPin);				//transceiver transmit enable
-	pio_set(RS485_RE_PORT,RS485_RE);
+	pio_set(RS485_NRE_PORT,RS485_NRE);
 	transmitIndex = 0;
 	uart_enable_interrupt(RS485Port,UART_IMR_TXRDY);
 }
@@ -307,7 +307,7 @@ void UART_Handler(void){
 			transmitIndex++;
 		}else if(uart_is_tx_empty(RS485Port)){
 			pio_clear(globalEnPinPort,globalEnPin);
-			pio_clear(RS485_RE_PORT,RS485_RE);
+			pio_clear(RS485_NRE_PORT,RS485_NRE);
 			uart_disable_interrupt(RS485Port,UART_IMR_TXRDY);
 		}
 	}

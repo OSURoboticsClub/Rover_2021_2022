@@ -48,6 +48,8 @@ extern "C" {
 /* External oscillator definition, to be overriden by application */
 #define CHIP_FREQ_XTAL_12M (12000000UL)
 
+#define CHIP_FREQ_XTAL (16000000UL)
+
 #if (!defined CHIP_FREQ_XTAL)
 #  define CHIP_FREQ_XTAL CHIP_FREQ_XTAL_12M
 #endif

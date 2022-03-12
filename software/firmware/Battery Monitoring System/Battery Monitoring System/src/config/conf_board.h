@@ -11,8 +11,10 @@
 #ifndef CONF_BOARD_H
 #define CONF_BOARD_H
 
-#define RS485_RE				PIO_PA12
-#define RS485_RE_PORT			PIOA
+#define RS485_NRE				PIO_PA12
+#define RS485_NRE_PORT			PIOA
+#define RS485_DE				PIO_PA13
+#define RS485_DE_PORT			PIOA
 
 #define TEMP_SEL0				PIO_PA8
 #define TEMP_SEL0_PORT			PIOA
@@ -39,5 +41,8 @@
 
 #define BOARD_LED				PIO_PA3
 #define BOARD_LED_PORT			PIOA
+
+#define USB_SNS					PIO_PA14
+#define USB_SNS_PORT			PIOA
 
 #endif // CONF_BOARD_H
