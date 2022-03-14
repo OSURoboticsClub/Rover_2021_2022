@@ -33,7 +33,7 @@ void board_init(void)
 	pio_set_output(RS485_NRE_PORT,RS485_NRE,LOW,DISABLE,DISABLE);			//init modbus receive enable pin		//only necessary for low power mode builds
 	modbus_init(UART1,500000,RS485_DE_PORT,RS485_DE,SLAVEID);					//init modbus      //note this version of modbus has been modified to support sleep mode
 	
-	NVIC_EnableIRQ(PIOA_IRQn);
+	//NVIC_EnableIRQ(PIOA_IRQn);
 	pio_set_output(TEMP_SEL0_PORT,TEMP_SEL0,LOW,DISABLE,DISABLE);
 	pio_set_output(TEMP_SEL1_PORT,TEMP_SEL1,LOW,DISABLE,DISABLE);
 	pio_set_output(TEMP_SEL2_PORT,TEMP_SEL2,LOW,DISABLE,DISABLE);
@@ -52,7 +52,7 @@ void board_init(void)
 	
 	pio_set_input(USB_SNS_PORT,USB_SNS,PIO_DEBOUNCE);
 	
-	pio_enable_pin_interrupt(0);
-	pio_enable_pin_interrupt(14);
+	//pio_enable_pin_interrupt(0);
+	//pio_enable_pin_interrupt(14);
 	
 }

@@ -48,7 +48,7 @@ void goToSleep(){
 	pmc_enable_periph_clk(ID_SUPC);
 	supc_set_wakeup_mode(SUPC,SUPC_WUMR_RTTEN_ENABLE | SUPC_WUMR_WKUPDBC_512_SCLK);
 	supc_set_wakeup_inputs(SUPC,SUPC_WUIR_WKUPEN0 | SUPC_WUIR_WKUPEN8 , SUPC_WUIR_WKUPT0 | SUPC_WUIR_WKUPT8);
-	supc_disable_voltage_regulator(SUPC);
+	//supc_disable_voltage_regulator(SUPC);
 	
 	//pio_set(BOARD_LED_PORT,BOARD_LED);
 	
