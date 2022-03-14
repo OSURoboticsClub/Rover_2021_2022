@@ -2,14 +2,14 @@ src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.d \
  src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o: \
  ../src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.c \
  ../src/ASF/sam/utils/cmsis/sam4s/include/sam4s.h \
- ../src/ASF/sam/utils/cmsis/sam4s/include/sam4s4a.h \
- s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stdint.h \
- s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\stdint.h \
- s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\machine\_default_types.h \
- s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\features.h \
- s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\_newlib_version.h \
- s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_intsup.h \
- s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_stdint.h \
+ ../src/ASF/sam/utils/cmsis/sam4s/include/sam4s4b.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stdint.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\stdint.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\machine\_default_types.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\features.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\_newlib_version.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_intsup.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_stdint.h \
  ../src/ASF/thirdparty/CMSIS/Include/core_cm4.h \
  ../src/ASF/thirdparty/CMSIS/Include/cmsis_version.h \
  ../src/ASF/thirdparty/CMSIS/Include/cmsis_compiler.h \
@@ -20,8 +20,10 @@ src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.d \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_adc.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_chipid.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_crccu.h \
+ ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_dacc.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_efc.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_gpbr.h \
+ ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_hsmci.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_matrix.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_pdc.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_pio.h \
@@ -39,6 +41,7 @@ src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.d \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_udp.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_usart.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_wdt.h \
+ ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_hsmci.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_ssc.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_spi.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_tc0.h \
@@ -46,8 +49,10 @@ src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.d \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_twi1.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_pwm.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_usart0.h \
+ ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_usart1.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_udp.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_adc.h \
+ ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_dacc.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_acc.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_crccu.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_matrix.h \
@@ -64,25 +69,25 @@ src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.d \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_wdt.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_rtc.h \
  ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_gpbr.h \
- ../src/ASF/sam/utils/cmsis/sam4s/include/pio/pio_sam4s4a.h
+ ../src/ASF/sam/utils/cmsis/sam4s/include/pio/pio_sam4s4b.h
 
 ../src/ASF/sam/utils/cmsis/sam4s/include/sam4s.h:
 
-../src/ASF/sam/utils/cmsis/sam4s/include/sam4s4a.h:
+../src/ASF/sam/utils/cmsis/sam4s/include/sam4s4b.h:
 
-s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stdint.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\6.3.1\include\stdint.h:
 
-s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\stdint.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\stdint.h:
 
-s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\machine\_default_types.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\machine\_default_types.h:
 
-s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\features.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\features.h:
 
-s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\_newlib_version.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\_newlib_version.h:
 
-s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_intsup.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_intsup.h:
 
-s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_stdint.h:
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\_stdint.h:
 
 ../src/ASF/thirdparty/CMSIS/Include/core_cm4.h:
 
@@ -104,9 +109,13 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\s
 
 ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_crccu.h:
 
+../src/ASF/sam/utils/cmsis/sam4s/include/component/component_dacc.h:
+
 ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_efc.h:
 
 ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_gpbr.h:
+
+../src/ASF/sam/utils/cmsis/sam4s/include/component/component_hsmci.h:
 
 ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_matrix.h:
 
@@ -142,6 +151,8 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\s
 
 ../src/ASF/sam/utils/cmsis/sam4s/include/component/component_wdt.h:
 
+../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_hsmci.h:
+
 ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_ssc.h:
 
 ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_spi.h:
@@ -156,9 +167,13 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\s
 
 ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_usart0.h:
 
+../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_usart1.h:
+
 ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_udp.h:
 
 ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_adc.h:
+
+../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_dacc.h:
 
 ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_acc.h:
 
@@ -192,4 +207,4 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\s
 
 ../src/ASF/sam/utils/cmsis/sam4s/include/instance/instance_gpbr.h:
 
-../src/ASF/sam/utils/cmsis/sam4s/include/pio/pio_sam4s4a.h:
+../src/ASF/sam/utils/cmsis/sam4s/include/pio/pio_sam4s4b.h:

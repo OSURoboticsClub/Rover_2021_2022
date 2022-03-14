@@ -2,8 +2,10 @@
  * IncFile1.h
  *
  * Created: 2/3/2022 3:37:46 PM
- *  Author: Anthony
- */ 
+ *  Author: Anthony Grana,
+			Blake Hakkila,
+			Kurtis Dinelle
+ */
 
 
 /**********************************************************************
@@ -69,8 +71,8 @@ void modbus_update(void);   //This function does all of the heavy lifting for mo
 #define FC_IDX				1		//packet byte index for Function Code byte
 #define START_REG_H_IDX		2		//packet byte index for the high side of the start register number
 #define START_REG_L_IDX		3		//packet byte index for the low side of the start register number
-#define END_REG_H_IDX		4		//packet byte index for the high side of the end register number
-#define END_REG_L_IDX		5		//packet byte index for the low side of the end register number
+#define NUM_REG_H_IDX		4		//packet byte index for the high side of the end register number
+#define NUM_REG_L_IDX		5		//packet byte index for the low side of the end register number
 #define WR_DATA_SIZE_IDX	6		//packet byte index for the size of the data to follow in bytes (write multiple only)
 #define RD_DATA_SIZE_IDX	2		//packet byte index for the size of the data to follow in bytes (read multiple only)
 
