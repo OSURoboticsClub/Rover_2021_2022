@@ -20,6 +20,7 @@ _CHAR_REG_OFFSET = 512
 _BOOL_REG_OFFSET = 768
 _REG_MAX = 1023
 
+_MAX_DATA_BYTES = 255
 
 class Node:
     """Represents a slave
@@ -47,13 +48,19 @@ class Node:
         if not _is_valid_write_data(register_addr, values):
             return
 
+        num_bytes = _calculate_num_bytes(values)
+
+        if num_bytes > _MAX_DATA_BYTES:
+            print("Write command would have sent over 255 data bytes")
+            return
+
         # The beginning of all write packets
         header = [
             self.slave_id,
             _WRITE_INSTR,
             register_addr,
             len(values),  # Length of values is equal to num registsers
-            _calculate_num_bytes(values)
+            num_bytes
         ]
 
         # Create the byte string for the write packet
@@ -106,6 +113,10 @@ class Node:
         num_bytes += (num_floats * _FLOAT_REG_BYTE_SZ)
         num_bytes += (num_chars * _CHAR_REG_BYTE_SZ)
         num_bytes += (num_bools * _BOOL_REG_BYTE_SZ)
+
+        if num_bytes > _MAX_DATA_BYTES:
+            print("Read command requested over 255 data bytes")
+            return
 
         # Send the instruction to slave, then read its response
         self.serial.write(packet)
