@@ -45,4 +45,22 @@
 #define USB_SNS					PIO_PA14
 #define USB_SNS_PORT			PIOA
 
+#define CELLV_SNS				PIO_PA17
+#define CELLV_SNS_PORT			PIOA
+
+#define CURRENT_SNS				PIO_PA18
+#define CURRENT_SNS_PORT		PIOA
+
+#define STACK_SNS				PIO_PA19
+#define	STACK_SNS_PORT			PIOA
+
+#define EXT_TEMP_SNS			PIO_PA20
+#define EXT_TEMP_SNS_PORT		PIOA
+
+#define FETTEMP_SNS				PIO_PB0
+#define FETTEMP_SNS_PORT		PIOB
+
+#define SHUNTTEMP_SNS			PIO_PB1
+#define SHUNTTEMP_SNS_PORT		PIOB
+
 #endif // CONF_BOARD_H

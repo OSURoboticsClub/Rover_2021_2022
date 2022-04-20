@@ -120,7 +120,7 @@ src/config/modbus.d src/config/modbus.o: ../src/config/modbus.c \
  ../src/config/conf_sleepmgr.h \
  ../src/ASF/common/services/sleepmgr/sleepmgr.h \
  ../src/ASF/common/services/sleepmgr/sam/sleepmgr.h \
- ../src/ASF/sam/drivers/uart/uart.h \
+ ../src/ASF/sam/drivers/tc/tc.h ../src/ASF/sam/drivers/uart/uart.h \
  ../src/ASF/common/services/usb/class/cdc/usb_protocol_cdc.h \
  ../src/ASF/common/services/usb/class/cdc/device/udi_cdc.h \
  ../src/config/conf_usb.h \
@@ -392,6 +392,8 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\a
 ../src/ASF/common/services/sleepmgr/sleepmgr.h:
 
 ../src/ASF/common/services/sleepmgr/sam/sleepmgr.h:
+
+../src/ASF/sam/drivers/tc/tc.h:
 
 ../src/ASF/sam/drivers/uart/uart.h:
 

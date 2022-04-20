@@ -16,6 +16,8 @@ src\ASF\sam\drivers\rtt\rtt.c
 
 src\ASF\sam\drivers\supc\supc.c
 
+src\ASF\sam\drivers\tc\tc.c
+
 src\ASF\sam\drivers\udp\udp_device.c
 
 src\config\interupt_handlers.c

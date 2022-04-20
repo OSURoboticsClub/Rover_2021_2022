@@ -21,23 +21,26 @@ void Wake_Sleep_Handler(){
 	bool PWRSwitchSense = pio_get(PWR_SW_PORT,PIO_TYPE_PIO_INPUT,PWR_SW);
 	
 	switch(IStatus){
-	case(PIO_ISR_P14):
-		if(USBSense){
-			USBWakeUp();
-			return;
-		}else if(!USBSense && !PWRSwitchSense)
-			goToSleep();
-			return;
-	case(PIO_ISR_P0):
-		if(PWRSwitchSense){
-			PWRSwitchWakeUp();
-			return;
-		}else if(!USBSense && !PWRSwitchSense)
-			goToSleep();
+		case(PIO_ISR_P14):
+			if(USBSense){
+				USBWakeUp();
+				return;
+			}else if(!USBSense && !PWRSwitchSense)
+				goToSleep();
+				return;
+		case(PIO_ISR_P0):
+			if(PWRSwitchSense){
+				PWRSwitchWakeUp();
+				return;
+			}else if(!USBSense && !PWRSwitchSense)
+				goToSleep();
+				return;
+		default:
 			return;
 	};
 }
 
 void Wakup_Timer_Handler(){
 	pio_set(BOARD_LED_PORT,BOARD_LED);
+	goToSleep();
 }

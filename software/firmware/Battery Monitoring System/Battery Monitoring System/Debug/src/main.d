@@ -119,7 +119,7 @@ src/main.d src/main.o: ../src/main.c ../src/asf.h \
  ../src/config/conf_sleepmgr.h \
  ../src/ASF/common/services/sleepmgr/sleepmgr.h \
  ../src/ASF/common/services/sleepmgr/sam/sleepmgr.h \
- ../src/ASF/sam/drivers/uart/uart.h \
+ ../src/ASF/sam/drivers/tc/tc.h ../src/ASF/sam/drivers/uart/uart.h \
  ../src/ASF/common/services/usb/class/cdc/usb_protocol_cdc.h \
  ../src/ASF/common/services/usb/class/cdc/device/udi_cdc.h \
  ../src/config/conf_usb.h \
@@ -133,9 +133,11 @@ src/main.d src/main.o: ../src/main.c ../src/asf.h \
  ../src/ASF/common/services/usb/udc/udi.h \
  ../src/ASF/common/services/usb/udc/udc.h \
  ../src/ASF/common/services/usb/udc/udd.h \
- ../src/ASF/sam/drivers/pio/pio_handler.h ../src/config/modbus.h \
- ../src/config/registers.h ../src/config/interupt_handlers.h \
- ../src/config/sleep_modes.h
+ ../src/ASF/sam/drivers/pio/pio_handler.h \
+ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\math.h \
+ ../src/config/modbus.h ../src/config/registers.h \
+ ../src/config/interupt_handlers.h ../src/config/sleep_modes.h \
+ ../src/config/main.h
 
 ../src/asf.h:
 
@@ -391,6 +393,8 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\a
 
 ../src/ASF/common/services/sleepmgr/sam/sleepmgr.h:
 
+../src/ASF/sam/drivers/tc/tc.h:
+
 ../src/ASF/sam/drivers/uart/uart.h:
 
 ../src/ASF/common/services/usb/class/cdc/usb_protocol_cdc.h:
@@ -421,6 +425,8 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\a
 
 ../src/ASF/sam/drivers/pio/pio_handler.h:
 
+s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\math.h:
+
 ../src/config/modbus.h:
 
 ../src/config/registers.h:
@@ -428,3 +434,5 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\a
 ../src/config/interupt_handlers.h:
 
 ../src/config/sleep_modes.h:
+
+../src/config/main.h:
