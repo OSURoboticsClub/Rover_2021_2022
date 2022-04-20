@@ -211,6 +211,8 @@ void protec(){
 	NVIC_EnableIRQ(TC1_IRQn);
 	tc_write_rc(TC0,TC_CH,468750);				  //causes timer to reset every 500ms (exactly)
 	tc_start(TC0,TC_CH);
+	
+	udc_start();
 }
 
 void clearProtections(){
