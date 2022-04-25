@@ -9,7 +9,7 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#define ADC_CLK_FREQ			500000
+#define ADC_CLK_FREQ			250000
 #define QTY_TRACKING_PERIODS	1
 #define TRANSFER_PERIOD			2
 
@@ -48,9 +48,16 @@
 #define OVERCURRENTIDX		4
 #define CELLIMBALANCEIDX	5
 
-#define TC_CH  1
+#define BLINK_TC			1
+#define ADC_TC				0
 
-#define OVER_VOLTAGE_THRESHOLD		4.25;
+#define OVER_VOLTAGE_THRESHOLD		4.25
+#define UNDER_VOLTAGE_THRESHOLD		3.3
+#define CELL_OVER_TEMP_THRESHOLD	60.0
+#define PCB_OVER_TEMP_THRESHOLD		80.0
+#define UNDER_TEMP_THRESHOLD		1.0
+#define OVER_CURRENT_THRESHOLD		60.0
+#define CELL_IMBALANCE_THRESHOLD	0.2
 
 void analogCalculate();
 void adcSetup();
@@ -63,5 +70,10 @@ bool underVolt();
 bool overCurrent();
 bool cellImbalance();
 void protec();
+void printStatus();
+void printInstructions();
+void checkUSB();
+void clearProtections();
+void printString(char*);
 
 #endif /* MAIN_H_ */

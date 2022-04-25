@@ -26,7 +26,7 @@ void board_init(void)
 	//Enable USB Comm port so we can send debug data over serial to a computer (could be useful)
 	//Configuration for this is in conf_usb.h
 	
-	//udc_start();
+	udc_start();
 	
 	pmc_enable_periph_clk(ID_PIOA);
 	pmc_enable_periph_clk(ID_PIOB);
@@ -40,12 +40,12 @@ void board_init(void)
 	pio_set_output(TEMP_SEL2_PORT,TEMP_SEL2,LOW,DISABLE,DISABLE);
 	
 	pio_set_output(CELL_SEL0_PORT,CELL_SEL0,LOW,DISABLE,DISABLE);
-	pio_set_output(CELL_SEL1_PORT,CELL_SEL0,LOW,DISABLE,DISABLE);
-	pio_set_output(CELL_SEL2_PORT,CELL_SEL0,LOW,DISABLE,DISABLE);
+	pio_set_output(CELL_SEL1_PORT,CELL_SEL1,LOW,DISABLE,DISABLE);
+	pio_set_output(CELL_SEL2_PORT,CELL_SEL2,LOW,DISABLE,DISABLE);
 	
 	pio_set_output(AFE_EN_PORT,AFE_EN,HIGH,DISABLE,DISABLE);
 	
-	pio_set_output(NBAT_EN_PORT,NBAT_EN,HIGH,DISABLE,DISABLE);
+	pio_set_output(NBAT_EN_PORT,NBAT_EN,LOW,DISABLE,DISABLE);
 	
 	pio_set_output(BOARD_LED_PORT,BOARD_LED,HIGH,DISABLE,DISABLE);
 	
@@ -67,5 +67,7 @@ void board_init(void)
 	
 	pio_enable_pin_interrupt(0);
 	pio_enable_pin_interrupt(14);
+	
+	
 	
 }

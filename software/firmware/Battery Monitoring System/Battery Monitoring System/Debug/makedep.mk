@@ -6,9 +6,13 @@ src\ASF\common\services\sleepmgr\sam\sleepmgr.c
 
 src\ASF\common\services\usb\class\cdc\device\udi_cdc.c
 
+src\ASF\common\services\usb\class\cdc\device\udi_cdc_desc.c
+
 src\ASF\common\services\usb\udc\udc.c
 
 src\ASF\sam\drivers\adc\adc.c
+
+src\ASF\sam\drivers\matrix\matrix.c
 
 src\ASF\sam\drivers\pio\pio_handler.c
 
@@ -26,11 +30,7 @@ src\config\modbus.c
 
 src\ASF\sam\drivers\adc\adc_sam3u.c
 
-src\ASF\common\services\usb\class\cdc\device\udi_cdc_desc.c
-
 src\ASF\common\services\clock\sam4s\sysclk.c
-
-src\ASF\sam\drivers\matrix\matrix.c
 
 src\ASF\sam\drivers\pio\pio.c
 

@@ -37,8 +37,6 @@
 #ifndef CONF_CLOCK_H_INCLUDED
 #define CONF_CLOCK_H_INCLUDED
 
-//#define CHIP_FREQ_XTAL (16000000UL)											//This is needed when using an external oscolator that's not 12MHz
-
 // ===== System Clock (MCK) Source Options
 //#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_SLCK_RC
 //#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_SLCK_XTAL
@@ -52,8 +50,8 @@
 //#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_PLLBCK
 
 // ===== System Clock (MCK) Prescaler Options   (Fmck = Fsys / (SYSCLK_PRES))
-#define CONFIG_SYSCLK_PRES          SYSCLK_PRES_1
-//#define CONFIG_SYSCLK_PRES          SYSCLK_PRES_2
+//#define CONFIG_SYSCLK_PRES          SYSCLK_PRES_1
+#define CONFIG_SYSCLK_PRES          SYSCLK_PRES_2
 //#define CONFIG_SYSCLK_PRES          SYSCLK_PRES_4
 //#define CONFIG_SYSCLK_PRES          SYSCLK_PRES_8
 //#define CONFIG_SYSCLK_PRES          SYSCLK_PRES_16
@@ -63,14 +61,14 @@
 
 // ===== PLL0 (A) Options   (Fpll = (Fclk * PLL_mul) / PLL_div)
 // Use mul and div effective values here.
-#define CONFIG_PLL0_SOURCE          PLL_SRC_MAINCK_XTAL
-#define CONFIG_PLL0_MUL             15
-#define CONFIG_PLL0_DIV             2
+#define CONFIG_PLL0_SOURCE          PLL_SRC_MAINCK_12M_RC
+#define CONFIG_PLL0_MUL             20
+#define CONFIG_PLL0_DIV             1
 
 // ===== PLL1 (B) Options   (Fpll = (Fclk * PLL_mul) / PLL_div)
 // Use mul and div effective values here.
-#define CONFIG_PLL1_SOURCE          PLL_SRC_MAINCK_XTAL
-#define CONFIG_PLL1_MUL             12
+#define CONFIG_PLL1_SOURCE          PLL_SRC_MAINCK_12M_RC
+#define CONFIG_PLL1_MUL             16
 #define CONFIG_PLL1_DIV             2
 
 // ===== USB Clock Source Options   (Fusb = FpllX / USB_div)

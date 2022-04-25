@@ -241,7 +241,7 @@ void sysclk_init(void)
 	SystemCoreClockUpdate();
 
 	/* Set a flash wait state depending on the new cpu frequency */
-	system_init_flash(sysclk_get_cpu_hz());
+	system_init_flash(sysclk_get_cpu_hz());									//Might need to add back in
 
 #if (defined CONFIG_SYSCLK_DEFAULT_RETURNS_SLOW_OSC)
 	/* Signal that the internal frequencies are setup */

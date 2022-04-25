@@ -103,6 +103,7 @@ uint32_t adc_init(Adc *p_adc, const uint32_t ul_mck,
  */
 uint32_t adc_init(Adc *p_adc, const uint32_t ul_mck, const uint32_t ul_adc_clock,
 		const uint32_t ul_startuptime)
+
 {
 	uint32_t ul_prescal, ul_startup;
 	p_adc->ADC_CR = ADC_CR_SWRST;

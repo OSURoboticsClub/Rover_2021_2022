@@ -135,9 +135,11 @@ src/main.d src/main.o: ../src/main.c ../src/asf.h \
  ../src/ASF/common/services/usb/udc/udd.h \
  ../src/ASF/sam/drivers/pio/pio_handler.h \
  s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\math.h \
- ../src/config/modbus.h ../src/config/registers.h \
- ../src/config/interupt_handlers.h ../src/config/sleep_modes.h \
- ../src/config/main.h
+ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\string.h \
+ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\xlocale.h \
+ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\string.h \
+ ../src/config/main.h ../src/config/modbus.h ../src/config/registers.h \
+ ../src/config/interupt_handlers.h ../src/config/sleep_modes.h
 
 ../src/asf.h:
 
@@ -427,6 +429,14 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\a
 
 s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\math.h:
 
+s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\string.h:
+
+s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\xlocale.h:
+
+s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\sys\string.h:
+
+../src/config/main.h:
+
 ../src/config/modbus.h:
 
 ../src/config/registers.h:
@@ -434,5 +444,3 @@ s:\microchip\ studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\m
 ../src/config/interupt_handlers.h:
 
 ../src/config/sleep_modes.h:
-
-../src/config/main.h:

@@ -18,7 +18,7 @@ void USBWakeUp(){
 	pmc_disable_periph_clk(ID_RTT);
 	
 	//start shit
-	udc_start();
+	//udc_start();
 	
 }
 
