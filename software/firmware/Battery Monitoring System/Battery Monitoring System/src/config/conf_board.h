@@ -63,4 +63,6 @@
 #define SHUNTTEMP_SNS			PIO_PB1
 #define SHUNTTEMP_SNS_PORT		PIOB
 
+#define PERIODIC_WAKEUP_TIME 15 //(in minutes)
+
 #endif // CONF_BOARD_H

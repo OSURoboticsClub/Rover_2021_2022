@@ -12,6 +12,8 @@ src\ASF\common\services\usb\udc\udc.c
 
 src\ASF\sam\drivers\adc\adc.c
 
+src\ASF\sam\drivers\efc\efc.c
+
 src\ASF\sam\drivers\matrix\matrix.c
 
 src\ASF\sam\drivers\pio\pio_handler.c
@@ -23,6 +25,8 @@ src\ASF\sam\drivers\supc\supc.c
 src\ASF\sam\drivers\tc\tc.c
 
 src\ASF\sam\drivers\udp\udp_device.c
+
+src\ASF\sam\services\flash_efc\flash_efc.c
 
 src\config\interupt_handlers.c
 
@@ -49,8 +53,6 @@ src\ASF\sam\utils\cmsis\sam4s\source\templates\gcc\startup_sam4s.c
 src\ASF\sam\utils\cmsis\sam4s\source\templates\system_sam4s.c
 
 src\ASF\sam\utils\syscalls\gcc\syscalls.c
-
-src\config\sleep_modes.c
 
 src\main.c
 

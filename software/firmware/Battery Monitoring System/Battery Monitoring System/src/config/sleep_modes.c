@@ -8,31 +8,17 @@
 #include <asf.h>
 #include <board.h>
 #include <sleep_modes.h>
+#include <main.h>
 
 void USBWakeUp(){
-	//Get out of sleep mode
-	
-	//disable RTT
-	NVIC_DisableIRQ(RTT_IRQn);
-	rtt_disable_interrupt(RTT,RTT_MR_ALMIEN);
-	pmc_disable_periph_clk(ID_RTT);
-	
-	//start shit
-	//udc_start();
-	
+
 }
 
 void PWRSwitchWakeUp(){
-	//sysclk_init();
-	//turn on everything
-	pio_clear(NBAT_EN_PORT,NBAT_EN);
-	pio_clear(RS485_NRE_PORT,RS485_NRE);
-	pio_clear(RS485_DE_PORT,RS485_DE);
-	pio_set(AFE_EN_PORT,AFE_EN);
 	
 }
 
-
+uint32_t flashPageBuffer[SIZE_OF_DATA_FLASH];
 void goToSleep(){
 	//turn off everything
 	pio_set(NBAT_EN_PORT,NBAT_EN);
@@ -41,6 +27,34 @@ void goToSleep(){
 	pio_clear(AFE_EN_PORT,AFE_EN);
 	pio_clear(BOARD_LED_PORT,BOARD_LED);
 	
+	//Store to flash
+	int buffIDX = 0;
+	int i=0;
+	for(i=buffIDX; i < (QTY_PROTECTIONS+buffIDX); i++){
+		flashPageBuffer[i] = activeProtections[i-buffIDX];
+	}
+	buffIDX = i;
+	
+	flashPageBuffer[buffIDX++] = batteryStable;
+	
+	flashPageBuffer[buffIDX++] = ignoreProtections;
+	
+	flashPageBuffer[buffIDX++] = protectionActive;
+	
+	for(i=buffIDX; i<(QTY_ANALOG_SOURCES + buffIDX); i++){
+		flashPageBuffer[i] = convertToInt32(MovingAverageADCData[i-buffIDX]);
+	}
+	buffIDX = i;
+	
+	for(i=buffIDX; i<(QTY_ANALOG_SOURCES + buffIDX); i++){
+		flashPageBuffer[i] = convertToInt32(minimumValues[i-buffIDX]);
+	}
+	buffIDX = i;
+	
+	for(i=buffIDX; i<(QTY_ANALOG_SOURCES + buffIDX); i++){
+		flashPageBuffer[i] = convertToInt32(maximumValues[i-buffIDX]);
+	}
+	buffIDX = i;
 	
 	//enable RTT for periodic wakeups
 	NVIC_EnableIRQ(RTT_IRQn);

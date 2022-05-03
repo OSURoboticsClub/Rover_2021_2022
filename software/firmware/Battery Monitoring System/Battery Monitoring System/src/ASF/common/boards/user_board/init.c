@@ -34,7 +34,6 @@ void board_init(void)
 	pio_set_output(RS485_NRE_PORT,RS485_NRE,LOW,DISABLE,DISABLE);			//init modbus receive enable pin		//only necessary for low power mode builds
 	modbus_init(UART1,500000,RS485_DE_PORT,RS485_DE,SLAVEID);					//init modbus      //note this version of modbus has been modified to support sleep mode
 	
-	NVIC_EnableIRQ(PIOA_IRQn);
 	pio_set_output(TEMP_SEL0_PORT,TEMP_SEL0,LOW,DISABLE,DISABLE);
 	pio_set_output(TEMP_SEL1_PORT,TEMP_SEL1,LOW,DISABLE,DISABLE);
 	pio_set_output(TEMP_SEL2_PORT,TEMP_SEL2,LOW,DISABLE,DISABLE);
@@ -45,9 +44,9 @@ void board_init(void)
 	
 	pio_set_output(AFE_EN_PORT,AFE_EN,HIGH,DISABLE,DISABLE);
 	
-	pio_set_output(NBAT_EN_PORT,NBAT_EN,LOW,DISABLE,DISABLE);
+	pio_set_output(NBAT_EN_PORT,NBAT_EN,HIGH,DISABLE,DISABLE);
 	
-	pio_set_output(BOARD_LED_PORT,BOARD_LED,HIGH,DISABLE,DISABLE);
+	pio_set_output(BOARD_LED_PORT,BOARD_LED,LOW,DISABLE,DISABLE);
 	
 	pio_set_input(PWR_SW_PORT,PWR_SW,PIO_DEBOUNCE);
 	
@@ -68,6 +67,9 @@ void board_init(void)
 	pio_enable_pin_interrupt(0);
 	pio_enable_pin_interrupt(14);
 	
-	
-	
+	NVIC_EnableIRQ(RTT_IRQn);
+	pmc_enable_periph_clk(ID_RTT);
+	rtt_init(RTT,0);
+	rtt_write_alarm_time(RTT,PERIODIC_WAKEUP_TIME * 60/2);
+	rtt_enable_interrupt(RTT, RTT_MR_ALMIEN);
 }
