@@ -5,7 +5,7 @@
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.ARMGCC.C</ToolchainName>
     <ProjectGuid>dce6c7e3-ee26-4d79-826b-08594b9ad897</ProjectGuid>
-    <avrdevice>ATSAM4S4A</avrdevice>
+    <avrdevice>ATSAM4S4B</avrdevice>
     <avrdeviceseries>sam4s</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>C</Language>
@@ -257,20 +257,31 @@
       </AAFDebugFiles>
     </AAFDebugger>
     <avrtool>com.atmel.avrdbg.tool.samice</avrtool>
-    <avrtoolserialnumber>801030912</avrtoolserialnumber>
-    <avrdeviceexpectedsignature>0x288B09E0</avrdeviceexpectedsignature>
+    <avrtoolserialnumber>801028741</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x289B09E0</avrdeviceexpectedsignature>
     <com_atmel_avrdbg_tool_samice>
       <ToolOptions>
         <InterfaceProperties>
           <SwdClock>4000000</SwdClock>
+          <JtagEnableExtResetOnStartSession>true</JtagEnableExtResetOnStartSession>
+          <JtagInChain>false</JtagInChain>
+          <JtagDevicesBefore>0</JtagDevicesBefore>
+          <JtagDevicesAfter>0</JtagDevicesAfter>
+          <JtagInstrBitsBefore>0</JtagInstrBitsBefore>
+          <JtagInstrBitsAfter>0</JtagInstrBitsAfter>
+          <JtagSelectedDeviceIndexInChain>0</JtagSelectedDeviceIndexInChain>
+          <JtagDbgClock>4000000</JtagDbgClock>
+          <JtagDaisyChainDevices>
+          </JtagDaisyChainDevices>
         </InterfaceProperties>
-        <InterfaceName>SWD</InterfaceName>
+        <InterfaceName>JTAG</InterfaceName>
+        <JlinkConfigFile>C:\Users\blake\OSUCS\Clubs\Robotics\Rover_2021_2022\software\firmware\ModbusDevelopment\ModbusDevelopment\jlink.config</JlinkConfigFile>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.samice</ToolType>
-      <ToolNumber>801030912</ToolNumber>
+      <ToolNumber>801028741</ToolNumber>
       <ToolName>J-Link</ToolName>
     </com_atmel_avrdbg_tool_samice>
-    <avrtoolinterface>SWD</avrtoolinterface>
+    <avrtoolinterface>JTAG</avrtoolinterface>
     <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -1133,6 +1144,12 @@
     <None Include="src\config\conf_usb.h">
       <SubType>compile</SubType>
     </None>
+    <Compile Include="src\config\port.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\config\port.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\config\modbus.c">
       <SubType>compile</SubType>
     </Compile>

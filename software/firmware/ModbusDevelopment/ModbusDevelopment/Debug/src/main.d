@@ -138,7 +138,7 @@ src/main.d src/main.o: ../src/main.c ../src/asf.h \
  ../src/ASF/common/services/usb/udc/udc.h \
  ../src/ASF/common/services/usb/udc/udd.h \
  ../src/ASF/sam/drivers/pio/pio_handler.h ../src/config/modbus.h \
- ../src/config/registers.h
+ ../src/config/port.h ../src/config/registers.h
 
 ../src/asf.h:
 
@@ -435,5 +435,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\arm\arm-gnu-toolchain\arm-no
 ../src/ASF/sam/drivers/pio/pio_handler.h:
 
 ../src/config/modbus.h:
+
+../src/config/port.h:
 
 ../src/config/registers.h:

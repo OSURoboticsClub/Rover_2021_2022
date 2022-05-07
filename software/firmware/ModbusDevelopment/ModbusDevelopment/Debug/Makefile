@@ -112,6 +112,7 @@ C_SRCS +=  \
 ../src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.c \
 ../src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.c \
 ../src/ASF/sam/utils/syscalls/gcc/syscalls.c \
+../src/config/port.c \
 ../src/config/modbus.c \
 ../src/main.c
 
@@ -144,6 +145,7 @@ src/ASF/common/utils/interrupt/interrupt_sam_nvic.o \
 src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.o \
 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o \
 src/ASF/sam/utils/syscalls/gcc/syscalls.o \
+src/config/port.o \
 src/config/modbus.o \
 src/main.o
 
@@ -169,6 +171,7 @@ src/ASF/common/utils/interrupt/interrupt_sam_nvic.o \
 src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.o \
 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o \
 src/ASF/sam/utils/syscalls/gcc/syscalls.o \
+src/config/port.o \
 src/config/modbus.o \
 src/main.o
 
@@ -194,6 +197,7 @@ src/ASF/common/utils/interrupt/interrupt_sam_nvic.d \
 src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.d \
 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.d \
 src/ASF/sam/utils/syscalls/gcc/syscalls.d \
+src/config/port.d \
 src/config/modbus.d \
 src/main.d
 
@@ -219,6 +223,7 @@ src/ASF/common/utils/interrupt/interrupt_sam_nvic.d \
 src/ASF/sam/utils/cmsis/sam4s/source/templates/gcc/startup_sam4s.d \
 src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.d \
 src/ASF/sam/utils/syscalls/gcc/syscalls.d \
+src/config/port.d \
 src/config/modbus.d \
 src/main.d
 
@@ -378,6 +383,13 @@ src/ASF/sam/utils/cmsis/sam4s/source/templates/system_sam4s.o: ../src/ASF/sam/ut
 	
 
 src/ASF/sam/utils/syscalls/gcc/syscalls.o: ../src/ASF/sam/utils/syscalls/gcc/syscalls.c
+	@echo Building file: $<
+	@echo Invoking: ARM/GNU C Compiler : 6.3.1
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAM4S4B__ -DDEBUG -Dscanf=iscanf -DBOARD=USER_BOARD -DARM_MATH_CM4=true -Dprintf=iprintf -DUDD_ENABLE  -I"../src/ASF/common/boards" -I"../src/ASF/sam/utils" -I"../src/ASF/sam/utils/header_files" -I"../src/ASF/sam/utils/preprocessor" -I"../src/ASF/thirdparty/CMSIS/Include" -I"../src/ASF/thirdparty/CMSIS/Lib/GCC" -I"../src/ASF/common/utils" -I"../src/ASF/sam/utils/cmsis/sam4s/include" -I"../src/ASF/common/boards/user_board" -I"../src" -I"../src/config" -I"../src/ASF/sam/drivers/pio" -I"../src/ASF/sam/drivers/pmc" -I"../src/ASF/sam/drivers/pwm" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/ioport" -I"../src/ASF/sam/drivers/adc" -I"../src/ASF/sam/drivers/usart" -I"../src/ASF/sam/drivers/matrix" -I"../src/ASF/common/services/sleepmgr" -I"../src/ASF/common/services/usb" -I"../src/ASF/common/services/usb/class/cdc" -I"../src/ASF/common/services/usb/class/cdc/device" -I"../src/ASF/common/services/usb/udc" -I"../src/ASF/sam/drivers/udp" -I"../src/ASF/sam/drivers/uart"  -O1 -fdata-sections -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m4 -c -pipe -fno-strict-aliasing -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -std=gnu99 -ffunction-sections -fdata-sections -Wchar-subscripts -Wcomment -Wformat=2 -Wimplicit-int -Wmain -Wparentheses -Wsequence-point -Wreturn-type -Wswitch -Wtrigraphs -Wunused -Wuninitialized -Wunknown-pragmas -Wfloat-equal -Wundef -Wshadow -Wbad-function-cast -Wwrite-strings -Wsign-compare -Waggregate-return  -Wmissing-declarations -Wformat -Wmissing-format-attribute -Wno-deprecated-declarations -Wpacked -Wredundant-decls -Wnested-externs -Wlong-long -Wunreachable-code -Wcast-align --param max-inline-insns-single=500 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+src/config/port.o: ../src/config/port.c
 	@echo Building file: $<
 	@echo Invoking: ARM/GNU C Compiler : 6.3.1
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\arm\arm-gnu-toolchain\bin\arm-none-eabi-gcc.exe$(QUOTE)  -x c -mthumb -D__SAM4S4B__ -DDEBUG -Dscanf=iscanf -DBOARD=USER_BOARD -DARM_MATH_CM4=true -Dprintf=iprintf -DUDD_ENABLE  -I"../src/ASF/common/boards" -I"../src/ASF/sam/utils" -I"../src/ASF/sam/utils/header_files" -I"../src/ASF/sam/utils/preprocessor" -I"../src/ASF/thirdparty/CMSIS/Include" -I"../src/ASF/thirdparty/CMSIS/Lib/GCC" -I"../src/ASF/common/utils" -I"../src/ASF/sam/utils/cmsis/sam4s/include" -I"../src/ASF/common/boards/user_board" -I"../src" -I"../src/config" -I"../src/ASF/sam/drivers/pio" -I"../src/ASF/sam/drivers/pmc" -I"../src/ASF/sam/drivers/pwm" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/ioport" -I"../src/ASF/sam/drivers/adc" -I"../src/ASF/sam/drivers/usart" -I"../src/ASF/sam/drivers/matrix" -I"../src/ASF/common/services/sleepmgr" -I"../src/ASF/common/services/usb" -I"../src/ASF/common/services/usb/class/cdc" -I"../src/ASF/common/services/usb/class/cdc/device" -I"../src/ASF/common/services/usb/udc" -I"../src/ASF/sam/drivers/udp" -I"../src/ASF/sam/drivers/uart"  -O1 -fdata-sections -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m4 -c -pipe -fno-strict-aliasing -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -std=gnu99 -ffunction-sections -fdata-sections -Wchar-subscripts -Wcomment -Wformat=2 -Wimplicit-int -Wmain -Wparentheses -Wsequence-point -Wreturn-type -Wswitch -Wtrigraphs -Wunused -Wuninitialized -Wunknown-pragmas -Wfloat-equal -Wundef -Wshadow -Wbad-function-cast -Wwrite-strings -Wsign-compare -Waggregate-return  -Wmissing-declarations -Wformat -Wmissing-format-attribute -Wno-deprecated-declarations -Wpacked -Wredundant-decls -Wnested-externs -Wlong-long -Wunreachable-code -Wcast-align --param max-inline-insns-single=500 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

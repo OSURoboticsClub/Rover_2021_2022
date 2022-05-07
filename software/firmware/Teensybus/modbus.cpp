@@ -7,8 +7,9 @@
 			Kurtis Dinelle
  */
 
+#include <stdbool.h>
 #include <modbus.h>
-#include <Arduino.h>
+#include <string.h> // For memcpy
 
 uint8_t slaveID;
 
@@ -16,7 +17,6 @@ uint8_t slaveID;
 // uint16_t	transmitDataSize = 0;
 // uint8_t		rxBuffer[RX_BUFFER_SIZE];
 uint16_t packetSize;
-uint16_t transmitIndex; // helper variables for transmitting
 bool endTransmission;
 
 uint16_t intRegisters[REGISTER_AR_SIZE];
@@ -27,18 +27,9 @@ bool boolRegisters[REGISTER_AR_SIZE];
 uint8_t responsePacket[TX_BUFFER_SIZE];
 uint16_t responsePacketSize;
 
-struct ringBuffer
-{				   // ring buffer to serve as rx buffer. Helps solve lots of data shifting problems
-	uint16_t head; // Next free space in the buffer
-	uint16_t tail; // Start of unprocessed data and beginning of packet
-	uint8_t data[RX_BUFFER_SIZE];
-} rxBuffer = {
+struct ringBuffer rxBuffer = {
 	.head = 0,
 	.tail = 0};
-
-// To handle edge case if a packet starts toward end of buffer but wraps around to beginning
-#define PKT_WRAP_ARND(idx) \
-	((idx) & (RX_BUFFER_SIZE - 1))
 
 /* All convert functions assume they are receiving unsigned values in
  * big-endian format. */
@@ -214,11 +205,9 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg)
 	return size;
 }
 
-void modbus_init(const uint32_t baud, const uint8_t slave_id)
+void modbus_init(const uint8_t slave_id)
 {
 	slaveID = slave_id;
-
-	Serial.begin(baud);
 }
 
 void modbus_update(void)
@@ -230,7 +219,6 @@ void modbus_update(void)
 	uint8_t *packet = pop_packet(); // packet is complete, so pull it out
 	if (packet[SLAVE_ID_IDX] != slaveID)
 		return; // disregard if the packet doesn't apply to this slave
-	
 	// extract register info from packet
 	uint16_t start_reg = packet[START_REG_H_IDX] << 8 | packet[START_REG_L_IDX];
 	uint16_t num_registers = packet[NUM_REG_H_IDX] << 8 | packet[NUM_REG_L_IDX];
@@ -250,6 +238,7 @@ void modbus_update(void)
 		break;
 	}
 	case FC_WRITE_MULT:
+	{
 		responsePacketSize = WR_RESP_PACKET_SIZE;
 		// responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];
 		responsePacket[SLAVE_ID_IDX] = MASTER_ADRESS;
@@ -261,6 +250,7 @@ void modbus_update(void)
 		writeHandler(&packet[WR_DATA_BYTE_START], start_reg, end_reg);
 		break;
 	}
+	}
 	// add the CRC to the response packet here
 	uint16_t responceCRC = ModRTU_CRC(responsePacket, responsePacketSize - CRC_SIZE); // calculate crc
 
@@ -268,17 +258,7 @@ void modbus_update(void)
 	responsePacket[responsePacketSize - 1] = (responceCRC >> 8) & 0xff;
 
 	// write out response packet
-	Serial.write(responsePacket, responsePacketSize);
-}
-
-// interrupt handler for incoming data
-void serialEvent()
-{
-	while (Serial.available())
-	{ // confirm there is data ready to be read
-		rxBuffer.data[rxBuffer.head] = Serial.read();
-		rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1); // iterate the head through the ring buffer
-	}
+	portWrite(responsePacket, responsePacketSize);
 }
 
 uint8_t *pop_packet()

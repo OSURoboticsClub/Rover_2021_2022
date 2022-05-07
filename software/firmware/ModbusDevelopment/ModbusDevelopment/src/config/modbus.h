@@ -36,6 +36,9 @@
 *Inside of a fast opperating main loop run the function modbus_update();
 ***********************************************************************/
 
+#include <stdint.h>
+#include <stdbool.h>
+#include <port.h>
 
 #ifndef MODBUS_H_
 #define MODBUS_H_
@@ -47,15 +50,13 @@ extern float		floatRegisters[REGISTER_AR_SIZE];
 extern char			charRegisters[REGISTER_AR_SIZE];
 extern bool			boolRegisters[REGISTER_AR_SIZE];
 
-void modbus_init(Uart*, const uint32_t, Pio*, const uint32_t, const uint8_t);    // Initialize modbus uart port, clock, memory, transmit enable, and ...
+void modbus_init(const uint8_t);    // Initialize modbus uart port, clock, memory, transmit enable, and ...
 
 void modbus_update(void);   //This function does all of the heavy lifting for modbus
 
 #define FC_WRITE_MULT	0x10	//write multiple registers function code
 #define FC_READ_MULT	0x03	//read multiple registers function code
 
-#define RX_BUFFER_SIZE		1024	//size of RX buffer, this determines max incoming packet size
-#define TX_BUFFER_SIZE		1024    //							!!!!!! Important change this value to the size of the tx buffer in the UART module
 
 #define INT_REG_OFFSET		0		//Offset for translating uint16_t array index to register index
 #define FLOAT_REG_OFFSET	256		//Offset for translating float array index to register index
@@ -95,7 +96,6 @@ void modbus_update(void);   //This function does all of the heavy lifting for mo
 //#define MODBUS_DEBUG				//uncomment this to enable debugging over USB_CDC this depends on USB_CDC being initialized elsewhere
 
 //internal functions:
-void UART_Handler(void);
 uint8_t* pop_packet();
 bool packet_complete();
 uint16_t ModRTU_CRC(uint8_t* buf, int len);

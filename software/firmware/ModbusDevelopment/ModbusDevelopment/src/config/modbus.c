@@ -8,22 +8,18 @@
  */ 
 
 
-#include <asf.h>
+#include <stdbool.h>
 #include <modbus.h>
 #include <string.h> // For memcpy
 
-Uart *RS485Port;
 uint8_t slaveID;
 
-Pio *globalEnPinPort;
-uint32_t globalEnPin;
 
 
 //uint16_t	recievedDataSize = 0;
 //uint16_t	transmitDataSize = 0;
 //uint8_t		rxBuffer[RX_BUFFER_SIZE];
 uint16_t	packetSize;							
-uint16_t	transmitIndex;					//helper variables for transmitting
 bool		endTransmission;
 
 uint16_t	intRegisters[REGISTER_AR_SIZE];
@@ -35,17 +31,9 @@ bool		boolRegisters[REGISTER_AR_SIZE];
 uint8_t responsePacket[TX_BUFFER_SIZE];
 uint16_t responsePacketSize;
 
-struct ringBuffer{																	//ring buffer to serve as rx buffer. Helps solve lots of data shifting problems
-	uint16_t head; // Next free space in the buffer
-	uint16_t tail; // Start of unprocessed data and beginning of packet
-	uint8_t data[RX_BUFFER_SIZE];
-} rxBuffer = {
+struct ringBuffer rxBuffer = {
 	.head = 0,
 	.tail = 0};
-
-// To handle edge case if a packet starts toward end of buffer but wraps around to beginning
-#define PKT_WRAP_ARND(idx) \
-((idx) & (RX_BUFFER_SIZE - 1))
 
 /* All convert functions assume they are receiving unsigned values in
  * big-endian format. */
@@ -79,24 +67,6 @@ static uint8_t* floatToBytes_union(float f){
 	floatCoversionBytes[3] = u.data & 0xFF;
 	
 	return floatCoversionBytes;
-}
-
-static float convertToFloat_memcpy(const uint8_t data[4]){
-    uint32_t merged = MERGE_FOUR_BYTES(data);
-    float f = 0.0f;
-
-    // Should not cause buffer overflow if float is guaranteed size 4
-    memcpy(&f, &merged, 4);
-    return f;
-}
-
-
-static float convertToFloat_recast(const uint8_t data[4]){
-    /* We can't just cast the data pointer because if bytes are received in
-     * big endian and we are on a little endian machine (or vice-versa),
-     * we get a garbage value. So we just merge them into a single uint32. */
-    uint32_t merged = MERGE_FOUR_BYTES(data);
-    return *((float *)&merged);
 }
 
 // These are so trivial they probably don't even need to be functions
@@ -204,49 +174,11 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 		return size;
 	}
 		
+	return size;	
 }
 
-void modbus_init(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_t enPin, const uint8_t slave_id){
-	
-	RS485Port = port485;
+void modbus_init(const uint8_t slave_id){
 	slaveID = slave_id;
-	
-	if(RS485Port == UART0){
-		pmc_enable_periph_clk(ID_UART0);		//Enable the clocks to the UART modules
-		pio_set_peripheral(PIOA,PIO_PERIPH_A,PIO_PA9);		//Sets PA9 to RX
-		pio_set_peripheral(PIOA,PIO_PERIPH_A,PIO_PA10);		//Sets PA10 to TX
-		NVIC_EnableIRQ(UART0_IRQn);							//enables interrupts related to this port
-	}
-	
-	if(RS485Port == UART1){
-		pmc_enable_periph_clk(ID_UART1);		//Enable the clocks to the UART modules
-		pio_set_peripheral(PIOB,PIO_PERIPH_A,PIO_PB2);		//Sets PB2 to RX
-		pio_set_peripheral(PIOB,PIO_PERIPH_A,PIO_PB3);		//Sets PB3 to TX
-		NVIC_EnableIRQ(UART1_IRQn);							//enables interrupts related to this port
-	}
-	
-	uint32_t clockSpeed = sysclk_get_peripheral_bus_hz(RS485Port);		//gets CPU speed to for baud counter
-	
-	sam_uart_opt_t UARTSettings = {
-		.ul_baudrate = baud,			//sets baudrate
-		.ul_mode = UART_MR_CHMODE_NORMAL | UART_MR_PAR_NO,	//sets to normal mode
-		.ul_mck = clockSpeed			//sets baud counter clock
-	};
-	
-	uart_init(RS485Port, &UARTSettings);							//init the UART port
-	uart_enable_rx(RS485Port);
-	uart_enable_tx(RS485Port);
-	uart_enable_interrupt(RS485Port, UART_IER_RXRDY);				//Enable interrupt for incoming data
-	
-	pio_set_output(enPinPort,enPin,LOW,DISABLE,DISABLE);		//init the enable pin
-	globalEnPinPort = enPinPort;
-	globalEnPin = enPin;
-	
-	/*																//CRC engine cannot be used in the current configuration because the modbus RTU polynomial (0xA001) does not match any of the supported polynomials
-	uint8_t CRCMode = CRCCU_MR_ENABLE | CRCCU_MR_PTYPE_CCITT16;
-	pmc_enable_periph_clk(ID_CRCCU);							//init CRC Computation Unit
-	crccu_configure_mode(CRCCU, CRCMode)
-	*/
 }
 
 
@@ -256,14 +188,14 @@ void modbus_update(void){
 	if( !packet_complete()) return;									//check if an entire packet has been received otherwise return, also resolves overflow errors
 	uint8_t* packet = pop_packet();									//packet is complete, so pull it out
 	if(packet[SLAVE_ID_IDX] != slaveID) return;						//disregard if the packet doesn't apply to this slave
-	uint8_t CRC[2] = {packet[packetSize-2], packet[packetSize-1]};
 	// extract register info from packet
 	uint16_t start_reg = packet[START_REG_H_IDX] << 8 | packet[START_REG_L_IDX];
 	uint16_t num_registers = packet[NUM_REG_H_IDX] << 8 | packet[NUM_REG_L_IDX];
 	int end_reg = start_reg + num_registers;                                    // this register number is exclusive, so all valid register numbers are less than end_reg
 	// call read and write handlers based on function code
 	switch(packet[FC_IDX]) {
-		case FC_READ_MULT: ;													//semicolon resolves statement errors
+		case FC_READ_MULT:
+		{
 			uint16_t read_num_bytes = getReadResponseDataSize(start_reg, end_reg);
 			responsePacketSize = RD_RESP_PACKET_MIN_SIZE + read_num_bytes;
 			//responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];				//this was how the protocol used to be
@@ -272,7 +204,9 @@ void modbus_update(void){
 			responsePacket[RD_DATA_SIZE_IDX] = read_num_bytes;
 			readHandler(responsePacket+RD_DATA_BYTE_START, start_reg, end_reg);
 			break;
-		case FC_WRITE_MULT: ;
+		}
+		case FC_WRITE_MULT:
+		{
 			responsePacketSize = WR_RESP_PACKET_SIZE;
 			//responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];
 			responsePacket[SLAVE_ID_IDX] = MASTER_ADRESS;	
@@ -283,6 +217,7 @@ void modbus_update(void){
 			responsePacket[NUM_REG_L_IDX] = packet[NUM_REG_L_IDX];
 			writeHandler(&packet[WR_DATA_BYTE_START], start_reg, end_reg);
 			break;
+		}
 	}
 	// add the CRC to the response packet here
 	uint16_t responceCRC = ModRTU_CRC(responsePacket, responsePacketSize-CRC_SIZE);			//calculate crc
@@ -291,35 +226,7 @@ void modbus_update(void){
 	responsePacket[responsePacketSize-1] = (responceCRC>>8) & 0xff;
 	
 	// write out response packet
-	pio_set(globalEnPinPort,globalEnPin);				//transceiver transmit enable
-	transmitIndex = 0;
-	uart_enable_interrupt(RS485Port,UART_IMR_TXRDY);
-}
-
-//interrupt handler for incoming data
-void UART_Handler(void){
-	if(uart_is_rx_ready(RS485Port)){							//confirm there is data ready to be read
-		uart_read(RS485Port, &(rxBuffer.data[rxBuffer.head]));		//move the data into the next index of the rx buffer
-		rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1);		//iterate the head through the ring buffer
-	}else if(uart_is_tx_ready(RS485Port)){
-		if(transmitIndex < responsePacketSize){
-			uart_write(RS485Port, responsePacket[transmitIndex]);
-			transmitIndex++;
-		}else if(uart_is_tx_empty(RS485Port)){
-			pio_clear(globalEnPinPort,globalEnPin);
-			uart_disable_interrupt(RS485Port,UART_IMR_TXRDY);
-		}
-	}
-}
-
-
-//Regardless of what UART port triggers the interrupt, the behavior is the same
-void UART0_Handler(){
-	UART_Handler();
-}
-
-void UART1_Handler(){
-	UART_Handler();
+	portWrite(responsePacket, responsePacketSize);
 }
 
 uint8_t* pop_packet(){
@@ -364,7 +271,6 @@ bool packet_complete(){
 		pop_packet();
 		return false;																
 	}
-	uint8_t slave_id = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + SLAVE_ID_IDX)];
 	
 	//bool need_crc = false;															//helper variables				//need crc becomes redundent, because at a certain point you need the crc no mater what
 	uint8_t num_data_bytes = 0;														// Default 0 for packets with no data bytes
@@ -382,7 +288,7 @@ bool packet_complete(){
 	else if (func_code == FC_READ_MULT) {
 		if(buffer_get_data_sz() < WRITE_RES_PACKET_SIZE) return false;					//if the data size is less than this, we know the packet is incomplete
 		base_pkt_sz = WRITE_RES_PACKET_SIZE;											//we know the final packet size
-		//need_crc = true;																//still need crc because we need to confirm we are processing a complete packet and not some segment of another packet
+		// need_crc = true;																//still need crc because we need to confirm we are processing a complete packet and not some segment of another packet
 	}
 	
 	uint16_t full_pkt_sz = num_data_bytes + base_pkt_sz;								//calculate full packet size
