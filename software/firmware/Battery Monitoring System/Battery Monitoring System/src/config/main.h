@@ -53,14 +53,14 @@
 #define WAKEUP_TC			2
 
 
-#define OVER_VOLTAGE_THRESHOLD		4.25
+#define OVER_VOLTAGE_THRESHOLD		4.4
 #define UNDER_VOLTAGE_THRESHOLD		3.3
 #define CELL_OVER_TEMP_THRESHOLD	60.0
 #define PCB_OVER_TEMP_THRESHOLD		80.0
 #define UNDER_TEMP_THRESHOLD		1.0
-#define IST_OVER_CURRENT_THRESHOLD	200.0			//These numbers are temperarily high till the current sensor is working better.
-#define CTS_OVER_CURRENT_THRESHOLD	200.0
-#define CELL_IMBALANCE_THRESHOLD	0.2
+#define IST_OVER_CURRENT_THRESHOLD	500.0			//These numbers are temperarily high till the current sensor is working better.
+#define CTS_OVER_CURRENT_THRESHOLD	500.0
+#define CELL_IMBALANCE_THRESHOLD	0.4
 
 #define SIZE_OF_DATA_FLASH		QTY_PROTECTIONS + (3 * QTY_ANALOG_SOURCES) + 3
 #define FLASH_DATA_PAGE_ADDRESS (IFLASH0_ADDR + IFLASH0_SIZE - IFLASH0_PAGE_SIZE * 8)
