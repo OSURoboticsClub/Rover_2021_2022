@@ -52,17 +52,17 @@ void serialEventHandler()
 
 void serialEvent1()
 {
-	serialEventHandler()
+	serialEventHandler();
 }
 
 void serialEvent2()
 {
-	serialEventHandler()
+	serialEventHandler();
 }
 
 void serialEvent3()
 {
-	serialEventHandler()
+	serialEventHandler();
 }
 
 #endif
