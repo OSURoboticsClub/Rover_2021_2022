@@ -81,7 +81,7 @@ void modbus_update(void); // This function does all of the heavy lifting for mod
 #define WR_RESP_PACKET_SIZE 8	  // packet size for write multiple response packet
 #define RD_RESP_PACKET_MIN_SIZE 5 // packet size for read multiple response with no data bytes added yet
 
-#define ABS_MIN_PACKET_SIZE 6		   // this is the smallest possible packet size in the protocol in bytes
+#define ABS_MIN_PACKET_SIZE 7		   // this is the smallest possible packet size in the protocol in bytes
 #define ABS_MIN_WRITE_PACKET_SIZE 10   // this is the smallest possible packet size for a write command from the master
 #define WRITE_RES_PACKET_SIZE 8		   // this is the only possible packet size for a write response from the slave This is the same as the size of read from master
 #define ABS_MIN_READ_RES_PACKET_SIZE 6 // this is the smallest possible packet size for a read response from the slave

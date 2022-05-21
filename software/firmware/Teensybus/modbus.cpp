@@ -85,6 +85,36 @@ static bool convertToBool(const uint8_t data[1])
 	return data[0];
 }
 
+void popToFc()
+{
+	uint16_t FCLoc = PKT_WRAP_ARND(rxBuffer.tail + FC_IDX + 1);
+	// uint16_t startHiLoc = PKT_WRAP_ARND(rxBuffer.tail + START_REG_H_IDX + 1);
+	// uint16_t numHiLoc = PKT_WRAP_ARND(rxBuffer.tail + NUM_REG_H_IDX + 1);
+	uint8_t checkFCByte = rxBuffer.data[FCLoc];
+	// uint8_t checkStartHiByte = rxBuffer.data[startHiLoc];
+	// uint8_t checkNumHiByte = rxBuffer.data[numHiLoc];
+	// while (((checkFCByte != FC_READ_MULT && checkFCByte != FC_WRITE_MULT) || checkNumHiByte >= 4 || checkStartHiByte >= 4) && FCLoc != rxBuffer.head)
+	while (checkFCByte != FC_READ_MULT && checkFCByte != FC_WRITE_MULT && FCLoc != rxBuffer.head)
+	{
+		FCLoc = PKT_WRAP_ARND(FCLoc + 1);
+		// startHiLoc = PKT_WRAP_ARND(startHiLoc + 1);
+		// numHiLoc = PKT_WRAP_ARND(numHiLoc + 1);
+		checkFCByte = rxBuffer.data[FCLoc];
+		// checkStartHiByte = rxBuffer.data[startHiLoc];
+		// checkNumHiByte = rxBuffer.data[numHiLoc];
+	}
+	if (PKT_WRAP_ARND(FCLoc - 1) >= rxBuffer.tail)
+	{
+		packetSize = PKT_WRAP_ARND(FCLoc - 1) - rxBuffer.tail;
+	}
+	else
+	{
+		packetSize = (RX_BUFFER_SIZE - rxBuffer.tail) + PKT_WRAP_ARND(FCLoc - 1);
+	}
+
+	pop_packet();
+}
+
 // modbus functions
 void readHandler(uint8_t *responsePacket, uint16_t start_reg, uint16_t end_reg)
 {
@@ -288,36 +318,33 @@ bool packet_complete()
 {
 	packetSize = 0; // Reset this in case packet is not complete
 
+	uint8_t slave_id = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + SLAVE_ID_IDX)];
 	uint8_t func_code = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + FC_IDX)];
 	uint8_t start_reg_hi = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + START_REG_H_IDX)];
+	uint8_t start_reg_lo = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + START_REG_L_IDX)];
 	uint8_t num_reg_hi = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + NUM_REG_H_IDX)];
+	uint8_t num_reg_lo = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + NUM_REG_L_IDX)];
+	uint8_t num_data_bytes = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + WR_DATA_SIZE_IDX)];
 
 	// if the function code isn't write or read or start register/number of registers high bytes are too big, we know somethings fucked up
-	if ((func_code != FC_WRITE_MULT && func_code != FC_READ_MULT) || start_reg_hi >= 4 || num_reg_hi >= 4)
+	// also we may as well skip if the slave id doesn't match
+	if ((func_code != FC_WRITE_MULT && func_code != FC_READ_MULT) || start_reg_hi >= 4 || num_reg_hi >= 4 || slave_id != slaveID)
 	{
 		// need to write a graceful handler here
 		// needs to be a while loop that iterates through the buffer looking for a valid function code, then pops out all the garbage that came before
-		uint8_t checkByte = func_code;
-		uint16_t FCLoc = PKT_WRAP_ARND(rxBuffer.tail + FC_IDX);
-		while (checkByte != FC_READ_MULT && checkByte != FC_WRITE_MULT && FCLoc != rxBuffer.head)
-		{
-			FCLoc = PKT_WRAP_ARND(FCLoc + 1);
-			checkByte = rxBuffer.data[FCLoc];
-		}
-		if (PKT_WRAP_ARND(FCLoc - 1) >= rxBuffer.tail)
-		{
-			packetSize = PKT_WRAP_ARND(FCLoc - 1) - rxBuffer.tail;
-		}
-		else
-		{
-			packetSize = (RX_BUFFER_SIZE - rxBuffer.tail) + PKT_WRAP_ARND(FCLoc - 1);
-		}
-		pop_packet();
+		popToFc();
+		return false;
+	}
+
+	// lets make sure the number of data bytes is correct
+	if (func_code == 0x10 && num_data_bytes != getReadResponseDataSize(start_reg_hi << 8 & start_reg_lo, num_reg_hi << 8 & num_reg_lo)) // calc what size should be for write packet here????????????????????????????????????????????????
+	{
+		popToFc();
 		return false;
 	}
 
 	// bool need_crc = false;															//helper variables				//need crc becomes redundent, because at a certain point you need the crc no mater what
-	uint8_t num_data_bytes = 0; // Default 0 for packets with no data bytes
+	num_data_bytes = 0; // Default 0 for packets with no data bytes
 	uint16_t base_pkt_sz;		// size of packet not including data bytes
 
 	// Handle write command from master

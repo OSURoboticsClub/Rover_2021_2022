@@ -41,13 +41,28 @@ void portWrite(uint8_t *packet, uint16_t packetSize)
 }
 
 // interrupt handler for incoming data
-void serialEvent()
+void serialEventHandler()
 {
-    if (port->available())
+    while (port->available())
     { // confirm there is data ready to be read
         rxBuffer.data[rxBuffer.head] = port->read();
         rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1); // iterate the head through the ring buffer
     }
+}
+
+void serialEvent1()
+{
+    serialEventHandler()
+}
+
+void serialEvent2()
+{
+    serialEventHandler()
+}
+
+void serialEvent3()
+{
+    serialEventHandler()
 }
 
 #endif

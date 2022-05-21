@@ -305,7 +305,7 @@ bool packet_complete(){
 	}
 	
 	//bool need_crc = false;															//helper variables				//need crc becomes redundent, because at a certain point you need the crc no mater what
-	uint8_t num_data_bytes = 0;														// Default 0 for packets with no data bytes
+	num_data_bytes = 0;														// Default 0 for packets with no data bytes
 	uint16_t base_pkt_sz;															//size of packet not including data bytes
 	
 	// Handle write command from master

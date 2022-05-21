@@ -3,8 +3,8 @@
 #define TEENSYBUS
 //#define ATMELBUS
 
-#define RX_BUFFER_SIZE 1024 // size of RX buffer, this determines max incoming packet size
-#define TX_BUFFER_SIZE 1024 //							!!!!!! Important change this value to the size of the tx buffer in the UART module
+#define RX_BUFFER_SIZE 8192 // size of RX buffer, this determines max incoming packet size
+#define TX_BUFFER_SIZE 8192 //							!!!!!! Important change this value to the size of the tx buffer in the UART module
 
 // To handle edge case if a packet starts toward end of buffer but wraps around to beginning
 #define PKT_WRAP_ARND(idx) \
@@ -26,12 +26,17 @@ extern uint16_t responsePacketSize;
 
 #include <Arduino.h>
 
+extern HardwareSerial *port;
+
 void portSetup(uint8_t, uint8_t, const uint32_t, const uint16_t);
 
 void portWrite(uint8_t *, uint16_t);
 
 // interrupt handler for incoming data
-void serialEvent();
+void serialEventHandler();
+void serialEvent1();
+void serialEvent2();
+void serialEvent3();
 
 #endif
 
