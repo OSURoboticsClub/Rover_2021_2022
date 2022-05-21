@@ -265,8 +265,7 @@ void triggerProtections(){
 	}else if(batteryStable){
 		ignoreProtections = false;
 		pio_clear(BOARD_LED_PORT,BOARD_LED);
-		if(pio_get(PWR_SW_PORT,PIO_INPUT,PWR_SW))
-			pio_clear(NBAT_EN_PORT,NBAT_EN);
+		pio_clear(NBAT_EN_PORT,NBAT_EN);
 	}
 }
 
@@ -386,8 +385,6 @@ void printStatus(){
 	sprintf(str, "Fet_Temp,%f,%f,%f\n\r",MovingAverageADCData[FETTEMPIDX],minimumValues[FETTEMPIDX],maximumValues[FETTEMPIDX]);
 	printString(str);
 	sprintf(str, "Output_Voltage,%f,%f,%f\n\r",MovingAverageADCData[STACKVOLTIDX],minimumValues[STACKVOLTIDX],maximumValues[STACKVOLTIDX]);
-	printString(str);
-	sprintf(str, "RTT Value: %i\n\r", RTT->RTT_VR);
 	printString(str);
 }
 
