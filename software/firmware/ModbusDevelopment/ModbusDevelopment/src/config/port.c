@@ -10,21 +10,21 @@ void portSetup(uint8_t serialNumber, uint8_t TXEnablePin, const uint32_t baud, c
 
 	timeout = serialTimeout;
 
-	switch (serialNumber)
-	{
-		case 1:
-		port = &Serial1;
-		break;
-		case 2:
-		port = &Serial2;
-		break;
-		case 3:
-		port = &Serial3;
-		break;
-		case 0:
-		default:
-		break;
-	}
+    switch (serialNumber)
+    {
+    case 1:
+        port = &Serial1;
+        break;
+    case 2:
+        port = &Serial2;
+        break;
+    case 3:
+        port = &Serial3;
+        break;
+    case 0:
+    default:
+        break;
+    }
 
 	port->begin(baud);
 	if (TXEnablePin > 1)
@@ -41,13 +41,28 @@ void portWrite(uint8_t *packet, uint16_t packetSize)
 }
 
 // interrupt handler for incoming data
-void serialEvent()
+void serialEventHandler()
 {
-	if (port->available())
-	{ // confirm there is data ready to be read
-		rxBuffer.data[rxBuffer.head] = port->read();
-		rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1); // iterate the head through the ring buffer
-	}
+    while (port->available())
+    { // confirm there is data ready to be read
+        rxBuffer.data[rxBuffer.head] = port->read();
+        rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1); // iterate the head through the ring buffer
+    }
+}
+
+void serialEvent1()
+{
+	serialEventHandler()
+}
+
+void serialEvent2()
+{
+	serialEventHandler()
+}
+
+void serialEvent3()
+{
+	serialEventHandler()
 }
 
 #endif
