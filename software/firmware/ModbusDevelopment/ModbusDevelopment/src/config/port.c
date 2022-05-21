@@ -2,8 +2,35 @@
 
 #ifdef TEENSYBUS
 
-HardwareSerial *port;
+HardwareSerial *port = NULL;
+usb_serial_class *sw_port = NULL;
 uint16_t timeout;
+
+static void _begin(uint32_t baud)
+{
+    if (sw_port)
+        sw_port->begin(baud);
+    else
+        port->begin(baud);
+}
+
+static int _read()
+{
+    return sw_port ? sw_port->read() : port->read();
+}
+
+static void _write(uint8_t *packet, uint16_t packetSize)
+{
+    if (sw_port)
+        sw_port->write(packet, packetSize);
+    else    
+        port->write(packet, packetSize);
+}
+
+static int _available()
+{
+    return sw_port ? sw_port->available() : port->available();
+}
 
 void portSetup(uint8_t serialNumber, uint8_t TXEnablePin, const uint32_t baud, const uint16_t serialTimeout)
 {
@@ -22,12 +49,14 @@ void portSetup(uint8_t serialNumber, uint8_t TXEnablePin, const uint32_t baud, c
         port = &Serial3;
         break;
     case 0:
+	sw_port = &Serial;
+	break;
     default:
         break;
     }
 
-	port->begin(baud);
-	if (TXEnablePin > 1)
+	_begin(baud);
+	if (port && TXEnablePin > 1)
 	{
 		pinMode(TXEnablePin, OUTPUT);
 		digitalWrite(TXEnablePin, LOW);
@@ -37,17 +66,22 @@ void portSetup(uint8_t serialNumber, uint8_t TXEnablePin, const uint32_t baud, c
 
 void portWrite(uint8_t *packet, uint16_t packetSize)
 {
-	port->write(packet, packetSize);
+	_write(packet, packetSize);
 }
 
 // interrupt handler for incoming data
 void serialEventHandler()
 {
-    while (port->available())
+    while (_available())
     { // confirm there is data ready to be read
-        rxBuffer.data[rxBuffer.head] = port->read();
+        rxBuffer.data[rxBuffer.head] = _read();
         rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1); // iterate the head through the ring buffer
     }
+}
+
+void serialEvent()
+{
+	serialEventHandler();
 }
 
 void serialEvent1()
