@@ -1,7 +1,5 @@
-import re
 import struct
 import serial
-from typing import Any, List, Tuple
 
 # Constants
 _WRITE_INSTR = 16
@@ -22,26 +20,34 @@ _REG_MAX = 1023
 
 _MAX_DATA_BYTES = 255
 
-class Node:
+_serialports = {}
+
+
+class Instrument:
     """Represents a slave
     """
     def __init__(
         self,
-        port: str,
-        slave_id: int,
-        baudrate: int = 9600
-    ) -> None:
+        port,
+        slave_id,
+        baudrate=19200
+    ):
         """Opens serial comms with a node and assigns it a slave id
         """
         self.slave_id = slave_id
         self.port = port
-        self.serial = serial.Serial(port, baudrate, timeout=1)
 
-    def write(
+        if port not in _serialports:
+            self.serial = _serialports[port] = serial.Serial(port, baudrate,
+                                                             timeout=1)
+        else:
+            self.serial = _serialports[port]
+
+    def write_registers(
         self,
-        register_addr: int,
-        values: List[Any]
-    ) -> None:
+        register_addr,
+        values
+    ):
         """Write a list of values starting at register_addr
         """
 
@@ -69,23 +75,27 @@ class Node:
         byte_string += _create_byte_string_int8([header[4]])
         byte_string += _create_byte_string(values)
 
-        packet = bytes(byte_string, encoding='latin1')
+        packet = bytes(byte_string)
         packet = _add_crc(packet)
 
         # Send the instruction to slave, then read its response
         self.serial.write(packet)
         resp = self.serial.read(_calculate_resp_size(_WRITE_INSTR))
 
+        if not resp:
+            print('No response.')
+            return
+
         # Do a CRC check (probably not necessary since this is just discarded)
-        crc = resp[-2] << 8 | resp[-1]
+        crc = ord(resp[-2]) << 8 | ord(resp[-1])
         if not _check_crc(resp, crc):
             print('Write response CRC check failed.')
 
-    def read(
+    def read_registers(
         self,
-        register_addr: int,
-        num_registers: int
-    ) -> List[Any]:
+        register_addr,
+        num_registers
+    ):
         """Read num_registers starting at register_addr
         """
         # The beginning of all read packets
@@ -100,7 +110,7 @@ class Node:
         byte_string = _create_byte_string_int8(header[0:2])
         byte_string += _create_byte_string(header[2:4])
 
-        packet = bytes(byte_string, encoding='latin1')
+        packet = bytes(byte_string)
         packet = _add_crc(packet)
 
         # Find the count of each register in the packet to calculate
@@ -137,8 +147,25 @@ class Node:
             return None
         return data[0:-1]  # Return data byte values (minus CRC)
 
+    def write_register(
+        self,
+        register_addr,
+        value
+    ):
+        """Write a single value starting at register_addr
+        """
+        self.write_registers(register_addr, [value])
 
-def _create_byte_string(values: List[Any]) -> str:
+    def read_register(
+        self,
+        register_addr
+    ):
+        """Read value from register_addr
+        """
+        return self.read_registers(register_addr, 1)[0]
+
+
+def _create_byte_string(values):
     """Convert a list of values into a byte string
     """
     bstr = ''
@@ -150,11 +177,11 @@ def _create_byte_string(values: List[Any]) -> str:
         elif isinstance(v, float):
             bstr += _pack('>f', v)
         elif isinstance(v, str):  # Would probably act weird if v is >1 char
-            bstr += _pack('>c', bytes(v, encoding='latin1'))
+            bstr += _pack('>c', bytes(v))
     return bstr
 
 
-def _create_byte_string_int8(values: List[int]) -> str:
+def _create_byte_string_int8(values):
     """Converts a list of integers into a uint8 byte string
     """
     bstr = ''
@@ -163,7 +190,7 @@ def _create_byte_string_int8(values: List[int]) -> str:
     return bstr
 
 
-def _calculate_num_bytes(values: List[Any]) -> int:
+def _calculate_num_bytes(values):
     """Calculates the total number of bytes for a list of values
     """
     num_bytes = 0
@@ -179,7 +206,7 @@ def _calculate_num_bytes(values: List[Any]) -> int:
     return num_bytes
 
 
-def _calculate_resp_size(instr: int, num_bytes: int = 0) -> int:
+def _calculate_resp_size(instr, num_bytes=0):
     """Calculates the expected response size for a command
     """
     if instr == _WRITE_INSTR:
@@ -188,12 +215,12 @@ def _calculate_resp_size(instr: int, num_bytes: int = 0) -> int:
         return _READ_RESP_SZ_BASE + num_bytes
 
 
-def _calculate_crc(packet: bytes) -> int:
+def _calculate_crc(packet):
     """Calculates the CRC for a list of values
     """
     crc = 0xffff
     for i in range(len(packet)):
-        crc ^= packet[i]
+        crc ^= ord(packet[i])
 
         for j in range(8, 0, -1):
             if((crc & 0x001) != 0):
@@ -205,26 +232,26 @@ def _calculate_crc(packet: bytes) -> int:
     return crc
 
 
-def _check_crc(resp: bytes, crc: int) -> bool:
+def _check_crc(resp, crc):
     """Checks that the CRC of a list of values matches the expected CRC
     """
     return _calculate_crc(resp[:-2]) == crc
 
 
-def _add_crc(packet: bytes) -> bytes:
+def _add_crc(packet):
     """Adds crc to packet"""
     crc = _calculate_crc(packet)
-    packet += crc.to_bytes(2, 'big')
+    packet += struct.pack('>H', crc)
     return packet
 
 
-def _pack(formatstring: str, value: Any) -> str:
+def _pack(formatstring, value):
     """Packs a value into a bytestring based on format
     """
-    return str(struct.pack(formatstring, value), encoding='latin1')
+    return str(struct.pack(formatstring, value))
 
 
-def _unpack(resp: bytes, register_addr: int, num_registers: int, skip_header: bool = True) -> List[Any]:
+def _unpack(resp, register_addr, num_registers, skip_header=True):
     """Given a response byte string, unpacks it into a list of values
     """
     # Get the number of each register type in the packet
@@ -250,7 +277,7 @@ def _unpack(resp: bytes, register_addr: int, num_registers: int, skip_header: bo
 
     while num_chars > 0:
         values.append(
-            str(struct.unpack_from('>c', resp, offset)[0], encoding='latin1')
+            str(struct.unpack_from('>c', resp, offset)[0])
         )
         offset += _CHAR_REG_BYTE_SZ
         num_chars -= 1
@@ -266,10 +293,10 @@ def _unpack(resp: bytes, register_addr: int, num_registers: int, skip_header: bo
 
 
 def _calc_num_type(
-    register_addr: int,
-    num_registers: int,
-    max_reg: int
-) -> int:
+    register_addr,
+    num_registers,
+    max_reg
+):
     """Returns the number of a register type in a packet
     """
     if num_registers <= 0:
@@ -285,9 +312,9 @@ def _calc_num_type(
 
 
 def _calc_num_types(
-    register_addr: int,
-    num_registers: int,
-) -> Tuple[int]:
+    register_addr,
+    num_registers,
+):
     """Returns the total number of each register type in a packet
     """
     # To calculate the number of each register type, we increase the register
@@ -317,34 +344,35 @@ def _calc_num_types(
     return num_ints, num_floats, num_chars, num_bools
 
 
-def _is_valid_write_data (
-    register_addr: int,
-    values: list[Any]
-) -> bool:
-
+def _is_valid_write_data(
+    register_addr,
+    values
+):
     if register_addr < _INT_REG_OFFSET or register_addr >= _REG_MAX:
-        print ('start or end register out of bounds')
+        print('start or end register out of bounds')
         return False
 
     # there has to be a better way, but I dont know it right now
     for v in values:
 
-        if register_addr >= _INT_REG_OFFSET and register_addr < _FLOAT_REG_OFFSET and isinstance (v, int):
+        if (register_addr >= _INT_REG_OFFSET
+                and register_addr < _FLOAT_REG_OFFSET and isinstance(v, int)):
             pass
 
-        elif register_addr >= _FLOAT_REG_OFFSET and register_addr < _CHAR_REG_OFFSET and isinstance (v, float):
+        elif (register_addr >= _FLOAT_REG_OFFSET
+                and register_addr < _CHAR_REG_OFFSET and isinstance(v, float)):
             pass
-
-        elif register_addr >= _CHAR_REG_OFFSET and register_addr < _BOOL_REG_OFFSET and isinstance (v, str) and len(v) == 1:
+        elif (register_addr >= _CHAR_REG_OFFSET
+                and register_addr < _BOOL_REG_OFFSET
+                and isinstance(v, str) and len(v) == 1):
             pass
-
-        elif register_addr >= _BOOL_REG_OFFSET and register_addr < _REG_MAX and isinstance (v, bool):
+        elif (register_addr >= _BOOL_REG_OFFSET
+                and register_addr < _REG_MAX and isinstance(v, bool)):
             pass
-        
-        else :
-            print ('write data type order invalid')
+        else:
+            print('write data type order invalid')
             return False
-        
+
         register_addr = register_addr + 1
 
     return True
