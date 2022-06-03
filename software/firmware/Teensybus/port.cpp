@@ -2,12 +2,38 @@
 
 #ifdef TEENSYBUS
 
-HardwareSerial *port;
+HardwareSerial *port = NULL;
+usb_serial_class *sw_port = NULL;
 uint16_t timeout;
+
+static void _begin(uint32_t baud)
+{
+    if (sw_port)
+        sw_port->begin(baud);
+    else
+        port->begin(baud);
+}
+
+static int _read()
+{
+    return sw_port ? sw_port->read() : port->read();
+}
+
+static void _write(uint8_t *packet, uint16_t packetSize)
+{
+    if (sw_port)
+        sw_port->write(packet, packetSize);
+    else    
+        port->write(packet, packetSize);
+}
+
+static int _available()
+{
+    return sw_port ? sw_port->available() : port->available();
+}
 
 void portSetup(uint8_t serialNumber, uint8_t TXEnablePin, const uint32_t baud, const uint16_t serialTimeout)
 {
-
     timeout = serialTimeout;
 
     switch (serialNumber)
@@ -22,47 +48,47 @@ void portSetup(uint8_t serialNumber, uint8_t TXEnablePin, const uint32_t baud, c
         port = &Serial3;
         break;
     case 0:
+        sw_port = &Serial;
+        break;
     default:
         break;
     }
 
-    port->begin(baud);
-    if (TXEnablePin > 1)
+    _begin(baud);
+    if (port && TXEnablePin > 1)
     {
         pinMode(TXEnablePin, OUTPUT);
         digitalWrite(TXEnablePin, LOW);
         port->transmitterEnable(TXEnablePin);
     }
+
+    while (_read() >= 0)
+        ;
 }
 
 void portWrite(uint8_t *packet, uint16_t packetSize)
 {
-    port->write(packet, packetSize);
+    _write(packet, packetSize);
 }
 
-// interrupt handler for incoming data
-void serialEventHandler()
+void serialEvent_Handler()
 {
-    while (port->available())
+    while (_available())
     { // confirm there is data ready to be read
-        rxBuffer.data[rxBuffer.head] = port->read();
+        rxBuffer.data[rxBuffer.head] = _read();
         rxBuffer.head = PKT_WRAP_ARND(rxBuffer.head + 1); // iterate the head through the ring buffer
     }
 }
 
-void serialEvent1()
-{
-    serialEventHandler();
-}
-
-void serialEvent2()
-{
-    serialEventHandler();
-}
-
+// interrupt handler for incoming data
 void serialEvent3()
 {
-    serialEventHandler();
+    serialEvent_Handler();
+}
+
+void serialEvent()
+{
+    serialEvent_Handler();
 }
 
 #endif
@@ -74,6 +100,87 @@ Pio *globalEnPinPort;
 uint32_t globalEnPin;
 
 uint16_t transmitIndex; // helper variables for transmitting
+
+static uint32_t elapsed_ms = 0;
+
+// Timeout method 1:
+/*static void init_timer(void)
+{
+	// Enable Timer 0 interrupt
+	NVIC_EnableIRQ(TC0_IRQn);
+
+	// Enable peripheral clock for Timer 0
+	REG_PMC_PCER0 |= PMC_PCER0_PID23;
+
+	// Set Timer 0 clock as master clock / 2
+	// If master clock is 120Mhz, this sets timer clock to 60Mhz
+	// Which means timer is ticked 60 million times a second
+	// Since the value register is 16-bits, its max value is 65535
+	// Which means it overflows 60000000/65535 times a second (915 times)
+	// Thus, it overflows roughly every 1 ms
+	REG_TC0_CMR0 |= TC_CMR_TCCLKS_TIMER_CLOCK1;
+
+	// Enable interrupt for counter overflow (how we know a ms has passed)
+	REG_TC0_IER0 |= TC_IER_COVFS;
+
+	// Enable Timer 0
+	REG_TC0_CCR0 |= TC_CCR_CLKEN;
+
+	// Start Timer 0
+	REG_TC0_CCR0 |= TC_CCR_SWTRG;
+}
+
+void TC0_Handler(void)
+{
+	// Check if overflow occured, which means 1 ms has passed
+	// Reading also resets the overflow flag
+    if (REG_TC0_SR0 & TC_SR_COVFS) {
+        elapsed_ms++;
+    }
+}
+
+uint32_t millis(void)
+{
+    return elapsed_ms
+}*/
+
+// Timeout method 2:
+static void init_timer(void) {
+	// Enable Timer 0 interrupt
+	NVIC_EnableIRQ(TC0_IRQn);
+
+	// Enable peripheral clock for Timer 0
+	REG_PMC_PCER0 |= PMC_PCER0_PID23;
+
+    // Set timer clock to builtin 32KHz slow clock
+    REG_TC0_CMR0 |= TC_CMR_TCCLKS_TIMER_CLOCK5;
+
+    // Enable overflow interrupt, which means 2 seconds have passed
+    // Since, buffer is 16 bits with max value ~65000
+    REG_TC0_IER0 |= TC_IER_COVFS;
+
+	// Enable Timer 0
+	REG_TC0_CCR0 |= TC_CCR_CLKEN;
+
+	// Start Timer 0
+	REG_TC0_CCR0 |= TC_CCR_SWTRG;
+}
+
+void TC0_Handler(void) {
+    // If an overflow occurred, increase elapsed by 2000 ms
+    // since this happens every 2 seconds
+    // We read the register status to clear overflow flag
+    if (REG_TC0_SR0 & TC_SR_COVFS) {
+        elapsed_ms += 2000;
+    }
+}
+
+uint32_t millis(void)
+{
+    // Return elapsed ms plus the current value of the timer
+    // Since the timer ticks 32000 times a second, divide by 32 to get ms
+    return elapsed_ms + ((REG_TC0_CV0) / 32);
+}
 
 void portSetup(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_t enPin)
 {
@@ -111,6 +218,8 @@ void portSetup(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_
     pio_set_output(enPinPort, enPin, LOW, DISABLE, DISABLE); // init the enable pin
     globalEnPinPort = enPinPort;
     globalEnPin = enPin;
+
+    init_timer(); // Enable timer for timeout purposes
 }
 
 void portWrite(uint8_t *packet, uint16_t packetSize)

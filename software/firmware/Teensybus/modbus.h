@@ -49,6 +49,8 @@ extern float floatRegisters[REGISTER_AR_SIZE];
 extern char charRegisters[REGISTER_AR_SIZE];
 extern bool boolRegisters[REGISTER_AR_SIZE];
 
+bool communicationGood(void);
+
 void modbus_init(const uint8_t); // Initialize modbus uart port, clock, memory, transmit enable, and ...
 
 void modbus_update(void); // This function does all of the heavy lifting for modbus

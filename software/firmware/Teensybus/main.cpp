@@ -39,7 +39,7 @@ enum MODBUS_REGISTERS
 };
 
 ////////// Global Variables //////////
-const uint8_t node_id = 2;
+const uint8_t node_id = 1;
 const uint8_t mobus_serial_port_number = 3;
 
 // uint16_t modbus_data[] = {0, 0, 0, 0, 0, 0};
@@ -101,7 +101,7 @@ void setup_hardware()
 
 void set_leds()
 {
-  if (true)
+  if (communication_good)
   {
     message_count++;
     if (message_count > 5)
@@ -119,6 +119,12 @@ void set_leds()
     digitalWrite(HARDWARE::LED_GREEN, HIGH);
     digitalWrite(HARDWARE::LED_RED, LOW);
   }
+  if (communication_good) {
+    Serial.write("good\n");
+  } else {
+    Serial.write("bad\n");
+  }
+  
 }
 
 void set_motor()
@@ -159,7 +165,7 @@ void setup()
 {
   setup_hardware();
 
-  portSetup(mobus_serial_port_number, HARDWARE::RS485_EN, 115200, 1000);
+  portSetup(mobus_serial_port_number, HARDWARE::RS485_EN, 115200, 50);
   modbus_init(node_id);
 
   Serial.begin(9600);
@@ -168,6 +174,7 @@ void setup()
 void loop()
 {
   modbus_update();
+  communication_good = communicationGood();
   set_leds();
   set_motor();
   poll_sensors_and_motor_state();

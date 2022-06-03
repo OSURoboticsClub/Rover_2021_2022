@@ -27,9 +27,7 @@ bool boolRegisters[REGISTER_AR_SIZE];
 uint8_t responsePacket[TX_BUFFER_SIZE];
 uint16_t responsePacketSize;
 
-struct ringBuffer rxBuffer = {
-	.head = 0,
-	.tail = 0};
+struct ringBuffer rxBuffer;
 
 /* All convert functions assume they are receiving unsigned values in
  * big-endian format. */
@@ -114,6 +112,20 @@ void popToFc()
 
 	pop_packet();
 }
+
+// PACKET TIMEOUT STUFF //
+uint32_t last_complete = 0;
+
+bool communicationGood()
+{
+	return !(millis() - last_complete > timeout);
+}
+
+static void reset_timeout(void)
+{
+	last_complete = millis();
+}
+// END PACKET TIMEOUT STUFF //
 
 // modbus functions
 void readHandler(uint8_t *responsePacket, uint16_t start_reg, uint16_t end_reg)
@@ -238,10 +250,16 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg)
 void modbus_init(const uint8_t slave_id)
 {
 	slaveID = slave_id;
+	rxBuffer.head = 0;
+	rxBuffer.tail = 0;
 }
 
 void modbus_update(void)
 {
+	//check_timeout(); // Check for and handle a packet timeout
+	// if (isTimedOut)
+	// 	return;
+
 	if (buffer_get_data_sz() < ABS_MIN_PACKET_SIZE)
 		return; // if not enough data has been received just break out
 	if (!packet_complete())
@@ -260,8 +278,8 @@ void modbus_update(void)
 	{
 		uint16_t read_num_bytes = getReadResponseDataSize(start_reg, end_reg);
 		responsePacketSize = RD_RESP_PACKET_MIN_SIZE + read_num_bytes;
-		// responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];				//this was how the protocol used to be
-		responsePacket[SLAVE_ID_IDX] = MASTER_ADRESS; // this is how the protocol is now to help identify when the master or slave is speaking
+		responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];				//this was how the protocol used to be
+		//responsePacket[SLAVE_ID_IDX] = MASTER_ADRESS; // this is how the protocol is now to help identify when the master or slave is speaking
 		responsePacket[FC_IDX] = packet[FC_IDX];
 		responsePacket[RD_DATA_SIZE_IDX] = read_num_bytes;
 		readHandler(responsePacket + RD_DATA_BYTE_START, start_reg, end_reg);
@@ -270,8 +288,8 @@ void modbus_update(void)
 	case FC_WRITE_MULT:
 	{
 		responsePacketSize = WR_RESP_PACKET_SIZE;
-		// responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];
-		responsePacket[SLAVE_ID_IDX] = MASTER_ADRESS;
+		responsePacket[SLAVE_ID_IDX] = packet[SLAVE_ID_IDX];
+		//responsePacket[SLAVE_ID_IDX] = MASTER_ADRESS;
 		responsePacket[FC_IDX] = packet[FC_IDX];
 		responsePacket[START_REG_H_IDX] = packet[START_REG_H_IDX];
 		responsePacket[START_REG_L_IDX] = packet[START_REG_L_IDX];
@@ -289,6 +307,9 @@ void modbus_update(void)
 
 	// write out response packet
 	portWrite(responsePacket, responsePacketSize);
+
+	// last_pop = millis();
+	reset_timeout();
 }
 
 uint8_t *pop_packet()
@@ -299,6 +320,8 @@ uint8_t *pop_packet()
 		returnPacket[i] = rxBuffer.data[rxBuffer.tail];
 		rxBuffer.tail = PKT_WRAP_ARND(rxBuffer.tail + 1); // iterate the tail
 	}
+
+	// reset_timeout();
 	return returnPacket; // return
 }
 
@@ -345,8 +368,8 @@ bool packet_complete()
 	}
 
 	// bool need_crc = false;															//helper variables				//need crc becomes redundent, because at a certain point you need the crc no mater what
-	num_data_bytes = 0; // Default 0 for packets with no data bytes
-	uint16_t base_pkt_sz;		// size of packet not including data bytes
+	num_data_bytes = 0;	  // Default 0 for packets with no data bytes
+	uint16_t base_pkt_sz; // size of packet not including data bytes
 
 	// Handle write command from master
 	if (func_code == FC_WRITE_MULT)
@@ -359,7 +382,8 @@ bool packet_complete()
 	}
 
 	// Handle write response from slave or read command from master (identical packet structure)
-	else if (func_code == FC_READ_MULT)
+	// else if (func_code == FC_READ_MULT) {
+	else
 	{
 		if (buffer_get_data_sz() < WRITE_RES_PACKET_SIZE)
 			return false;					 // if the data size is less than this, we know the packet is incomplete
@@ -374,7 +398,8 @@ bool packet_complete()
 
 	packetSize = full_pkt_sz; // Set global packetSize to completed packet size
 
-	uint8_t packetNoCRC[packetSize - CRC_SIZE]; // pull packet into linear buffer for crc check
+	//uint8_t packetNoCRC[packetSize - CRC_SIZE]; // pull packet into linear buffer for crc check
+	uint8_t packetNoCRC[1024]; // pull packet into linear buffer for crc check
 	for (int i = 0; i < packetSize - CRC_SIZE; i++)
 	{
 		packetNoCRC[i] = rxBuffer.data[PKT_WRAP_ARND(rxBuffer.tail + i)];
