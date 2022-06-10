@@ -21,6 +21,8 @@ extern struct ringBuffer rxBuffer;
 extern uint8_t responsePacket[TX_BUFFER_SIZE];
 extern uint16_t responsePacketSize;
 
+extern uint16_t timeout;
+
 #ifdef TEENSYBUS
 
 #include <Arduino.h>
@@ -52,5 +54,7 @@ void UART_Handler(void);
 void UART0_Handler();
 
 void UART1_Handler();
+
+uint32_t millis(void);
 
 #endif

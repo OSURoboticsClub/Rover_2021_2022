@@ -31,9 +31,7 @@ bool		boolRegisters[REGISTER_AR_SIZE];
 uint8_t responsePacket[TX_BUFFER_SIZE];
 uint16_t responsePacketSize;
 
-struct ringBuffer rxBuffer = {
-	.head = 0,
-	.tail = 0};
+struct ringBuffer rxBuffer;
 
 /* All convert functions assume they are receiving unsigned values in
  * big-endian format. */
@@ -111,6 +109,20 @@ void popToFc()
 
 	pop_packet();
 }
+
+// PACKET TIMEOUT STUFF //
+uint32_t last_complete = 0;
+
+bool communicationGood()
+{
+	return !(millis() - last_complete > timeout);
+}
+
+static void reset_timeout(void)
+{
+	last_complete = millis();
+}
+// END PACKET TIMEOUT STUFF //
 
 // modbus functions
 void readHandler(uint8_t* responsePacket, uint16_t start_reg, uint16_t end_reg) {
@@ -209,9 +221,9 @@ uint16_t getReadResponseDataSize(uint16_t start_reg, uint16_t end_reg) {
 
 void modbus_init(const uint8_t slave_id){
 	slaveID = slave_id;
+	rxBuffer.head = 0;
+	rxBuffer.tail = 0;
 }
-
-
 
 void modbus_update(void){
 	if(buffer_get_data_sz() < ABS_MIN_PACKET_SIZE) return;			//if not enough data has been received just break out
@@ -257,6 +269,8 @@ void modbus_update(void){
 	
 	// write out response packet
 	portWrite(responsePacket, responsePacketSize);
+
+	reset_timeout();
 }
 
 uint8_t* pop_packet(){

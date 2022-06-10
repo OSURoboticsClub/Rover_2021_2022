@@ -62,6 +62,9 @@ void portSetup(uint8_t serialNumber, uint8_t TXEnablePin, const uint32_t baud, c
 		digitalWrite(TXEnablePin, LOW);
 		port->transmitterEnable(TXEnablePin);
 	}
+
+	while (_read() >= 0)
+		;
 }
 
 void portWrite(uint8_t *packet, uint16_t packetSize)
@@ -109,6 +112,49 @@ uint32_t globalEnPin;
 
 uint16_t transmitIndex; // helper variables for transmitting
 
+static uint32_t elapsed_ms = 0;
+
+// Timeout method 2:
+static void init_timer(void)
+{
+	// Enable Timer 0 interrupt
+	NVIC_EnableIRQ(TC0_IRQn);
+
+	// Enable peripheral clock for Timer 0
+	REG_PMC_PCER0 |= PMC_PCER0_PID23;
+
+	// Set timer clock to builtin 32KHz slow clock
+	REG_TC0_CMR0 |= TC_CMR_TCCLKS_TIMER_CLOCK5;
+
+	// Enable overflow interrupt, which means 2 seconds have passed
+	// Since, buffer is 16 bits with max value ~65000
+	REG_TC0_IER0 |= TC_IER_COVFS;
+
+	// Enable Timer 0
+	REG_TC0_CCR0 |= TC_CCR_CLKEN;
+
+	// Start Timer 0
+	REG_TC0_CCR0 |= TC_CCR_SWTRG;
+}
+
+void TC0_Handler(void)
+{
+	// If an overflow occurred, increase elapsed by 2000 ms
+	// since this happens every 2 seconds
+	// We read the register status to clear overflow flag
+	if (REG_TC0_SR0 & TC_SR_COVFS)
+	{
+		elapsed_ms += 2000;
+	}
+}
+
+uint32_t millis(void)
+{
+	// Return elapsed ms plus the current value of the timer
+	// Since the timer ticks 32000 times a second, divide by 32 to get ms
+	return elapsed_ms + ((REG_TC0_CV0) / 32);
+}
+
 void portSetup(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_t enPin)
 {
 	RS485Port = port485;
@@ -145,6 +191,8 @@ void portSetup(Uart *port485, const uint32_t baud, Pio *enPinPort, const uint32_
 	pio_set_output(enPinPort, enPin, LOW, DISABLE, DISABLE); // init the enable pin
 	globalEnPinPort = enPinPort;
 	globalEnPin = enPin;
+
+	init_timer(); // Enable timer for timeout purposes
 }
 
 void portWrite(uint8_t *packet, uint16_t packetSize)
