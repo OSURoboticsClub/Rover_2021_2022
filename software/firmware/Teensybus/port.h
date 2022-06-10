@@ -22,6 +22,8 @@ extern struct ringBuffer rxBuffer;
 extern uint8_t responsePacket[TX_BUFFER_SIZE];
 extern uint16_t responsePacketSize;
 
+extern uint16_t timeout;
+
 #ifdef TEENSYBUS
 
 #include <Arduino.h>
@@ -33,10 +35,7 @@ void portSetup(uint8_t, uint8_t, const uint32_t, const uint16_t);
 void portWrite(uint8_t *, uint16_t);
 
 // interrupt handler for incoming data
-void serialEventHandler();
-void serialEvent1();
-void serialEvent2();
-void serialEvent3();
+void serialEvent();
 
 #endif
 
@@ -53,5 +52,7 @@ void UART_Handler(void);
 void UART0_Handler();
 
 void UART1_Handler();
+
+uint32_t millis(void);
 
 #endif
