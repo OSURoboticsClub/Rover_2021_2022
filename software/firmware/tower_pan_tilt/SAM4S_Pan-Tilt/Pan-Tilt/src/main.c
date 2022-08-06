@@ -60,33 +60,15 @@ int main(void) {
 	//servo_s hitch_servo;
 	
 	servo_setup(&pan_servo, PWM_CHANNEL_0, 1300, 3000);
-	//servo_setup(&tilt_servo, PWM_CHANNEL_1, 1020, 2400);
+	
+	// Since the thing can do like 8 revolutions, restrict range to only 1 revolution
+	// Not tested, possible the servo needs some physical adjustment
+	servo_setup(&tilt_servo, PWM_CHANNEL_1, 600, 825);
+	
 	//servo_setup(&hitch_servo, PWM_CHANNEL_2, 0, 2000);
 	
-	// Center
-	/*servo_write_angle(&pan_servo, 0);
-	servo_write_angle(&tilt_servo, 0);
-	
-	// Some tests for now switching between frequencies.
-	//for (volatile uint32_t i = 0; i < (12000000) * 3; i++);
-	servo_write_angle(&pan_servo, 30);
-	servo_write_angle(&tilt_servo, 30);
-	
-	//for (volatile uint32_t i = 0; i < (12000000) * 3; i++);
-	servo_write_angle(&pan_servo, 60);
-	servo_write_angle(&tilt_servo, 60);
-	
-	//for (volatile uint32_t i = 0; i < (12000000) * 3; i++);
 	servo_write_angle(&pan_servo, 90);
-	servo_write_angle(&tilt_servo, 90);*/
-	
-	servo_write_angle(&pan_servo, 0);
-	servo_write_angle(&pan_servo, 30);
-	servo_write_angle(&pan_servo, 60);
-	servo_write_angle(&pan_servo, 90);
-	servo_write_angle(&pan_servo, 120);
-	servo_write_angle(&pan_servo, 150);
-	servo_write_angle(&pan_servo, 180);
+	servo_write_angle(&tilt_servo, 90);
 	
 	while (1) {
 		modbus_update();
