@@ -11,7 +11,7 @@
 
 #define STEPPER_PWM_CHANNEL PWM_CHANNEL_3
 #define STEPPER_DIR_PORT PIOA
-#define STEPPER_DIR_PIN PIO_PA8 // PA6 not working on breakout
+#define STEPPER_DIR_PIN PIO_PA6
 
 int main(void) {
 	sysclk_init();
