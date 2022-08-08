@@ -592,6 +592,9 @@
     <Compile Include="src\port.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\registers.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\servo.c">
       <SubType>compile</SubType>
     </Compile>
