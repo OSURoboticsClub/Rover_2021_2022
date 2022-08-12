@@ -11,13 +11,6 @@
 #ifndef CONF_BOARD_H
 #define CONF_BOARD_H
 
-
-#define MODBUS_BPS 115200
-#define MODBUS_TIMEOUT 20000				//increased to deal with blocking code potentially causing issues.
-#define MODBUS_SER_PORT UART0
-#define MODBUS_EN_PORT PIOA
-#define MODBUS_EN_PIN PIO_PA11
-
 #define STEPPER_PWM_CHANNEL PWM_CHANNEL_3
 #define STEPPER_DIR_PORT PIOA
 #define STEPPER_DIR_PIN PIO_PA6
