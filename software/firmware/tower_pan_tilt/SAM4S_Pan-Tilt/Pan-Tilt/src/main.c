@@ -19,11 +19,19 @@ enum MODBUS_REGISTERS {
 	HITCH_SERVO_NEGATIVE = 6
 };
 
+// Pan/tilt hard limits
+int pan_min = 1470;
+int pan_center = 1605;
+int pan_max = 1725;
+int tilt_min = 1020;
+int tilt_center = 1820;
+int tilt_max = 2400;
+
 
 void handle_pan_tilt(servo_s *pan_servo, servo_s *tilt_servo) {
 	if (intRegisters[CENTER_ALL]) {
-		servo_write_angle(pan_servo, 90);
-		servo_write_angle(tilt_servo, 90);
+		servo_write_us(pan_servo, pan_servo->us_center);
+		servo_write_us(tilt_servo, tilt_servo->us_center);
 		
 		intRegisters[CENTER_ALL] = 0;
 	} else {
@@ -59,20 +67,16 @@ int main(void) {
 	servo_s tilt_servo;
 	//servo_s hitch_servo;
 	
-	servo_setup(&pan_servo, PWM_CHANNEL_0, 1300, 3000);
+	servo_setup(&pan_servo, PWM_CHANNEL_0, pan_min, pan_max, pan_center);
 	
 	// Since the thing can do like 8 revolutions, restrict range to only 1 revolution
 	// Not tested, possible the servo needs some physical adjustment
-	servo_setup(&tilt_servo, PWM_CHANNEL_1, 600, 825);
+	servo_setup(&tilt_servo, PWM_CHANNEL_1, tilt_min, tilt_max, tilt_center);
 	
-	//servo_setup(&hitch_servo, PWM_CHANNEL_2, 0, 2000);
-	
-	servo_write_angle(&pan_servo, 90);
-	servo_write_angle(&tilt_servo, 90);
 	
 	while (1) {
 		modbus_update();
-		//handle_pan_tilt(&pan_servo, &tilt_servo);
+		handle_pan_tilt(&pan_servo, &tilt_servo);
 		//handle_hitch(&hitch_servo);
 	}
 }

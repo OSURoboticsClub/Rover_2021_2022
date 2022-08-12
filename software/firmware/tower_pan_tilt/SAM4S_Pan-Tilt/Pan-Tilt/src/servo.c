@@ -30,10 +30,11 @@ static void _pwm_set_duty(servo_s *servo, unsigned duty) {
 	pwm_channel_enable(PWM, servo->pwm_channel_num);
 }
 
-void servo_setup(servo_s *servo, uint32_t pwm_channel_num, unsigned us_min, unsigned us_max) {
+void servo_setup(servo_s *servo, uint32_t pwm_channel_num, unsigned us_min, unsigned us_max, unsigned us_center) {
 	servo->pwm_channel_num = pwm_channel_num;
 	servo->us_min = us_min;
 	servo->us_max = us_max;
+	servo->us_center = us_center;
 	
 	uint32_t pwm_pin;
 	switch (pwm_channel_num) {
@@ -53,6 +54,9 @@ void servo_setup(servo_s *servo, uint32_t pwm_channel_num, unsigned us_min, unsi
 	
 	pio_set_peripheral(PIOA, PIO_PERIPH_B, pwm_pin);
 	_init_pwm(servo);
+	
+	servo->position = us_center;
+	_pwm_set_duty(servo, (PWM_CLK_SPEED / 1000000.0) * us_center);
 }
 
 void servo_write_us(servo_s *servo, unsigned us) {
