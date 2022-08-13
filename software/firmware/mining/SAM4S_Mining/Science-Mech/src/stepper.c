@@ -7,6 +7,7 @@
 // Percentage of duty cycle, ie 0.5 = 50% duty cycle
 #define PWM_DUTY_CYCLE 0.5
 #define PWM_CLK_SPEED 10000
+#define STEP_FREQ 100
 
 
 static void _init_pwm(stepper_s *stepper) {
@@ -47,6 +48,7 @@ void stepper_setup(stepper_s *stepper, uint32_t pwm_channel_num, Pio *dir_port, 
 	stepper->pwm_channel_num = pwm_channel_num;
 	
 	pio_set_output(dir_port, dir_pin, HIGH, DISABLE, DISABLE);
+	pio_set_peripheral(PIOA, PIO_PERIPH_B, step_pin);
 	_init_pwm(stepper);
 }
 
@@ -68,25 +70,28 @@ void stepper_set_position(stepper_s *stepper, int pos){
 	
 	delta = delta > 0? delta : -delta;				//take absolute value of delta
 	
-	int period = PWM_CLK_SPEED / 2000;
+	int period = PWM_CLK_SPEED / STEP_FREQ;
 	pwm_channel_t pwm_channel_instance = {
 		.ul_prescaler = PWM_CMR_CPRE_CLKA,
 		.ul_period = period,
 		.ul_duty = period * PWM_DUTY_CYCLE,
 		.channel = stepper->pwm_channel_num
 	};
+	stepper->pwm_channel = pwm_channel_instance;
+	
 	pwm_channel_disable(PWM, stepper->pwm_channel_num);
-	pwm_channel_init(PWM, &stepper->pwm_channel_num);
+	pwm_channel_init(PWM, &stepper->pwm_channel);
 	pwm_channel_enable(PWM, stepper->pwm_channel_num);
 	
 	for (int i=0; i<delta; i++){					//make a step for each step that needs to be made. then disable PWM
-		while(!PWM->PWM_ISR1 | PWM_ISR1_CHID3){}	//Wait until counter event occurs (on counter reset) Reading this register clears it, !! Double check that the register is actually clearing. Reference page 961 of the datasheet
+		while(!PWM->PWM_ISR1){}	//Wait until counter event occurs (on counter reset) Reading this register clears it, !! Double check that the register is actually clearing. Reference page 961 of the datasheet
 	}												//I chose the blocking method because dealing with interrupts without testing is hard.
+	//for (volatile uint32_t i = 0; i < (12000000) * 3; i++);
 	pwm_channel_disable(PWM, stepper->pwm_channel_num);
 	
 	stepper->position = pos;
 }
 
 void stepper_stop(stepper_s *stepper) {
-	stepper_set_velocity(stepper, 0, STEPPER_DIR_CW);
+	pwm_channel_disable(PWM, stepper->pwm_channel_num);
 }
